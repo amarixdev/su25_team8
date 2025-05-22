@@ -26,6 +26,8 @@ export default function FollowersPage() {
   
   const [activeTab, setActiveTab] = useState(tabParam === 'following' ? 'following' : 'followers');
   const [searchTerm, setSearchTerm] = useState('');
+  // Simulate user type, replace with actual auth state
+  const [userType, setUserType] = useState('visitor'); // 'visitor' or 'contributor'
 
   // Update active tab when URL parameter changes
   useEffect(() => {
@@ -35,6 +37,14 @@ export default function FollowersPage() {
       setActiveTab('followers');
     }
   }, [tabParam]);
+  
+  // Simulate user type detection - in a real app, this would come from auth context
+  useEffect(() => {
+    const currentUser = localStorage.getItem('userType'); // Or however you store user type
+    if (currentUser === 'contributor') {
+      setUserType('contributor');
+    }
+  }, []);
 
   // Filter users based on search term
   const filteredUsers = mockUsers.filter(user => 
@@ -95,32 +105,51 @@ export default function FollowersPage() {
           </div>
         </div>
         
-        {/* User Grid */}
+        {/* User Grid or Upgrade Link */}
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
-              {activeTab === 'followers' ? 'People who follow you' : 'People you follow'}
-            </h2>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {filteredUsers.map(user => (
-                <UserCard
-                  key={user.id}
-                  id={user.id}
-                  name={user.name}
-                  username={user.username}
-                  avatar={user.avatar}
-                  isFollowing={user.isFollowing}
-                  showFollowButton={activeTab === 'followers'}
-                  showUnfollowButton={activeTab === 'following'}
-                />
-              ))}
-            </div>
-            
-            {filteredUsers.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No {activeTab} found</p>
+            {userType === 'visitor' && activeTab === 'followers' ? (
+              <div className="text-center py-12">
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                  Want to see who follows you and gain your own followers?
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Upgrade to a contributor account to publish articles, connect with readers, and build your presence.
+                </p>
+                <Link 
+                  href="/upgrade"
+                  className="px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Upgrade to Contributor
+                </Link>
               </div>
+            ) : (
+              <>
+                <h2 className="text-lg font-medium text-gray-900 mb-4">
+                  {activeTab === 'followers' ? 'People who follow you' : 'People you follow'}
+                </h2>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                  {filteredUsers.map(user => (
+                    <UserCard
+                      key={user.id}
+                      id={user.id}
+                      name={user.name}
+                      username={user.username}
+                      avatar={user.avatar}
+                      isFollowing={user.isFollowing}
+                      showFollowButton={activeTab === 'followers' && userType === 'contributor'}
+                      showUnfollowButton={activeTab === 'following'}
+                    />
+                  ))}
+                </div>
+                
+                {filteredUsers.length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No {activeTab} found.</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -20,7 +20,7 @@ const Login = () => {
   return (
     <div className="flex-grow flex items-center justify-center p-8">
       <div className="flex flex-col items-center gap-8">
-        <h1 className="text-3xl font-bold">Welcome to Spartan Paradigm</h1>
+        <h1 className="text-3xl font-bold">Welcome to SpartanParadigm</h1>
         
         <div className="flex gap-4">
           <button 

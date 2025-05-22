@@ -44,8 +44,8 @@ const Sidebar = () => {
   return (
     <aside className="w-64 h-screen bg-white text-gray-800 p-4 space-y-6 fixed top-0 left-0 shadow-lg border-r">
       <div className="mb-10">
-        <Link href="/" className="text-2xl font-bold hover:text-indigo-600">
-          Logo
+        <Link href="/" className="text-xl font-bold hover:text-indigo-600">
+          SpartanParadigm
         </Link>
       </div>
       <nav className="space-y-2">

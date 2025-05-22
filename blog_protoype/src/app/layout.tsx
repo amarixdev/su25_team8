@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Spartan Paradigm",
+  title: "SpartanParadigm",
   description: "A blog platform for sharing knowledge and insights",
 };
 
