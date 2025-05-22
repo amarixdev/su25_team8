@@ -43,6 +43,10 @@ const Header = () => {
     router.push('/login');
   };
 
+  if (pathname === '/login') {
+    return null;
+  }
+
   return (
     <header className="w-full fixed top-0 left-0 right-0 bg-white shadow-sm h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8">
       <nav className="flex space-x-8 items-center">

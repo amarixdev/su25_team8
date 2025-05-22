@@ -6,12 +6,16 @@ import React, { useEffect, useState } from 'react';
 const Sidebar = () => {
   const pathname = usePathname();
   const [userType, setUserType] = useState<string | null>(null);
-  
+  const [isLoggedIn, setIsLoggedIn] = useState<string | null>(null);
   useEffect(() => {
     // Function to update user type from localStorage
     const updateUserType = () => {
       const storedUserType = localStorage.getItem('userType');
       setUserType(storedUserType);
+    };
+    const updateIsLoggedIn = () => {
+      const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+      setIsLoggedIn(storedIsLoggedIn);
     };
 
     // Initial check
@@ -45,6 +49,23 @@ const Sidebar = () => {
         </Link>
       </div>
       <nav className="space-y-2">
+      <Link
+          href="/"
+          className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+        >
+          <svg
+            className="h-5 w-5 text-gray-600"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M3 9.5l9-7 9 7V20a1 1 0 01-1 1h-5a1 1 0 01-1-1v-6H9v6a1 1 0 01-1 1H3a1 1 0 01-1-1V9.5z"></path>
+          </svg>
+          <span>Home</span>
+        </Link>
         <Link
           href="/search"
           className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
@@ -99,7 +120,7 @@ const Sidebar = () => {
           <span>Edit Profile</span>
         </Link>
 
-        {userType === 'contributor' && (
+       
           <div className="mt-6 pt-6 border-t">
             <div className="px-2 mb-3">
               <div className="flex items-center">
@@ -121,23 +142,7 @@ const Sidebar = () => {
                 <span className="text-sm font-medium text-indigo-600">45</span>
               </div>
             </Link>
-            {userType === 'contributor' ?             <Link
-              href="/network"
-              className="flex items-center space-x-3 p-2 rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 cursor-pointer"
-            >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              <span>Upgrade Account</span>
-            </Link> :             <Link
+            <Link
               href="/followers"
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
             >
@@ -148,14 +153,25 @@ const Sidebar = () => {
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Followers</span>
-                <span className="text-sm font-medium text-indigo-600">234</span>
+                {userType === "contributor" ? <span className="text-sm font-medium text-indigo-600">234</span> : 
+                <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-purple-600 transition-colors">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-3 w-3" 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>Upgrade</span>
+                </button>}
               </div>
-            </Link>  }
+            </Link>
 
 
 
           </div>
-        )}
+     
       </nav>
     </aside>
   );
