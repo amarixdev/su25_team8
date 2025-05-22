@@ -1,9 +1,22 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+
+// Define proper type for contributor data
+interface Contributor {
+  id: number;
+  name: string;
+  username: string;
+  avatar: string;
+  postsPublished: number;
+  totalLikes: number;
+  totalComments: number;
+  avgLikes: number;
+}
 
 // Mock Data (replace with actual data fetching)
-const mockContributors = [
+const mockContributors: Contributor[] = [
   { id: 1, name: 'Alice Wonderland', username: 'alicew', avatar: '/placeholder-avatar.png', postsPublished: 150, totalLikes: 3200, totalComments: 800, avgLikes: 21.3 },
   { id: 2, name: 'Bob The Builder', username: 'bobuilds', avatar: '/placeholder-avatar.png', postsPublished: 120, totalLikes: 2800, totalComments: 650, avgLikes: 23.3 },
   { id: 3, name: 'Charlie Brown', username: 'goodgrief', avatar: '/placeholder-avatar.png', postsPublished: 180, totalLikes: 3500, totalComments: 900, avgLikes: 19.4 },
@@ -16,8 +29,13 @@ const mockContributors = [
 
 const contributorOfTheMonth = mockContributors[7]; // Hannah Montana
 
-const LeaderboardSection = ({ title, data, metricKey, unit = '' }: { title: string, data: any[], metricKey: string, unit?: string }) => {
-  const sortedData = [...data].sort((a, b) => b[metricKey] - a[metricKey]).slice(0, 5); // Top 5
+const LeaderboardSection = ({ title, data, metricKey, unit = '' }: { 
+  title: string, 
+  data: Contributor[], 
+  metricKey: keyof Pick<Contributor, 'postsPublished' | 'totalLikes' | 'totalComments' | 'avgLikes'>, 
+  unit?: string 
+}) => {
+  const sortedData = [...data].sort((a, b) => Number(b[metricKey]) - Number(a[metricKey])).slice(0, 5); // Top 5
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -27,7 +45,13 @@ const LeaderboardSection = ({ title, data, metricKey, unit = '' }: { title: stri
           <li key={contributor.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
             <div className="flex items-center">
               <span className="text-lg font-medium text-gray-600 mr-3">{index + 1}.</span>
-              <img src={contributor.avatar} alt={contributor.name} className="w-10 h-10 rounded-full mr-3" />
+              <Image 
+                src={contributor.avatar} 
+                alt={contributor.name} 
+                width={40}
+                height={40}
+                className="rounded-full mr-3" 
+              />
               <div>
                 <Link href={`/profile/${contributor.username}`} className="text-indigo-600 hover:text-indigo-800 font-medium">
                   {contributor.name}
@@ -51,7 +75,7 @@ export default function LeaderboardsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900">Leaderboards</h1>
-            <p className="mt-2 text-lg text-gray-600">See who's making the biggest impact in our community.</p>
+            <p className="mt-2 text-lg text-gray-600">See who&apos;s making the biggest impact in our community.</p>
         </div>
 
         {/* Contributor of the Month */}
@@ -59,10 +83,12 @@ export default function LeaderboardsPage() {
           <h2 className="text-3xl font-bold mb-2 text-center">Contributor of the Month</h2>
           {contributorOfTheMonth && (
             <div className="flex flex-col items-center">
-              <img 
+              <Image 
                 src={contributorOfTheMonth.avatar} 
                 alt={contributorOfTheMonth.name} 
-                className="w-24 h-24 rounded-full mb-4 border-4 border-white shadow-lg"
+                width={96}
+                height={96}
+                className="rounded-full mb-4 border-4 border-white shadow-lg"
               />
               <Link href={`/profile/${contributorOfTheMonth.username}`} className="text-2xl font-semibold hover:underline">
                 {contributorOfTheMonth.name}

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -20,70 +21,15 @@ export default function ProfilePage() {
     ]
   });
 
-  const [newPlatform, setNewPlatform] = useState('');
-  const [newUsername, setNewUsername] = useState('');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSocialLinkChange = (id: number, field: string, value: string) => {
-    const updatedLinks = formData.socialLinks.map(link => 
-      link.id === id ? { ...link, [field]: value } : link
-    );
-    setFormData({ ...formData, socialLinks: updatedLinks });
-  };
-
-  const addSocialLink = () => {
-    if (newPlatform && newUsername) {
-      const newId = formData.socialLinks.length > 0 
-        ? Math.max(...formData.socialLinks.map(link => link.id)) + 1 
-        : 1;
-      
-      setFormData({
-        ...formData,
-        socialLinks: [
-          ...formData.socialLinks,
-          { id: newId, platform: newPlatform, username: newUsername }
-        ]
-      });
-      
-      setNewPlatform('');
-      setNewUsername('');
-    }
-  };
-
-  const removeSocialLink = (id: number) => {
-    setFormData({
-      ...formData,
-      socialLinks: formData.socialLinks.filter(link => link.id !== id)
-    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would save the profile data
     alert('Profile updated successfully!');
-  };
-
-  // Platform options for the dropdown
-  const platformOptions = [
-    { value: 'twitter', label: 'Twitter', prefix: 'twitter.com/' },
-    { value: 'github', label: 'GitHub', prefix: 'github.com/' },
-    { value: 'linkedin', label: 'LinkedIn', prefix: 'linkedin.com/in/' },
-    { value: 'instagram', label: 'Instagram', prefix: 'instagram.com/' },
-    { value: 'facebook', label: 'Facebook', prefix: 'facebook.com/' },
-    { value: 'youtube', label: 'YouTube', prefix: 'youtube.com/@' },
-    { value: 'medium', label: 'Medium', prefix: 'medium.com/@' },
-    { value: 'dev', label: 'Dev.to', prefix: 'dev.to/' },
-    { value: 'other', label: 'Other', prefix: '' }
-  ];
-
-  // Get prefix for a platform
-  const getPlatformPrefix = (platform: string) => {
-    const found = platformOptions.find(option => option.value === platform);
-    return found ? found.prefix : '';
   };
 
   return (
@@ -118,10 +64,12 @@ export default function ProfilePage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6">
                   <div className="mb-4 sm:mb-0 sm:mr-6">
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100">
-                      <img
+                      <Image
                         src={profileImage}
                         alt="Profile"
-                        className="w-full h-full object-cover"
+                        width={96}
+                        height={96}
+                        className="object-cover"
                         onError={() => setProfileImage('/placeholder-avatar.png')}
                       />
                     </div>

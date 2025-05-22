@@ -3,19 +3,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-const Sidebar = () => {
+interface SidebarProps {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [userType, setUserType] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<string | null>(null);
+  
   useEffect(() => {
     // Function to update user type from localStorage
     const updateUserType = () => {
       const storedUserType = localStorage.getItem('userType');
       setUserType(storedUserType);
-    };
-    const updateIsLoggedIn = () => {
-      const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
-      setIsLoggedIn(storedIsLoggedIn);
     };
 
     // Initial check
@@ -42,17 +43,28 @@ const Sidebar = () => {
   }
 
   return (
-    <aside className="w-64 h-screen bg-white text-gray-800 p-4 space-y-6 fixed top-0 left-0 shadow-lg border-r">
-      <div className="mb-10">
+    <aside 
+      className={`w-64 bg-white text-gray-800 p-4 space-y-6 shadow-lg border-r fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out 
+                 md:translate-x-0 md:fixed 
+                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+    >
+      <div className="flex justify-between items-center mb-10">
         <Link href="/" className="text-xl font-bold hover:text-indigo-600">
           SpartanParadigm
         </Link>
-        <p className="text-sm text-gray-500">{ userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p>
+        <button 
+          className="md:hidden text-gray-600 hover:text-gray-800"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
+      <p className="text-sm text-gray-500">{ userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p>
       <nav className="space-y-2">
-      <Link
+        <Link
           href="/"
           className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
             className="h-5 w-5 text-gray-600"
@@ -70,6 +82,7 @@ const Sidebar = () => {
         <Link
           href="/search"
           className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
             className="h-5 w-5 text-gray-600"
@@ -88,6 +101,7 @@ const Sidebar = () => {
         <Link
           href="/bookmarks"
           className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
             className="h-5 w-5 text-gray-600"
@@ -106,6 +120,7 @@ const Sidebar = () => {
         <Link
           href="/profile"
           className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
             className="h-5 w-5 text-gray-600"
@@ -132,6 +147,7 @@ const Sidebar = () => {
             <Link
               href="/following"
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none">
 <path d="M8.5 8.5C8.5 6.56625 10.0662 5 12 5C13.9338 5 15.5 6.56625 15.5 8.5C15.5 10.4338 13.9338 12 12 12C10.0662 12 8.5 10.4338 8.5 8.5Z" fill="#000000"/>
@@ -146,6 +162,7 @@ const Sidebar = () => {
             <Link
               href={userType === "contributor" ? "/followers" : "/upgrade"}
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none">
 <path d="M8.5 8.5C8.5 6.56625 10.0662 5 12 5C13.9338 5 15.5 6.56625 15.5 8.5C15.5 10.4338 13.9338 12 12 12C10.0662 12 8.5 10.4338 8.5 8.5Z" fill="#000000"/>

@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface UserCardProps {
-  id: number;
   name: string;
   username: string;
   avatar: string;
@@ -12,7 +12,6 @@ interface UserCardProps {
 }
 
 export default function UserCard({
-  id,
   name,
   username,
   avatar,
@@ -24,10 +23,12 @@ export default function UserCard({
     <div className="flex flex-col items-center">
       <Link href={`/profile/${username}`} className="group">
         <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 mb-2 group-hover:ring-2 group-hover:ring-indigo-500">
-          <img
+          <Image
             src={avatar}
             alt={name}
-            className="w-full h-full object-cover"
+            width={80}
+            height={80}
+            className="object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = '/placeholder-avatar.png';

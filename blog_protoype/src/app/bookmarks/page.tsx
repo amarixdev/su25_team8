@@ -41,16 +41,7 @@ const dummyBookmarks = [
   }
 ];
 
-// Dummy folders
-const dummyFolders = [
-  { id: 1, name: "All Bookmarks", count: 12 },
-  { id: 2, name: "Tech Trends", count: 5 },
-  { id: 3, name: "Design Resources", count: 4 },
-  { id: 4, name: "Coding Tips", count: 3 }
-];
-
 export default function BookmarksPage() {
-  const [activeFolder, setActiveFolder] = useState(1);
   const [view, setView] = useState('grid');
 
   return (

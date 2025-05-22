@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import UserCard from '@/components/UserCard';
@@ -20,7 +20,8 @@ const mockUsers = [
   { id: 12, name: 'Patricia Martinez', username: 'patriciam', avatar: '/placeholder-avatar.png', isFollowing: false },
 ];
 
-export default function FollowersPage() {
+// New component to contain the logic using useSearchParams
+function FollowersContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
   
@@ -134,7 +135,6 @@ export default function FollowersPage() {
                   {filteredUsers.map(user => (
                     <UserCard
                       key={user.id}
-                      id={user.id}
                       name={user.name}
                       username={user.username}
                       avatar={user.avatar}
@@ -156,5 +156,13 @@ export default function FollowersPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FollowersPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FollowersContent />
+    </Suspense>
   );
 } 

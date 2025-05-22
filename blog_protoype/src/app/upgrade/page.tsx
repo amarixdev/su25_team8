@@ -57,7 +57,7 @@ export default function UpgradePage() {
               </div>
               <h2 className="text-lg font-medium text-gray-900 mb-2">Application Submitted!</h2>
               <p className="text-gray-600 mb-4">
-                Your application to become a contributor is being reviewed. We'll notify you once it's approved.
+                Your application to become a contributor is being reviewed. We&apos;ll notify you once it&apos;s approved.
               </p>
               <Link href="/" className="text-indigo-600 hover:text-indigo-800 font-medium">
                 Return to Home
@@ -167,7 +167,7 @@ export default function UpgradePage() {
                     Processing...
                   </>
                 ) : (
-                  'Apply to Become a Contributor'
+                  "Apply to Become a Contributor"
                 )}
               </button>
             </div>
