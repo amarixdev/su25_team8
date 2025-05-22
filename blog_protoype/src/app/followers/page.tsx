@@ -60,6 +60,17 @@ export default function FollowersPage() {
         {/* Tabs */}
         <div className="border-b border-gray-200 mb-8">
           <nav className="-mb-px flex space-x-8">
+          <Link
+              href="/followers?tab=following"
+              className={`${
+                activeTab === 'following'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm cursor-pointer`}
+              onClick={() => setActiveTab('following')}
+            >
+              Following
+            </Link>
             <Link
               href="/followers"
               className={`${
@@ -71,17 +82,7 @@ export default function FollowersPage() {
             >
               Followers
             </Link>
-            <Link
-              href="/followers?tab=following"
-              className={`${
-                activeTab === 'following'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm cursor-pointer`}
-              onClick={() => setActiveTab('following')}
-            >
-              Following
-            </Link>
+          
           </nav>
         </div>
         

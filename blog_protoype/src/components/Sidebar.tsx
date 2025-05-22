@@ -47,6 +47,7 @@ const Sidebar = () => {
         <Link href="/" className="text-xl font-bold hover:text-indigo-600">
           SpartanParadigm
         </Link>
+        <p className="text-sm text-gray-500">{ userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p>
       </div>
       <nav className="space-y-2">
       <Link
