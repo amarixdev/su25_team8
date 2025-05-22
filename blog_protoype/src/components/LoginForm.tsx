@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface LoginFormProps {
   loginType: 'visitor' | 'contributor' | null;
@@ -9,11 +10,12 @@ const LoginForm = ({ loginType }: LoginFormProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would handle the login logic
-    console.log('Login submitted:', { loginType, username, password, email });
+    // For prototype, just redirect to home page
+    router.push('/');
   };
 
   return (
