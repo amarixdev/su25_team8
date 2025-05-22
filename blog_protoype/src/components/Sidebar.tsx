@@ -143,7 +143,7 @@ const Sidebar = () => {
               </div>
             </Link>
             <Link
-              href="/followers"
+              href={userType === "contributor" ? "/followers" : "/upgrade"}
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
             >
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none">
