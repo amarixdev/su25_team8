@@ -155,7 +155,7 @@ const Sidebar = () => {
               <div className="flex justify-between items-center flex-1">
                 <span>Followers</span>
                 {userType === "contributor" ? <span className="text-sm font-medium text-indigo-600">234</span> : 
-                <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-purple-600 transition-colors">
+                <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-indigo-700 transition-colors">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     className="h-3 w-3" 

@@ -11,10 +11,6 @@ export default function FollowingPage() {
   }, [router]);
   
   return (
-    <div className="py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <p className="text-center text-gray-500">Redirecting to following...</p>
-      </div>
-    </div>
+    null
   );
 } 
