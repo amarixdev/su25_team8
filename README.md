@@ -2,7 +2,7 @@
 > Spartan Paradigm
 
 ## Team Members
-> Amari Devaughn, Camden Gregory
+> Amari DeVaughn, Camden Gregory
 
 ## Description 
 Spartan Paradigm is a simple blog-style web application to let UNCG students
@@ -32,7 +32,7 @@ with like-minded peers at UNCG!
 
    3. Subscribe to providers or topics – Follow specific providers or tags to receive updates when new posts are published.
 
-   4. React to blog posts – Engage with posts by liking or bookmarking them. Customers cannot create or comment on blog entries.P
+   4. React to blog posts – Engage with posts by liking or bookmarking them. Customers cannot create or comment on blog entries.
 
    5. Apply for posting priveledges - After account has been completed and verified and the user has engaged with one post on the app they may apply for posting priviledges. 
 
