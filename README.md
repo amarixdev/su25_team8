@@ -26,7 +26,7 @@ with like-minded peers at UNCG!
 
 1. Customer (the user with the customer role):
    
-   1. Create/modify personal profile – Set up a basic profile with name, interests, and school affiliation. Users can update this information anytime.
+   1. Create/modify/remove personal profile – Set up a basic profile with name, interests, and school affiliation. Users can update this information anytime.
 
    2. Browse available blog posts – Explore blog entries shared by providers. Posts can be filtered by subject, date, or popularity.
 
