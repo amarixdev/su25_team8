@@ -1,10 +1,9 @@
 # Software Requirements Specification
-## For <SpartanParadigm>
+## For SpartanParadigm
 
 Version 0.1  
-Prepared by <Amari DeVaughn, Camden Gregory>  
-<Paradigm>  
-<5/26/2025> 
+Prepared by <Amari DeVaughn, Camden Gregory>   
+Created 5/26/2025 
 
 Table of Contents
 =================
@@ -35,11 +34,11 @@ Table of Contents
     * 3.2.7 [Deadline](#327-deadline)
 
 ## Revision History
-| Name | Date    | Reason For Changes  | Version   |
-| Cam  | 5/26    | initial SRS         | 1.0       |
-|      |         |                     |           |
-|      |         |                     |           |
-|      |         |                     |           |
+
+| Name | Date | Reason For Changes | Version |
+|------|------|---------------------|---------|
+| Cam  | 5/26 | Initial SRS         | 1.0     |
+
 
 ## 1. Introduction
 
@@ -118,21 +117,37 @@ List any assumed factors (as opposed to known facts) that could affect the requi
 This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
 
 FR0: The system will allow users to create accounts with user priviledges. 
+
     * Each account shall have a unique identifier assigned at the time of creation.
+
     * Each account will have USER priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
+
     * Any account may be deleted at anytime by its owner. 
+
 FR1: The system shall allow USERS/CONTRIBUTERS/ADMINS to browse through the list of available blog posts.
+
 FR2: The system shall allow USERS/CONTRIBUTERS/ADMINS to interact with available blog posts. 
+
     * All users may view, comment, like, and subscribe to blog posts. 
+
 FR3: The system shall allow USERS to apply for CONTRIBUTER status after interacting with a minimum of THREE blog posts. 
+
 FR4: CONTRIBUTERS have permissions to draft, edit, post, and delete their blogs to the system at any time. 
+
 FR5: USERS/CONTRIBUTERS/ADMINS will be able to edit their profile at any time.
+
 FR6: The system shall allow CONTRIBUTERS to view their post analytics at anytime. 
-    * post analytics includes viewer count, interaction data, demographical data, and other stats to gauge engagement. 
+
+    * post analytics includes viewer count, interaction data, demographical data, and other stats to gauge engagement.
+
 FR7: The system shall allow CONTRIBUTERS to reply to comments on their blogs with an authorship pin to verify them as the poster. 
+
 FR8: The system shall allow ADMINS to manually approve users applying for contributer (blogger) status. 
+
 FR9: The system will allow ADMINS to suspend or remove USER/CONTRIBUTER accounts. 
+
 FR10: Admins may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed. 
+
 FR11: ADMINS may access server wide stats to help moderate content.
 
 #### 3.1.1 User interfaces
