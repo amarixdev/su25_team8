@@ -37,7 +37,7 @@ Table of Contents
 
 | Name | Date | Reason For Changes | Version |
 |------|------|---------------------|---------|
-| Cam  | 5/26 | Initial SRS         | 1.0     |
+| Amari  | 5/26 | Initial SRS         | 1.01     |
 
 
 ## 1. Introduction
@@ -66,11 +66,15 @@ Spartan Paradigm is a blog-style web app for UNCG students to connect and share 
 | VS Code     | An integrated development environment (IDE) for Java. This is where our system will be created|
 | Node.Js     | a cross-platform, open-source JavaScript runtime environment that can run on Windows, Linux, Unix, macOS, and more. |
 | Next.Js     | Next.js is an open-source web development framework built on top of Node.Js, providing React-based web applications with server-side rendering and static rendering.|
+| TailwindCSS | A utility-first CSS framework that provides low-level, atomic classes for rapidly building custom, responsive UIs without writing custom CSS. |
 
 ### 1.4 References
-[https://spring.io/guides](https://spring.io/guides)
-[https://www.geeksforgeeks.org/nextjs/](https://www.geeksforgeeks.org/nextjs/)
-List any other documents or Web addresses to which this SRS refers. These may include user interface style guides, contracts, standards, system requirements specifications, use case documents, or a vision and scope document. Provide enough information so that the reader could access a copy of each reference, including title, author, version number, date, and source or location.
+- https://docs.oracle.com/en/java/javase/21/  
+- https://www.postgresql.org/docs/17/  
+- https://docs.spring.io/spring-boot/docs/3.4.5/reference/html/  
+- https://react.dev/learn  
+- https://nextjs.org/docs  
+- https://tailwindcss.com/docs  
 
 ### 1.5 Document Overview
 Section 1 contains a general introduction to Spartan Paradigm, intended for any reader. Section 2 is focused on Spartan Paradigm functionality, design, and its features. This section is for customers and stakeholders. Section 3 defines the requirements and constraints for Spartan Paradigm as well as its development process. This section is intended for stakeholders, especially the dev team.
@@ -79,8 +83,6 @@ Section 1 contains a general introduction to Spartan Paradigm, intended for any 
 Spartan Paradigm is a simple to use blog web app that is designed for students and instructors to share informative content with one another. 
 
 ### 2.1 Product Functions
-Summarize the major functions the product must perform or must let the user perform. Details will be provided in Section 3, so only a high level summary (such as a bullet list) is needed here. Organize the functions to make them understandable to any reader of the SRS. A picture of the major groups of related requirements and how they relate, such as a top level data flow diagram or object class diagram, is often effective.
-
 - USERS
     * View blogs posted to Spartan Paradigm
     * Interact with posts via comments, liking, or subscribing to the author. 
@@ -98,18 +100,13 @@ Summarize the major functions the product must perform or must let the user perf
     * Oversee platform activity – View system-wide stats and manage featured content
 
 ### 2.2 Product Constraints
-This subsection should provide a general description of any other items that will limit the developer’s options. These may include:  
-
-* Interfaces to users, other applications or hardware.  
-* Quality of service constraints.  
-* Standards compliance.  
-* Constraints around design or implementation.
+Spartan Paradigm will operate only on environments that support Java JDK 21. It is developed using Spring Boot 3.4.5 for the backend and PostgreSQL 17 for database management. Current development uses the free tier of PostgreSQL, which may restrict database size and performance, especially as messaging and interaction history grow. The frontend depends on React 19 and Next.js 15, and assumes users are accessing the platform from modern, standards-compliant web browsers. Because the project is constrained by a short timeline and limited resources, not all planned features may be available at launch, and some may be deferred to later iterations.
   
 ### 2.3 User Characteristics
-Identify the various user classes that you anticipate will use this product. User classes may be differentiated based on frequency of use, subset of product functions used, technical expertise, security or privilege levels, educational level, or experience. Describe the pertinent characteristics of each user class. Certain requirements may pertain only to certain user classes. Distinguish the most important user classes for this product from those who are less important to satisfy.
+The platform is designed for students and instructors who want to share and interact with educational content. Most users will have basic digital literacy, such as navigating websites and filling out forms. Advanced tasks—such as messaging, applying for contributor access, or managing posts—are supported with intuitive design patterns and do not require technical knowledge. Users are expected to become comfortable with the interface after minimal use, and role-specific guidance for contributors and admins will be integrated as needed.
 
 ### 2.4 Assumptions and Dependencies
-List any assumed factors (as opposed to known facts) that could affect the requirements stated in the SRS. These could include third-party or commercial components that you plan to use, issues around the development or operating environment, or constraints. The project could be affected if these assumptions are incorrect, are not shared, or change. Also identify any dependencies the project has on external factors, such as software components that you intend to reuse from another project, unless they are already documented elsewhere (for example, in the vision and scope document or the project plan).
+Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API and business logic, and PostgreSQL for storing data such as posts, messages, and user relationships. The frontend relies on React and Next.js for fast rendering and smooth navigation. RESTful communication connects the frontend to backend services. Development assumes a Unix-compatible environment and is being conducted in VS Code.
 
 ## 3. Requirements
 
@@ -150,33 +147,53 @@ FR10: Admins may moderate content through reviewing, editing, or deleting blog p
 
 FR11: ADMINS may access server wide stats to help moderate content.
 
-#### 3.1.1 User interfaces
-Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
+#### 3.1.1 User Interfaces  
+Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Admins use a moderation dashboard to oversee user activity, review flagged content, and manage contributor access. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
 
-Could be further divided into Usability and Convenience requirements.
+#### 3.1.2 Hardware Interfaces  
+Mobile and desktop devices with web browsing capabilities.
 
-#### 3.1.2 Hardware interfaces
-Describe the logical and physical characteristics of each interface between the software product and the hardware components of the system. This may include the supported device types, the nature of the data and control interactions between the software and the hardware, and communication protocols to be used.
+#### 3.1.3 Software Interfaces  
+- **Backend:**  
+  - **Java JDK 21**: Core language runtime and development tools for backend logic.  
+  - **Spring Boot 3.4.5**: Backend framework for RESTful APIs, dependency injection, and configuration.  
+  - **PostgreSQL 17**: Relational database for persisting application data.
 
-#### 3.1.3 Software interfaces
-Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
+- **Frontend:**  
+  - **React v19**: UI rendering and user interaction layer.  
+  - **Next.js 15**: Routing and build optimization for React.
 
-### 3.2 Non Functional Requirements 
+- **Services and Communication:**  
+  - **API Layer (Spring Boot):**  
+    - Exposes RESTful endpoints for domain logic.  
+    - Communicates with PostgreSQL via Spring Data JPA and Hibernate.  
+  - **Database Layer (PostgreSQL 17):**  
+    - Stores structured, normalized data with indexing.  
+    - Supports transactional consistency.  
+  - **Frontend Layer (Next.js + React):**  
+    - Fetches backend data using `fetch()` or Axios.  
+    - Manages state with React hooks or external libraries.
 
-#### 3.2.1 Performance
-If there are performance requirements for the product under various circumstances, state them here and explain their rationale, to help the developers understand the intent and make suitable design choices. Specify the timing relationships for real time systems. Make such requirements as specific as possible. You may need to state performance requirements for individual functional requirements or features.
+---
 
-#### 3.2.2 Security
-Specify any requirements regarding security or privacy issues surrounding use of the product or protection of the data used or created by the product. Define any user identity authentication requirements. Refer to any external policies or regulations containing security issues that affect the product. Define any security or privacy certifications that must be satisfied.
+## 3.2 Non-Functional Requirements
 
-#### 3.2.3 Reliability
-Specify the factors required to establish the required reliability of the software system at time of delivery.
+#### 3.2.1 Performance  
+- **NFR0:** Load all primary pages within 2 seconds under typical network conditions to maintain user engagement.  
+- **NFR1:** Database queries should return results within 500 milliseconds to maintain seamless user experience.
 
-#### 3.2.4 Availability
-Specify the factors required to guarantee a defined availability level for the entire system such as checkpoint, recovery, and restart.
+#### 3.2.2 Security  
+- **NFR3:** System will be available only to authorized users, using their username and password.
 
-#### 3.2.5 Compliance
-Specify the requirements derived from existing standards or regulations
+#### 3.2.3 Reliability  
+- **NFR4:** Spartan Paradigm must achieve a minimum uptime of 99% to be reliable enough for consistent academic and social interactions.
+
+#### 3.2.4 Availability  
+- **NFR5:** Critical errors should not exceed 1 per week.  
+- **NFR6:** Non-critical errors (e.g., UI glitches) must not interrupt user workflows and should be recoverable without requiring a page refresh or restart.
+
+#### 3.2.5 Compliance  
+- **NFR7:** Spartan Paradigm should follow academic and project-level guidelines provided by the course instructor.
 
 #### 3.2.6 Cost
 We expect this project to cost $0
