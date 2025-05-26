@@ -111,41 +111,37 @@ Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API a
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
-This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
 
-FR0: The system will allow users to create accounts with user priviledges. 
+- **FR0:** The system will allow users to create accounts with user privileges.  
+  * Each account shall have a unique identifier assigned at the time of creation.
 
-    * Each account shall have a unique identifier assigned at the time of creation.
+  * Each account will have USER priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
 
-    * Each account will have USER priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
+  * Any account may be deleted at anytime by its owner. 
 
-    * Any account may be deleted at anytime by its owner. 
+- **FR1:** The system shall allow USERS/CONTRIBUTORS/ADMINS to browse through the list of available blog posts.
 
-FR1: The system shall allow USERS/CONTRIBUTERS/ADMINS to browse through the list of available blog posts.
+- **FR2:** The system shall allow USERS/CONTRIBUTORS/ADMINS to interact with available blog posts.  
+   * All users may view, comment, like, and subscribe to blog posts.
 
-FR2: The system shall allow USERS/CONTRIBUTERS/ADMINS to interact with available blog posts. 
+- **FR3:** The system shall allow USERS to apply for CONTRIBUTOR status after interacting with a minimum of three blog posts.
 
-    * All users may view, comment, like, and subscribe to blog posts. 
+- **FR4:** CONTRIBUTORS have permissions to draft, edit, post, and delete their blogs to the system at any time.
 
-FR3: The system shall allow USERS to apply for CONTRIBUTER status after interacting with a minimum of THREE blog posts. 
+- **FR5:** USERS/CONTRIBUTORS/ADMINS will be able to edit their profile at any time.
 
-FR4: CONTRIBUTERS have permissions to draft, edit, post, and delete their blogs to the system at any time. 
+- **FR6:** The system shall allow CONTRIBUTORS to view their post analytics at any time.  
+  * Post analytics includes viewer count, interaction data, demographic data, and other stats to gauge engagement.
 
-FR5: USERS/CONTRIBUTERS/ADMINS will be able to edit their profile at any time.
+- **FR7:** The system shall allow CONTRIBUTORS to reply to comments on their blogs with an authorship pin to verify them as the poster.
 
-FR6: The system shall allow CONTRIBUTERS to view their post analytics at anytime. 
+- **FR8:** The system shall allow ADMINS to manually approve users applying for contributor status.
 
-    * post analytics includes viewer count, interaction data, demographical data, and other stats to gauge engagement.
+- **FR9:** The system will allow ADMINS to suspend or remove USER/CONTRIBUTOR accounts.
 
-FR7: The system shall allow CONTRIBUTERS to reply to comments on their blogs with an authorship pin to verify them as the poster. 
+- **FR10:** ADMINS may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed.
 
-FR8: The system shall allow ADMINS to manually approve users applying for contributer (blogger) status. 
-
-FR9: The system will allow ADMINS to suspend or remove USER/CONTRIBUTER accounts. 
-
-FR10: Admins may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed. 
-
-FR11: ADMINS may access server wide stats to help moderate content.
+- **FR11:** ADMINS may access server-wide stats to help moderate content.
 
 #### 3.1.1 User Interfaces  
 Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Admins use a moderation dashboard to oversee user activity, review flagged content, and manage contributor access. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
