@@ -59,12 +59,9 @@ Spartan Paradigm is a blog-style web app for UNCG students to connect and share 
 | SpringBoot  | An open-source Java-based framework used to create a micro Service. This will be used to create and run our application. |
 | Spring MVC  | Model-View-Controller. This is the architectural pattern that will be used to implement our system. |
 | Spring Web  | Will be used to build our web application by using Spring MVC. This is one of the dependencies of our system. |
-| API         | Application Programming Interface. This will be used to interface the backend and the frontend of our application. |
-| HTML        | Hypertext Markup Language. This is the code that will be used to structure and design the web application and its content. |
-| CSS         | Cascading Style Sheets. Will be used to add styles and appearance to the web app. |
+| RESTful API | A Representational State Transfer (REST)–style API that uses standard HTTP methods for CRUD operations to interface the frontend and backend of our application. |
 | JavaScript  | An object-oriented computer programming language commonly used to create interactive effects within web browsers. Will be used in conjunction with HTML and CSS to make the web app. |
-| VS Code     | An integrated development environment (IDE) for Java. This is where our system will be created|
-| Node.Js     | a cross-platform, open-source JavaScript runtime environment that can run on Windows, Linux, Unix, macOS, and more. |
+| React       | A JavaScript library for building composable, declarative user interfaces using components and a virtual DOM for efficient rendering. |
 | Next.Js     | Next.js is an open-source web development framework built on top of Node.Js, providing React-based web applications with server-side rendering and static rendering.|
 | TailwindCSS | A utility-first CSS framework that provides low-level, atomic classes for rapidly building custom, responsive UIs without writing custom CSS. |
 
