@@ -1,7 +1,7 @@
 # Software Requirements Specification
 ## For SpartanParadigm
 
-Version 0.1  
+Version 1.1  
 Prepared by <Amari DeVaughn, Camden Gregory>   
 Created 5/26/2025 
 
@@ -37,7 +37,8 @@ Table of Contents
 
 | Name | Date | Reason For Changes | Version |
 |------|------|---------------------|---------|
-| Amari  | 5/26 | Initial SRS         | 1.01     |
+| Cam  | 5/26 |  Initial SRS          | 1.0  |
+| Amari | 5/26 | Formatting & Content | 1.1  |
 
 
 ## 1. Introduction
