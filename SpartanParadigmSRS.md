@@ -81,18 +81,18 @@ Section 1 contains a general introduction to Spartan Paradigm, intended for any 
 Spartan Paradigm is a simple to use blog web app that is designed for students and instructors to share informative content with one another. 
 
 ### 2.1 Product Functions
-- USERS
+- **USERS**
     * View blogs posted to Spartan Paradigm
     * Interact with posts via comments, liking, or subscribing to the author. 
     * Connect with authors by adding them as friends.
     * Directly message friends who have added them back. 
     * Ability to apply for contributer status (after interacting with 3 or more posts). 
-- CONTRIBUTERS
+- **CONTRIBUTERS**
     * All USER functions (- apply for contributer)
     * Ability to draft, save, post, and delete blogs to or from Spartan Paradigm.
     * Ability to block any users (- admins) from viewing their posts. 
     * View statistics for their blogs and account (Viewer demographics, interaction count, etc.)
-- ADMINS
+- **ADMINS**
     * Manage user access – Approve, suspend, or remove user accounts.
     * Moderate content – Review flagged posts and ensure content aligns with platform guidelines.
     * Oversee platform activity – View system-wide stats and manage featured content
@@ -110,36 +110,36 @@ Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API a
 
 ### 3.1 Functional Requirements 
 
-- **FR0:** The system will allow users to create accounts with user privileges.  
+- FR0: The system will allow users to create accounts with user privileges.  
   * Each account shall have a unique identifier assigned at the time of creation.
 
   * Each account will have USER priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
 
   * Any account may be deleted at anytime by its owner. 
 
-- **FR1:** The system shall allow USERS/CONTRIBUTORS/ADMINS to browse through the list of available blog posts.
+- FR1: The system shall allow USERS/CONTRIBUTORS/ADMINS to browse through the list of available blog posts.
 
-- **FR2:** The system shall allow USERS/CONTRIBUTORS/ADMINS to interact with available blog posts.  
+- FR2: The system shall allow USERS/CONTRIBUTORS/ADMINS to interact with available blog posts.  
    * All users may view, comment, like, and subscribe to blog posts.
 
-- **FR3:** The system shall allow USERS to apply for CONTRIBUTOR status after interacting with a minimum of three blog posts.
+- FR3: The system shall allow USERS to apply for CONTRIBUTOR status after interacting with a minimum of three blog posts.
 
-- **FR4:** CONTRIBUTORS have permissions to draft, edit, post, and delete their blogs to the system at any time.
+- FR4: CONTRIBUTORS have permissions to draft, edit, post, and delete their blogs to the system at any time.
 
-- **FR5:** USERS/CONTRIBUTORS/ADMINS will be able to edit their profile at any time.
+- FR5: USERS/CONTRIBUTORS/ADMINS will be able to edit their profile at any time.
 
-- **FR6:** The system shall allow CONTRIBUTORS to view their post analytics at any time.  
+- FR6: The system shall allow CONTRIBUTORS to view their post analytics at any time.  
   * Post analytics includes viewer count, interaction data, demographic data, and other stats to gauge engagement.
 
-- **FR7:** The system shall allow CONTRIBUTORS to reply to comments on their blogs with an authorship pin to verify them as the poster.
+- FR7: The system shall allow CONTRIBUTORS to reply to comments on their blogs with an authorship pin to verify them as the poster.
 
-- **FR8:** The system shall allow ADMINS to manually approve users applying for contributor status.
+- FR8: The system shall allow ADMINS to manually approve users applying for contributor status.
 
-- **FR9:** The system will allow ADMINS to suspend or remove USER/CONTRIBUTOR accounts.
+- FR9: The system will allow ADMINS to suspend or remove USER/CONTRIBUTOR accounts.
 
-- **FR10:** ADMINS may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed.
+- FR10: ADMINS may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed.
 
-- **FR11:** ADMINS may access server-wide stats to help moderate content.
+- FR11: ADMINS may access server-wide stats to help moderate content.
 
 #### 3.1.1 User Interfaces  
 Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Admins use a moderation dashboard to oversee user activity, review flagged content, and manage contributor access. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
@@ -160,7 +160,6 @@ Mobile and desktop devices with web browsing capabilities.
 - **Services and Communication:**  
   - **API Layer (Spring Boot):**  
     - Exposes RESTful endpoints for domain logic.  
-    - Communicates with PostgreSQL via Spring Data JPA and Hibernate.  
   - **Database Layer (PostgreSQL 17):**  
     - Stores structured, normalized data with indexing.  
     - Supports transactional consistency.  
@@ -173,21 +172,21 @@ Mobile and desktop devices with web browsing capabilities.
 ## 3.2 Non-Functional Requirements
 
 #### 3.2.1 Performance  
-- **NFR0:** Load all primary pages within 2 seconds under typical network conditions to maintain user engagement.  
-- **NFR1:** Database queries should return results within 500 milliseconds to maintain seamless user experience.
+- NFR0: Load all primary pages within 2 seconds under typical network conditions to maintain user engagement.  
+- NFR1: Database queries should return results within 500 milliseconds to maintain seamless user experience.
 
 #### 3.2.2 Security  
-- **NFR3:** System will be available only to authorized users, using their username and password.
+- NFR3: System will be available only to authorized users, using their username and password.
 
 #### 3.2.3 Reliability  
-- **NFR4:** Spartan Paradigm must achieve a minimum uptime of 99% to be reliable enough for consistent academic and social interactions.
+- NFR4: Spartan Paradigm must achieve a minimum uptime of 99% to be reliable enough for consistent academic and social interactions.
 
 #### 3.2.4 Availability  
-- **NFR5:** Critical errors should not exceed 1 per week.  
-- **NFR6:** Non-critical errors (e.g., UI glitches) must not interrupt user workflows and should be recoverable without requiring a page refresh or restart.
+- NFR5: Critical errors should not exceed 1 per week.  
+- NFR6: Non-critical errors (e.g., UI glitches) must not interrupt user workflows and should be recoverable without requiring a page refresh or restart.
 
 #### 3.2.5 Compliance  
-- **NFR7:** Spartan Paradigm should follow academic and project-level guidelines provided by the course instructor.
+- NFR7: Spartan Paradigm should follow academic and project-level guidelines provided by the course instructor.
 
 #### 3.2.6 Cost
 We expect this project to cost $0
