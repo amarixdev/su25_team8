@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Login from '../../components/Login';
+import Login from '../../components/login/Login';
 // import Header from '@/components/Header'; // Assuming Header might be used later
 
 export default function LoginPage() {
