@@ -42,6 +42,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts }) => {
             </div>
           </div>
         ))}
+        
       </div>
     </div>
   );
