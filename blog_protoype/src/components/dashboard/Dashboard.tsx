@@ -8,7 +8,7 @@ import AnalyticsTabContent from './AnalyticsTabContent';
 import { RecentPost } from './types';
 
 // Dummy data for the dashboard
-const dummyStats = {
+const sampleDashData = {
   totalPosts: 12,
   totalViews: 3456,
   totalComments: 89,
@@ -27,9 +27,23 @@ const dashboardTabs = [
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const userName = "Contributor";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Flex container for welcome and button */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-2xl font-bold">
+          Welcome, {userName}!
+        </div>
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
+          onClick={() => alert('Create New Post clicked!')}
+        >
+          + Create New Post
+        </button>
+      </div>
+      
       <DashboardHeader 
         title="Contributor Dashboard" 
         subtitle="Manage your content and track your performance" 
@@ -44,13 +58,13 @@ const Dashboard = () => {
       {/* Content based on active tab */}
       {activeTab === 'overview' && (
         <OverviewTabContent 
-          stats={dummyStats} 
-          recentPosts={dummyStats.recentPosts} 
+          stats={sampleDashData} 
+          recentPosts={sampleDashData.recentPosts} 
         />
       )}
 
       {activeTab === 'posts' && (
-        <MyPostsTabContent posts={dummyStats.recentPosts} /> // Using recentPosts for now
+        <MyPostsTabContent posts={sampleDashData.recentPosts} /> // Using recentPosts for now
       )}
 
       {activeTab === 'analytics' && (
