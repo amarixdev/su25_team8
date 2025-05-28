@@ -64,6 +64,14 @@ const Header = () => {
             Dashboard
           </Link>
         )}
+        {userType === 'admin' && (
+          <Link 
+            href="/admin" 
+            className="cursor-pointer text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+          >
+            Admin Dashboard
+          </Link>
+        )}
         {userType && (
           <button
             onClick={handleLogout}
