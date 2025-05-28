@@ -15,6 +15,11 @@ interface OverviewTabContentProps {
 const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPosts }) => {
   return (
     <div className="space-y-8">
+        {/* Header or intro */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
+        <p className="text-sm text-gray-500">Here’s a quick summary of your recent activity.</p>
+      </div>
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard title="Total Posts" value={stats.totalPosts} />
