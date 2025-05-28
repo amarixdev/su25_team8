@@ -1,13 +1,14 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Dashboard from '../../components/dashboard/Dashboard';
 
 export default function DashboardPage() {
   const router = useRouter();
 
+
+  // Code to conditionally render dashboard based on login status - AD
   useEffect(() => {
-    // Check if user is logged in and is a contributor
+    // Check if user is logged in and is a contributor 
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userType = localStorage.getItem('userType');
     
@@ -16,9 +17,11 @@ export default function DashboardPage() {
     }
   }, [router]);
 
+
+  //TODO - CG
   return (
     <div className="py-8">
-      <Dashboard />
+      {/* <Dashboard /> */}
     </div>
   );
 } 
