@@ -10,12 +10,13 @@ interface OverviewTabContentProps {
     totalComments: number;
   };
   recentPosts: RecentPost[];
+  onSeeAllPosts: () => void;
 }
 
-const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPosts }) => {
+const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPosts, onSeeAllPosts }) => {
   return (
     <div className="space-y-8">
-        {/* Header or intro */}
+        {/* Header */}
       <div>
         <h2 className="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
         <p className="text-sm text-gray-500">Here’s a quick summary of your recent activity.</p>
@@ -28,7 +29,10 @@ const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPo
       </div>
 
       {/* Recent posts */}
-      <RecentPostsSection recentPosts={recentPosts} />
+      <
+        RecentPostsSection recentPosts={recentPosts} 
+        onSeeAllPosts={onSeeAllPosts}
+      />
     </div>
   );
 };

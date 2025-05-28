@@ -3,9 +3,11 @@ import { RecentPost } from './types';
 
 interface RecentPostsSectionProps {
   recentPosts: RecentPost[];
+  onSeeAllPosts: () => void;
 }
 
-const RecentPostsSection: React.FC<RecentPostsSectionProps> = ({ recentPosts }) => {
+const RecentPostsSection: React.FC<RecentPostsSectionProps> = ({ recentPosts, onSeeAllPosts }) => {
+
   return (
     <div className="bg-white shadow rounded-lg">
       <div className="px-4 py-5 sm:px-6">
@@ -13,7 +15,7 @@ const RecentPostsSection: React.FC<RecentPostsSectionProps> = ({ recentPosts }) 
       </div>
       <div className="border-t border-gray-200">
         <ul className="divide-y divide-gray-200">
-          {recentPosts.map((post) => (
+          {recentPosts.slice(0,3).map((post) => (
             <li key={post.id} className="px-4 py-4 sm:px-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
@@ -32,6 +34,14 @@ const RecentPostsSection: React.FC<RecentPostsSectionProps> = ({ recentPosts }) 
             </li>
           ))}
         </ul>
+      </div>
+      <div className="flex justify-center py-4">
+      <button
+      onClick={onSeeAllPosts}
+      className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+      See All Posts
+      </button>
+
       </div>
     </div>
   );
