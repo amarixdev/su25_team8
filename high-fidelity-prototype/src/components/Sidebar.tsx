@@ -44,11 +44,11 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
   return (
     <aside 
-      className={`w-64 bg-white text-gray-800 p-4 space-y-6 shadow-lg border-r fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out 
+      className={`w-64 ${userType == 'admin' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}  p-4 space-y-6 shadow-lg fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out 
                  md:translate-x-0 md:fixed 
                  ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex justify-between items-center mb-4">
         <Link href="/" className="text-xl font-bold hover:text-indigo-600">
           SpartanParadigm
         </Link>
@@ -59,15 +59,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
-      <p className="text-sm text-gray-500">{ userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p>
-      <nav className="space-y-2">
+     {userType != 'admin' ? <p className="text-sm text-gray-500"> { userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p> : <p className=" text-white max-w-[80px] rounded-2xl px-2 text-center bg-red-600">Admin</p>}
+      <nav className={`space-y-2 ${userType == 'admin' ? 'text-white' : 'text-gray-700'} mt-6`}>
         <Link
           href="/"
-          className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          className={`${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} flex items-center space-x-3 p-2 rounded-md  cursor-pointer`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
-            className="h-5 w-5 text-gray-600"
+            className="h-5 w-5 "
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -81,11 +81,11 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
         </Link>
         <Link
           href="/search"
-          className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"}  cursor-pointer`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
-            className="h-5 w-5 text-gray-600"
+            className="h-5 w-5"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -100,11 +100,11 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
         <Link
           href="/bookmarks"
-          className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} cursor-pointer`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
-            className="h-5 w-5 text-gray-600"
+            className="h-5 w-5"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -117,9 +117,9 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
           <span>Bookmarks</span>
         </Link>
 
-        <Link
+      { userType != 'admin'  &&  <Link
           href="/profile"
-          className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} cursor-pointer`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
@@ -134,10 +134,10 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
             <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
           <span>Edit Profile</span>
-        </Link>
+        </Link>}
 
        
-          <div className="mt-6 pt-6 border-t">
+          {userType != 'admin' && <div className="mt-6 pt-6 border-t">
             <div className="px-2 mb-3">
               <div className="flex items-center">
                 <span className="text-sm font-bold text-indigo-600">Community</span>
@@ -188,7 +188,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
 
 
-          </div>
+          </div>}
      
       </nav>
     </aside>

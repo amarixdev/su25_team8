@@ -48,18 +48,18 @@ const Header = () => {
   }
 
   return (
-    <header className="w-full fixed top-0 left-0 right-0 bg-white shadow-sm h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8">
-      <nav className="flex space-x-8 items-center">
+    <header className={`w-full fixed top-0 left-0 right-0 ${userType == 'admin' ? 'bg-gray-800' : 'bg-white'} shadow-sm h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8`}>
+      <nav className={`flex ccc space-x-8 items-center ${userType == 'admin' ? 'text-white' : 'text-gray-700'}`}>
         <Link 
           href="/leaderboards" 
-          className="cursor-pointer text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+          className={`cursor-pointer hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
         >
           Leaderboards
         </Link>
         {userType === 'contributor' && (
           <Link 
             href="/dashboard" 
-            className="cursor-pointer text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            className="cursor-pointer  hover:text-indigo-600 px-3 py-2 text-sm font-medium"
           >
             Dashboard
           </Link>
@@ -67,7 +67,7 @@ const Header = () => {
         {userType === 'admin' && (
           <Link 
             href="/admin" 
-            className="cursor-pointer text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            className="cursor-pointer  hover:text-indigo-600 px-3 py-2 text-sm font-medium"
           >
             Admin Dashboard
           </Link>
@@ -75,7 +75,7 @@ const Header = () => {
         {userType && (
           <button
             onClick={handleLogout}
-            className="cursor-pointer text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            className={`cursor-pointer ${userType == 'admin' ? 'text-white' : 'text-gray-700'} hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
           >
             Log Out
           </button>
