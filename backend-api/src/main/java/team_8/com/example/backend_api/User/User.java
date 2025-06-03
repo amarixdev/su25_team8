@@ -18,10 +18,14 @@ public abstract class User {
     @Id
     @GeneratedValue
     private Long id;
-    private String profilePicturePath;
+    @Column(unique = true, nullable = false)    
     private String displayName;
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
+
     private String email;
+    private String profilePicturePath;
     private String bio;
     private String location;
     private String website;
@@ -30,12 +34,14 @@ public abstract class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+    
 
     // Constructors
     public User() {}
   
     public User(String profilePicturePath, String displayName, String username, String email, 
-                String bio, String location, String website, int following) {
+            String bio, String location, String website, int following) {
+                    
         this.profilePicturePath = profilePicturePath;
         this.displayName = displayName;
         this.username = username;
@@ -44,7 +50,7 @@ public abstract class User {
         this.location = location;
         this.website = website;
         this.comments = new ArrayList<>();
-    
+        
     }
 
     // Essential fields constructor
