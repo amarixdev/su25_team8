@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import team_8.com.example.backend_api.Comment.Comment;
+import team_8.com.example.backend_api.Post.Post;
 
 
 
@@ -34,6 +35,9 @@ public abstract class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
     
 
     // Constructors
@@ -50,6 +54,7 @@ public abstract class User {
         this.location = location;
         this.website = website;
         this.comments = new ArrayList<>();
+        this.posts = new ArrayList<>();
         
     }
 
@@ -59,6 +64,7 @@ public abstract class User {
         this.username = username;
         this.email = email;
         this.comments = new ArrayList<>();
+        this.posts = new ArrayList<>();
     }
 
     // Common getters/setters
@@ -140,5 +146,23 @@ public abstract class User {
 
     public void setFollowing(int following) {
         this.following = following;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setAuthor(this);
+    }
+
+    public void removePost(Post post) {
+        posts.remove(post);
+        post.setAuthor(null);
     }
 }
