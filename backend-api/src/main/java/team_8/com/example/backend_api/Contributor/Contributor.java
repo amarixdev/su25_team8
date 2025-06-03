@@ -19,6 +19,9 @@ import java.util.Set;
 @DiscriminatorValue("PROVIDER")
 public class Contributor extends User {
     
+    @Column(name = "profile_picture", columnDefinition = "TEXT")
+    private String profilePicture;  // Will store Base64 string
+    
     // Set of subjects the contributor specializes in
     @ElementCollection
     @CollectionTable(name = "contributor_subjects", joinColumns = @JoinColumn(name = "contributor_id"))
@@ -123,5 +126,13 @@ public class Contributor extends User {
     
     public void incrementPosts() {
         this.totalPosts++;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

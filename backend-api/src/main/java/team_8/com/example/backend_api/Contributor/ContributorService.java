@@ -269,4 +269,27 @@ public class ContributorService {
             throw new IllegalArgumentException("Academic background (bio) is required");
         }
     }
+
+    @Transactional
+    public Contributor updateProfilePicture(Long id, String base64Image) {
+        if (base64Image == null || !base64Image.startsWith("data:image/")) {
+            throw new IllegalArgumentException("Invalid image format. Must be a Base64 encoded image.");
+        }
+
+        return contributorRepository.findById(id)
+            .map(contributor -> {
+                contributor.setProfilePicture(base64Image);
+                return contributorRepository.save(contributor);
+            })
+            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
+    }
+
+    @Transactional
+    public void deleteProfilePicture(Long id) {
+        contributorRepository.findById(id)
+            .ifPresent(contributor -> {
+                contributor.setProfilePicture(null);
+                contributorRepository.save(contributor);
+            });
+    }
 } 

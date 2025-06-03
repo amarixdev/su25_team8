@@ -123,4 +123,24 @@ public class ContributorController {
     public ResponseEntity<Contributor> incrementPosts(@PathVariable Long id) {
         return ResponseEntity.ok(contributorService.incrementPosts(id));
     }
+
+    @GetMapping("/{id}/profile-picture")
+    public ResponseEntity<String> getProfilePicture(@PathVariable Long id) {
+        return contributorService.getContributorById(id)
+            .map(contributor -> ResponseEntity.ok(contributor.getProfilePicture()))
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/profile-picture")
+    public ResponseEntity<Contributor> updateProfilePicture(
+            @PathVariable Long id,
+            @RequestBody String base64Image) {
+        return ResponseEntity.ok(contributorService.updateProfilePicture(id, base64Image));
+    }
+
+    @DeleteMapping("/{id}/profile-picture")
+    public ResponseEntity<Void> deleteProfilePicture(@PathVariable Long id) {
+        contributorService.deleteProfilePicture(id);
+        return ResponseEntity.ok().build();
+    }
 } 
