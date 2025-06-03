@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.HashSet;
 
 /**
- * Service class for handling Contributor business logic and their blog services.
+ * Service class for handling Contributor business logic.
  * Acts as an intermediary between the Controller and Repository layers.
  * Handles data validation, business rules, and complex operations.
  */
@@ -16,13 +16,10 @@ import java.util.HashSet;
 public class ContributorService {
     
     private final ContributorRepository contributorRepository;
-    private final BlogServiceRepository blogServiceRepository;
     
     @Autowired
-    public ContributorService(ContributorRepository contributorRepository, 
-                            BlogServiceRepository blogServiceRepository) {
+    public ContributorService(ContributorRepository contributorRepository) {
         this.contributorRepository = contributorRepository;
-        this.blogServiceRepository = blogServiceRepository;
     }
     
     /**
@@ -270,169 +267,6 @@ public class ContributorService {
         }
         if (contributor.getBio() == null || contributor.getBio().trim().isEmpty()) {
             throw new IllegalArgumentException("Academic background (bio) is required");
-        }
-    }
-    
-    // Blog Service operations
-    public List<BlogService> getAllServices() {
-        return blogServiceRepository.findAll();
-    }
-    
-    public Optional<BlogService> getServiceById(Long id) {
-        return blogServiceRepository.findById(id);
-    }
-    
-    public List<BlogService> getServicesByContributor(Long contributorId) {
-        Contributor contributor = getContributorById(contributorId)
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found"));
-        return blogServiceRepository.findByContributor(contributor);
-    }
-    
-    public List<BlogService> getServicesByStatus(ServiceStatus status) {
-        return blogServiceRepository.findByStatus(status);
-    }
-    
-    public List<BlogService> getServicesByCategory(String category) {
-        return blogServiceRepository.findByCategory(category);
-    }
-    
-    public List<BlogService> getServicesByTag(String tag) {
-        return blogServiceRepository.findByTag(tag);
-    }
-    
-    public List<BlogService> getTopServicesByViews() {
-        return blogServiceRepository.findTopByViews();
-    }
-    
-    public List<BlogService> getTopServicesByLikes() {
-        return blogServiceRepository.findTopByLikes();
-    }
-    
-    public List<BlogService> getTopServicesBySubscribers() {
-        return blogServiceRepository.findTopBySubscribers();
-    }
-    
-    public List<BlogService> searchServices(String query) {
-        return blogServiceRepository.searchByTitleOrDescription(query);
-    }
-    
-    @Transactional
-    public BlogService createService(BlogService service, Long contributorId) {
-        validateService(service);
-        Contributor contributor = getContributorById(contributorId)
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found"));
-        service.setContributor(contributor);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService updateService(Long id, BlogService updatedService) {
-        BlogService existingService = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        
-        // Update fields
-        existingService.setTitle(updatedService.getTitle());
-        existingService.setDescription(updatedService.getDescription());
-        existingService.setContent(updatedService.getContent());
-        existingService.setCategories(updatedService.getCategories());
-        existingService.setTags(updatedService.getTags());
-        existingService.setStatus(updatedService.getStatus());
-        
-        return blogServiceRepository.save(existingService);
-    }
-    
-    @Transactional
-    public void deleteService(Long id) {
-        if (!blogServiceRepository.existsById(id)) {
-            throw new IllegalArgumentException("Service not found");
-        }
-        blogServiceRepository.deleteById(id);
-    }
-    
-    @Transactional
-    public BlogService addCategory(Long id, String category) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.addCategory(category);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService removeCategory(Long id, String category) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.removeCategory(category);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService addTag(Long id, String tag) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.addTag(tag);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService removeTag(Long id, String tag) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.removeTag(tag);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService updateStatus(Long id, ServiceStatus status) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.setStatus(status);
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService incrementServiceViews(Long id) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.incrementViews();
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService incrementServiceLikes(Long id) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.incrementLikes();
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService incrementServiceSubscribers(Long id) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.incrementSubscribers();
-        return blogServiceRepository.save(service);
-    }
-    
-    @Transactional
-    public BlogService decrementServiceSubscribers(Long id) {
-        BlogService service = blogServiceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-        service.decrementSubscribers();
-        return blogServiceRepository.save(service);
-    }
-    
-    private void validateService(BlogService service) {
-        if (service.getTitle() == null || service.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("Title is required");
-        }
-        if (service.getDescription() == null || service.getDescription().trim().isEmpty()) {
-            throw new IllegalArgumentException("Description is required");
-        }
-        if (service.getContent() == null || service.getContent().trim().isEmpty()) {
-            throw new IllegalArgumentException("Content is required");
-        }
-        if (service.getContributor() == null) {
-            throw new IllegalArgumentException("Contributor is required");
         }
     }
 } 
