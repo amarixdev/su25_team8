@@ -25,6 +25,8 @@ public abstract class User {
     private String bio;
     private String location;
     private String website;
+    private int following;
+    
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -33,7 +35,7 @@ public abstract class User {
     public User() {}
   
     public User(String profilePicturePath, String displayName, String username, String email, 
-                String bio, String location, String website) {
+                String bio, String location, String website, int following) {
         this.profilePicturePath = profilePicturePath;
         this.displayName = displayName;
         this.username = username;
@@ -42,6 +44,7 @@ public abstract class User {
         this.location = location;
         this.website = website;
         this.comments = new ArrayList<>();
+    
     }
 
     // Essential fields constructor
@@ -123,5 +126,13 @@ public abstract class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
     }
 }
