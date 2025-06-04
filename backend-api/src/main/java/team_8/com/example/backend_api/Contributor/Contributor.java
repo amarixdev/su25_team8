@@ -31,8 +31,8 @@ public class Contributor extends User {
     @Column(name = "total_likes")
     private Integer totalLikes = 0;
     
-    @Column(name = "total_bookmarks")
-    private Integer totalBookmarks = 0;
+    @Column(name = "followers")
+    private Integer followers = 0;
     
     // Removed posts list as it's inherited from User and mapped by 'contributor'
     @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,13 +74,14 @@ public class Contributor extends User {
     public void setTotalLikes(Integer totalLikes) {
         this.totalLikes = totalLikes;
     }
+
     
-    public Integer getTotalBookmarks() {
-        return totalBookmarks;
+    public Integer getFollowers() {
+        return followers;
     }
     
-    public void setTotalBookmarks(Integer totalBookmarks) {
-        this.totalBookmarks = totalBookmarks;
+    public void setFollowers(Integer followers) {
+        this.followers = followers;
     }
 
     public List<Post> getPosts() {
@@ -104,11 +105,17 @@ public class Contributor extends User {
     public void incrementLikes() {
         this.totalLikes++;
     }
-    
-    public void incrementBookmarks() {
-        this.totalBookmarks++;
+
+    public void incrementFollowers() {
+        this.followers++;
     }
     
+    public void decrementFollowers() {
+        if (this.followers > 0) {
+            this.followers--;
+        }
+    }
+
     public void incrementPosts() { // Method to increment the explicit totalPosts counter
         this.totalPosts++;
     }
