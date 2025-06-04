@@ -77,9 +77,14 @@ public class ContributorController {
         return ResponseEntity.ok(contributorService.incrementLikes(id));
     }
 
-    @PostMapping("/api/contributors/{id}/bookmarks")
-    public ResponseEntity<Contributor> incrementBookmarks(@PathVariable Long id) {
-        return ResponseEntity.ok(contributorService.incrementBookmarks(id));
+    @PostMapping("/api/contributors/{id}/followers")
+    public ResponseEntity<Contributor> incrementFollowers(@PathVariable Long id) {
+        return ResponseEntity.ok(contributorService.incrementFollowers(id));
+    }
+
+    @DeleteMapping("/api/contributors/{id}/followers")
+    public ResponseEntity<Contributor> decrementFollowers(@PathVariable Long id) {
+        return ResponseEntity.ok(contributorService.decrementFollowers(id));
     }
 
 } 

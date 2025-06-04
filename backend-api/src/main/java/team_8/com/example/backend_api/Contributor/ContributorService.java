@@ -154,8 +154,6 @@ public class ContributorService {
      * @return The updated contributor
      * @throws IllegalArgumentException if contributor not found
      */
-
-
     @Transactional
     public Contributor incrementLikes(Long id) {
         return contributorRepository.findById(id)
@@ -165,23 +163,39 @@ public class ContributorService {
             })
             .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
     }
-    
+
     /**
-     * Increments the bookmark count for a contributor
+     * Increments the follower count for a contributor
      * @param id The contributor's ID
      * @return The updated contributor
      * @throws IllegalArgumentException if contributor not found
      */
     @Transactional
-    public Contributor incrementBookmarks(Long id) {
+    public Contributor incrementFollowers(Long id) {
         return contributorRepository.findById(id)
             .map(contributor -> {
-                contributor.incrementBookmarks();
+                contributor.incrementFollowers();
                 return contributorRepository.save(contributor);
             })
             .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
     }
     
+    /**
+     * Decrements the follower count for a contributor
+     * @param id The contributor's ID
+     * @return The updated contributor
+     * @throws IllegalArgumentException if contributor not found
+     */
+    @Transactional
+    public Contributor decrementFollowers(Long id) {
+        return contributorRepository.findById(id)
+            .map(contributor -> {
+                contributor.decrementFollowers();
+                return contributorRepository.save(contributor);
+            })
+            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
+    }
+
     /**
      * Validates a contributor's data
      * @param contributor The contributor to validate
