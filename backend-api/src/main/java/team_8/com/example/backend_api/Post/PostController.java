@@ -39,8 +39,8 @@ public class PostController {
         return postService.searchPostsByTitle(title);
     }
 
-    @PostMapping("/api/posts")
-    public Post createPost(@RequestBody Post post, @RequestParam Long contributorId) {
+    @PostMapping("/api/contributors/{contributorId}/posts")
+    public Post createPost(@RequestBody Post post, @PathVariable Long contributorId) {
         return postService.createPost(post, contributorId);
     }
 

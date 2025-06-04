@@ -5,3 +5,4 @@ public enum PostStatus {
     PUBLISHED,
     ARCHIVED
 } 
+

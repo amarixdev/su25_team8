@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import team_8.com.example.backend_api.Comment.Comment;
 import team_8.com.example.backend_api.Post.Post;
 
@@ -15,6 +16,7 @@ import team_8.com.example.backend_api.Post.Post;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //Role Column is auto-generated
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class User {
 
     @Id
