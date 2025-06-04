@@ -67,15 +67,6 @@ public class ContributorService {
     }
     
     /**
-     * Finds contributors who specialize in a specific subject
-     * @param subject The subject to search for
-     * @return List of contributors with the specified subject
-     */
-    public List<Contributor> getContributorsBySubject(String subject) {
-        return contributorRepository.findBySubject(subject);
-    }
-    
-    /**
      * Finds top contributors based on number of posts
      * @param minPosts Minimum number of posts required
      * @return List of contributors with more than minPosts
@@ -129,57 +120,17 @@ public class ContributorService {
         // Update fields
         existingContributor.setDisplayName(updatedContributor.getDisplayName());
         existingContributor.setBio(updatedContributor.getBio());
-        existingContributor.setSubjects(new HashSet<>(updatedContributor.getSubjects()));
         
         return contributorRepository.save(existingContributor);
     }
-    
-    /**
-     * Deletes a contributor
-     * @param id The ID of the contributor to delete
-     * @throws IllegalArgumentException if contributor not found
-     */
-    @Transactional
+   
     public void deleteContributor(Long id) {
         if (!contributorRepository.existsById(id)) {
             throw new IllegalArgumentException("Contributor not found");
         }
         contributorRepository.deleteById(id);
     }
-    
-    /**
-     * Adds a subject to a contributor's list of subjects
-     * @param id The contributor's ID
-     * @param subject The subject to add
-     * @return The updated contributor
-     * @throws IllegalArgumentException if contributor not found
-     */
-    @Transactional
-    public Contributor addSubject(Long id, String subject) {
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.addSubject(subject);
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
-    }
-    
-    /**
-     * Removes a subject from a contributor's list of subjects
-     * @param id The contributor's ID
-     * @param subject The subject to remove
-     * @return The updated contributor
-     * @throws IllegalArgumentException if contributor not found
-     */
-    @Transactional
-    public Contributor removeSubject(Long id, String subject) {
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.removeSubject(subject);
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
-    }
+
     
     /**
      * Increments the view count for a contributor
@@ -203,6 +154,8 @@ public class ContributorService {
      * @return The updated contributor
      * @throws IllegalArgumentException if contributor not found
      */
+
+
     @Transactional
     public Contributor incrementLikes(Long id) {
         return contributorRepository.findById(id)
@@ -224,22 +177,6 @@ public class ContributorService {
         return contributorRepository.findById(id)
             .map(contributor -> {
                 contributor.incrementBookmarks();
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
-    }
-    
-    /**
-     * Increments the post count for a contributor
-     * @param id The contributor's ID
-     * @return The updated contributor
-     * @throws IllegalArgumentException if contributor not found
-     */
-    @Transactional
-    public Contributor incrementPosts(Long id) {
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.incrementPosts();
                 return contributorRepository.save(contributor);
             })
             .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
@@ -268,28 +205,5 @@ public class ContributorService {
         if (contributor.getBio() == null || contributor.getBio().trim().isEmpty()) {
             throw new IllegalArgumentException("Academic background (bio) is required");
         }
-    }
-
-    @Transactional
-    public Contributor updateProfilePicture(Long id, String base64Image) {
-        if (base64Image == null || !base64Image.startsWith("data:image/")) {
-            throw new IllegalArgumentException("Invalid image format. Must be a Base64 encoded image.");
-        }
-
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.setProfilePicture(base64Image);
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
-    }
-
-    @Transactional
-    public void deleteProfilePicture(Long id) {
-        contributorRepository.findById(id)
-            .ifPresent(contributor -> {
-                contributor.setProfilePicture(null);
-                contributorRepository.save(contributor);
-            });
     }
 } 

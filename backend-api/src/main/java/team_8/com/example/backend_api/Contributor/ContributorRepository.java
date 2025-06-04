@@ -24,10 +24,6 @@ public interface ContributorRepository extends JpaRepository<Contributor, Long> 
     // Find contributors by their academic background (stored in bio)
     List<Contributor> findByBio(String bio);
     
-    // Find contributors who have a specific subject in their subjects list
-    @Query("SELECT c FROM Contributor c WHERE :subject MEMBER OF c.subjects")
-    List<Contributor> findBySubject(@Param("subject") String subject);
-    
     // Find top contributors who have posted more than the minimum number of posts
     @Query("SELECT c FROM Contributor c WHERE c.totalPosts >= :minPosts ORDER BY c.totalPosts DESC")
     List<Contributor> findTopByPosts(@Param("minPosts") Integer minPosts);
