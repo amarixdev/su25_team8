@@ -10,7 +10,7 @@ import team_8.com.example.backend_api.Post.Post;
 
 
 @Entity
-@Table(name = "app_user")
+@Table(name = "app_users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //Role Column is auto-generated
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
@@ -36,7 +36,7 @@ public abstract class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
     
 
@@ -45,7 +45,7 @@ public abstract class User {
   
     public User(String profilePicturePath, String displayName, String username, String email, 
             String bio, String location, String website, int following) {
-                    
+
         this.profilePicturePath = profilePicturePath;
         this.displayName = displayName;
         this.username = username;
@@ -55,18 +55,8 @@ public abstract class User {
         this.website = website;
         this.comments = new ArrayList<>();
         this.posts = new ArrayList<>();
-        
     }
-
-    // Essential fields constructor
-    public User(String displayName, String username, String email) {
-        this.displayName = displayName;
-        this.username = username;
-        this.email = email;
-        this.comments = new ArrayList<>();
-        this.posts = new ArrayList<>();
-    }
-
+    
     // Common getters/setters
     public Long getId() {
         return id;
@@ -154,15 +144,5 @@ public abstract class User {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
-    }
-
-    public void addPost(Post post) {
-        posts.add(post);
-        post.setAuthor(this);
-    }
-
-    public void removePost(Post post) {
-        posts.remove(post);
-        post.setAuthor(null);
     }
 }
