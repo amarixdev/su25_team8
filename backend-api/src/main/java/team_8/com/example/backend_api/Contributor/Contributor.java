@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import team_8.com.example.backend_api.Post.Post;
 // import team_8.com.example.backend_api.Post.Post; // No longer needed here directly if posts list is removed
 import team_8.com.example.backend_api.User.*;
 
@@ -33,8 +35,9 @@ public class Contributor extends User {
     private Integer totalBookmarks = 0;
     
     // Removed posts list as it's inherited from User and mapped by 'contributor'
-    // @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Post> posts = new ArrayList<>();
 
     // Constructors
     public Contributor() {
@@ -79,7 +82,19 @@ public class Contributor extends User {
     public void setTotalBookmarks(Integer totalBookmarks) {
         this.totalBookmarks = totalBookmarks;
     }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
     
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setContributor(this);
+    }
     
     // Analytics methods
     public void incrementViews() {

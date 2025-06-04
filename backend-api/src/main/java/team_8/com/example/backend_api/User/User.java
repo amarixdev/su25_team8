@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import team_8.com.example.backend_api.Comment.Comment;
 import team_8.com.example.backend_api.Post.Post;
 
@@ -34,9 +35,11 @@ public abstract class User {
     
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
     
 
