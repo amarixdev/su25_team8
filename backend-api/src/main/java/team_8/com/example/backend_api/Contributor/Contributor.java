@@ -1,11 +1,13 @@
 package team_8.com.example.backend_api.Contributor;
 
-import jakarta.persistence.*;
-import team_8.com.example.backend_api.User.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
+
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import team_8.com.example.backend_api.Post.Post;
+// import team_8.com.example.backend_api.Post.Post; // No longer needed here directly if posts list is removed
+import team_8.com.example.backend_api.User.*;
 
 /**
  * Entity class representing a Provider/Contributor in the system.
@@ -15,23 +17,14 @@ import java.util.Set;
  * Inherits basic user fields (id, displayName, username, email) from User class.
  */
 @Entity
-@Table(name = "contributors")
-@DiscriminatorValue("PROVIDER")
+// @Table(name = "contributors") // This can be uncommented if a separate table specifically for Contributor-only fields is desired beyond the app_user table for User.
+@DiscriminatorValue("CONTRIBUTOR")
 public class Contributor extends User {
     
-    @Column(name = "profile_picture", columnDefinition = "TEXT")
-    private String profilePicture;  // Will store Base64 string
-    
-    // Set of subjects the contributor specializes in
-    @ElementCollection
-    @CollectionTable(name = "contributor_subjects", joinColumns = @JoinColumn(name = "contributor_id"))
-    @Column(name = "subject")
-    private Set<String> subjects = new HashSet<>();
-    
     // Statistics tracking
-    @Column(name = "total_posts")
+    @Column(name = "total_posts") // Assuming this is explicitly managed, not just posts.size()
     private Integer totalPosts = 0;
-    
+
     @Column(name = "total_views")
     private Integer totalViews = 0;
     
@@ -41,25 +34,22 @@ public class Contributor extends User {
     @Column(name = "total_bookmarks")
     private Integer totalBookmarks = 0;
     
+    // Removed posts list as it's inherited from User and mapped by 'contributor'
+    @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Post> posts = new ArrayList<>();
+
     // Constructors
     public Contributor() {
         super();
     }
     
-    public Contributor(String displayName, String username, String email, String academicBackground) {
-        super(displayName, username, email);
-        setBio(academicBackground); // Use bio field for academic background
+    public Contributor(String profilePicturePath, String displayName, String username, String email, String bio, String location, String website, int following) {
+        super(profilePicturePath, displayName, username, email, bio, location, website, following);
     }
-    
-    // Getters and Setters for academic background (using bio)
-    public String getAcademicBackground() {
-        return getBio(); // Return bio as academic background
-    }
-    
-    public void setAcademicBackground(String academicBackground) {
-        setBio(academicBackground); // Set bio as academic background
-    }
-    
+
+    // Removed getPosts/setPosts as they are inherited from User
+
     // Statistics getters and setters
     public Integer getTotalPosts() {
         return totalPosts;
@@ -68,7 +58,7 @@ public class Contributor extends User {
     public void setTotalPosts(Integer totalPosts) {
         this.totalPosts = totalPosts;
     }
-    
+
     public Integer getTotalViews() {
         return totalViews;
     }
@@ -92,23 +82,18 @@ public class Contributor extends User {
     public void setTotalBookmarks(Integer totalBookmarks) {
         this.totalBookmarks = totalBookmarks;
     }
-    
-    // Subject management
-    public List<String> getSubjects() {
-        return new ArrayList<>(subjects);
+
+    public List<Post> getPosts() {
+        return posts;
     }
     
-    public void setSubjects(Set<String> subjects) {
-        this.subjects.clear();
-        this.subjects.addAll(subjects);
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
-    
-    public void addSubject(String subject) {
-        subjects.add(subject);
-    }
-    
-    public void removeSubject(String subject) {
-        subjects.remove(subject);
+
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setContributor(this);
     }
     
     // Analytics methods
@@ -124,15 +109,7 @@ public class Contributor extends User {
         this.totalBookmarks++;
     }
     
-    public void incrementPosts() {
+    public void incrementPosts() { // Method to increment the explicit totalPosts counter
         this.totalPosts++;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
     }
 }

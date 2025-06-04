@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import team_8.com.example.backend_api.Comment.Comment;
+import team_8.com.example.backend_api.Post.Post;
 
 
 
 @Entity
-@Table(name = "app_user")
+@Table(name = "app_users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //Role Column is auto-generated
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
@@ -18,22 +20,35 @@ public abstract class User {
     @Id
     @GeneratedValue
     private Long id;
-    private String profilePicturePath;
+    @Column(unique = true, nullable = false)    
     private String displayName;
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
+
     private String email;
+    private String profilePicturePath;
     private String bio;
     private String location;
     private String website;
+    private int following;
+    
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Post> posts = new ArrayList<>();
+    
 
     // Constructors
     public User() {}
   
     public User(String profilePicturePath, String displayName, String username, String email, 
-                String bio, String location, String website) {
+            String bio, String location, String website, int following) {
+
         this.profilePicturePath = profilePicturePath;
         this.displayName = displayName;
         this.username = username;
@@ -42,16 +57,9 @@ public abstract class User {
         this.location = location;
         this.website = website;
         this.comments = new ArrayList<>();
+        this.posts = new ArrayList<>();
     }
-
-    // Essential fields constructor
-    public User(String displayName, String username, String email) {
-        this.displayName = displayName;
-        this.username = username;
-        this.email = email;
-        this.comments = new ArrayList<>();
-    }
-
+    
     // Common getters/setters
     public Long getId() {
         return id;
@@ -123,5 +131,21 @@ public abstract class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }
