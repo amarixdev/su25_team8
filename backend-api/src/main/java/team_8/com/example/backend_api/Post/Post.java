@@ -1,57 +1,43 @@
 package team_8.com.example.backend_api.Post;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import team_8.com.example.backend_api.User.User;
 import team_8.com.example.backend_api.Comment.Comment;
-
+import team_8.com.example.backend_api.User.User;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "post")
+@Table(name = "posts")
 public class Post {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-    private String imagePath;
-
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User contributor;
+    
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
-    // Constructors
-    public Post() {
-    }
-
-    public Post(String title, User author, String imagePath, String content) {
-        this.title = title;
-        this.author = author;
-        this.imagePath = imagePath;
-        this.content = content;
-    }
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
 
     // Getters and Setters
     public Long getId() {
@@ -70,12 +56,12 @@ public class Post {
         this.title = title;
     }
 
-    public User getAuthor() {
-        return author;
+    public String getContent() {
+        return content;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -94,6 +80,22 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
+    public User getAuthor() {
+        return contributor;
+    }
+
+    public void setContributor(User contributor) {
+        this.contributor = contributor;
+    }
+
+    public PostStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PostStatus status) {
+        this.status = status;
+    }
+
     public String getImagePath() {
         return imagePath;
     }
@@ -102,30 +104,28 @@ public class Post {
         this.imagePath = imagePath;
     }
 
-    public String getContent() {
-        return content;
-    }
+       // Helper methods for managing bidirectional relationship with Comment
+       public void addComment(Comment comment) {
+           comments.add(comment);
+           comment.setPost(this);
+       }
+ 
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    // Helper methods for managing bidirectional relationship with Comment
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setPost(this);
-    }
 
     public void removeComment(Comment comment) {
         comments.remove(comment);
         comment.setPost(null);
+    }
+
+    // Pre-persist and pre-update hooks
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 } 
