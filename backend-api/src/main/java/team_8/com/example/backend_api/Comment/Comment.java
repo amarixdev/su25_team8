@@ -1,12 +1,12 @@
 package team_8.com.example.backend_api.Comment;
 
 import jakarta.persistence.*;
-import team_8.com.example.backend_api.User.User;
 import team_8.com.example.backend_api.Post.Post;
+import team_8.com.example.backend_api.User.User;
 
 @Entity
+@Table(name = "comments")
 public class Comment {
-
     @Id
     @GeneratedValue
     private Long id;
