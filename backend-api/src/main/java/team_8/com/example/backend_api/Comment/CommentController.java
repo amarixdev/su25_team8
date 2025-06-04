@@ -31,9 +31,9 @@ public class CommentController {
         return commentService.getCommentById(id);
     }
 
-    @PostMapping("/api/comments")
-    public Comment createComment(@RequestBody Comment comment) {
-        return commentService.createComment(comment);
+    @PostMapping("/api/comments/{postId}/{userId}")
+    public Comment createComment(@RequestBody Comment comment, @PathVariable Long postId, @PathVariable Long userId) {
+        return commentService.createComment(comment, postId, userId);
     }
 
     @PutMapping("/api/comments/{id}")

@@ -3,17 +3,24 @@ package team_8.com.example.backend_api.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import team_8.com.example.backend_api.Post.Post;
+import team_8.com.example.backend_api.Post.PostRepository;
+import team_8.com.example.backend_api.User.User;
+import team_8.com.example.backend_api.User.UserRepository;
+
 import java.util.List;
 
 @Service
 public class CommentService {
-
-    private final CommentRepository commentRepository;
-
     @Autowired
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    private CommentRepository commentRepository;
+    
+    @Autowired
+    private PostRepository postRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+
 
     public List<Comment> getAllComments() {
         return commentRepository.findAll();
@@ -24,7 +31,14 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
     }
 
-    public Comment createComment(Comment comment) {
+    public Comment createComment(Comment comment, Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+        comment.setPost(post);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        comment.setUser(user);
+
         // Add any validation or business logic before saving
         if (comment.getContent() == null || comment.getContent().trim().isEmpty()) {
             throw new RuntimeException("Comment content cannot be empty");

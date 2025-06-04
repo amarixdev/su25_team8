@@ -1,11 +1,13 @@
 package team_8.com.example.backend_api.Comment;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import team_8.com.example.backend_api.Post.Post;
 import team_8.com.example.backend_api.User.User;
 
 @Entity
 @Table(name = "comments")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Comment {
     @Id
     @GeneratedValue
@@ -15,10 +17,12 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // foreign key in comment table
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "posts", "comments"})
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false) // foreign key in comment table, assuming a comment must belong to a post
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "comments"})
     private Post post;
 
     // Constructors
