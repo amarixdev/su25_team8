@@ -16,9 +16,9 @@ public class VisitorService {
     private final ContributorRepository contributorRepository; 
     
     @Autowired
-    public VisitorService(VisitorRepository visitorRepository) {
+    public VisitorService(VisitorRepository visitorRepository, ContributorRepository contributorRepository) {
         this.visitorRepository = visitorRepository;
-        this.contributorRepository = null;
+        this.contributorRepository = contributorRepository;
     }
 
     public List<Visitor> getAllVisitors() {
@@ -64,19 +64,7 @@ public class VisitorService {
         visitorRepository.deleteById(id);
     }
 
-    public Visitor applyForContributor(Long id) {
-        Visitor visitor = visitorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Visitor not found with id: " + id));
-        
-        // Business logic for applying for contributor status
-        // This could involve checking eligibility criteria
-        if (visitor.getAccountAge() >= 30 && visitor.getPostsReads() >= 10) {
-            visitor.setCanUpgradeAccount(true);
-        }
-        
-        return visitorRepository.save(visitor);
-    }
-
+ 
     public Contributor upgradeAccount(Long id) {
         Visitor visitor = visitorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Visitor not found with id: " + id));
@@ -86,15 +74,32 @@ public class VisitorService {
         }
     
         // Create a new Contributor using data from Visitor
-        Contributor contributor = new Contributor();
-        // ...copy any other shared fields...
+        Contributor contributor = new Contributor(
+            visitor.getProfilePicturePath(),
+            visitor.getDisplayName(),
+            visitor.getUsername(),
+            visitor.getEmail(),
+            visitor.getBio(),
+            visitor.getLocation(),
+            visitor.getWebsite(),
+            visitor.getFollowing()
+        );
+        
+        // Initialize Contributor-specific fields with defaults
+        contributor.setTotalPosts(0);
+        contributor.setTotalViews(0);
+        contributor.setTotalLikes(0);
+        contributor.setFollowers(0);
     
-        // You may also set Contributor-specific fields here
-    
-        // Optional: delete the old Visitor record
+        // Delete the old Visitor record
         visitorRepository.delete(visitor);
 
-        return contributorRepository.save(contributor);
+        // Save the new Contributor first
+         Contributor savedContributor = contributorRepository.save(contributor);
+        
+      
+
+        return savedContributor;
     }
     
 

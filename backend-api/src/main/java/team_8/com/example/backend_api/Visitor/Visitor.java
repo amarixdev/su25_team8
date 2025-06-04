@@ -25,7 +25,7 @@ public class Visitor extends User {
         this.canUpgradeAccount = canUpgradeAccount;
     }
 
-    public void applyForContributor() {
+    public void upgradeToContributor() {
         
     }
 

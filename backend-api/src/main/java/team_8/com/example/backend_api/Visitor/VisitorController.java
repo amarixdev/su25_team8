@@ -49,18 +49,13 @@ public class VisitorController {
         visitorService.deleteVisitor(id);
     }
 
-    @PostMapping("/api/visitors/{id}/apply-for-contributor")
-    public Visitor applyForContributor(@PathVariable Long id) {
-        return visitorService.applyForContributor(id);
+    @PutMapping("/api/visitors/{id}/upgrade")
+    public Contributor upgradeToContributor(@PathVariable Long id) {
+        return visitorService.upgradeAccount(id);
     }
 
-    @GetMapping("/api/visitors/{id}/upgrade-account")
+    @GetMapping("/api/visitors/{id}/upgrade")
     public void upgradeAccount(@PathVariable Long id) {
       //serve upgrade account page
-    }
-
-    @PostMapping("/api/visitors/{id}/upgrade-account")
-    public Contributor upgradeAccountPost(@PathVariable Long id) {
-        return visitorService.upgradeAccount(id);
     }
 }

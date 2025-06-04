@@ -58,6 +58,7 @@ public abstract class User {
         this.bio = bio;
         this.location = location;
         this.website = website;
+        this.following = following;
         this.comments = new ArrayList<>();
         this.posts = new ArrayList<>();
     }
