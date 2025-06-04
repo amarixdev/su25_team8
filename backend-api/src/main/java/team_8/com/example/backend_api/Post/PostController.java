@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+// @RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
@@ -40,8 +40,8 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public Post createPost(@RequestBody Post post) {
-        return postService.createPost(post);
+    public Post createPost(@RequestBody Post post, @RequestParam Long contributorId) {
+        return postService.createPost(post, contributorId);
     }
 
     @PutMapping("/api/posts/{id}")

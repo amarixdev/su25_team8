@@ -2,6 +2,10 @@ package team_8.com.example.backend_api.Post;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import team_8.com.example.backend_api.Contributor.Contributor;
+import team_8.com.example.backend_api.Contributor.ContributorRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +14,8 @@ public class PostService {
     
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private ContributorRepository contributorRepository;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -31,7 +37,10 @@ public class PostService {
         return postRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    public Post createPost(Post post) {
+    public Post createPost(Post post, Long contributorId) {
+        Contributor contributor = contributorRepository.findById(contributorId)
+            .orElseThrow(() -> new RuntimeException("Contributor not found with id: " + contributorId));
+        contributor.addPost(post);
         return postRepository.save(post);
     }
 
