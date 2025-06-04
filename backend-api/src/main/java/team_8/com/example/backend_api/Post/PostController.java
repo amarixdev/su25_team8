@@ -30,12 +30,12 @@ public class PostController {
     }
 
     @GetMapping("/api/blogs/status/{status}")
-    public List<Post> getBlogsByStatus(@PathVariable PostStatus status) {
+    public List<Post> getPostsByStatus(@PathVariable PostStatus status) {
         return postService.getPostsByStatus(status);
     }
 
     @GetMapping("/api/blogs/search")
-    public List<Post> searchBlogsByTitle(@RequestParam String title) {
+    public List<Post> searchPostsByTitle(@RequestParam String title) {
         return postService.searchPostsByTitle(title);
     }
 
