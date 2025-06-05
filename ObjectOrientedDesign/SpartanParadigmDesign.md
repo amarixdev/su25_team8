@@ -20,8 +20,9 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | ---- | ------- | ------------------- | --------- |
-|Camden| 6/17/24 | Initial Design      |    1      |
-|      |         |                     |           |
+|Camden| 6/3/25 | Initial Design      |    1      |
+|Amari | 6/4/25 | Updae UML Diagram   |    1.1    |
+|      |        |                     |           |
 
 ## 1. Product Overview
 Spartan Paradigm is a blog-style web app for UNCG students to connect and share ideas and lessons they've learned with eachother.
@@ -45,6 +46,6 @@ A Contributor can respond to comments made on their posts.
 #### 2.2.2 Actor: Visitor
 
 ## 3. UML Class Diagram
-![UML Class Diagram](https://github.com/uncg-csc340/su25-team0/blob/main/object-oriented-design/class-diagram.png)
+![UML Class Diagram](https://github.com/amarixdev/su25_team8/blob/main/ObjectOrientedDesign/UML.png)
 ## 4. Database Schema
 ![Database Schema Diagram](https://github.com/amarixdev/su25_team8/blob/main/ObjectOrientedDesign/SpartanParadigmDBSchema%20(1).png)
