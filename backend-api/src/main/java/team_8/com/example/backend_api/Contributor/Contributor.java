@@ -115,4 +115,8 @@ public class Contributor extends User {
     public void incrementPosts() { // Method to increment the explicit totalPosts counter
         this.totalPosts++;
     }
+
+    public void decrementPosts() { // Method to increment the explicit totalPosts counter
+        this.totalPosts--;
+    }
 }

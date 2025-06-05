@@ -2,9 +2,10 @@ package team_8.com.example.backend_api.Post;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import team_8.com.example.backend_api.Contributor.Contributor;
 import team_8.com.example.backend_api.Contributor.ContributorRepository;
+import team_8.com.example.backend_api.User.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,12 +38,16 @@ public class PostService {
         return postRepository.findByTitleContainingIgnoreCase(title);
     }
 
+    @Transactional //  if either operation fails, the other is rolled back
     public Post createPost(Post post, Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
             .orElseThrow(() -> new RuntimeException("Contributor not found with id: " + contributorId));
-        contributor.addPost(post);
+
+        contributor.addPost(post); 
+        Post savedPost = postRepository.save(post);
         contributor.incrementPosts();
-        return postRepository.save(post);
+        contributorRepository.save(contributor);
+        return savedPost;
     }
 
     public Post updatePost(Long id, Post postDetails) {
@@ -58,7 +63,26 @@ public class PostService {
         return null;
     }
 
+    @Transactional 
     public void deletePost(Long id) {
-        postRepository.deleteById(id);
+        Optional<Post> postOptional = postRepository.findById(id);
+        if (postOptional.isPresent()) {
+            Post postToDelete = postOptional.get();
+
+            // Get the User who authored the post
+            User author = postToDelete.getAuthor(); 
+
+            // Check if the author is a Contributor before decrementing the count
+            if (author instanceof Contributor) { 
+                 Contributor contributor = (Contributor) author; // Safely cast to Contributor
+                 contributor.decrementPosts();   
+                contributorRepository.save(contributor);
+            }  
+            
+            // Delete the post
+            postRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Post not found with id: " + id);
+        }
     }
 } 
