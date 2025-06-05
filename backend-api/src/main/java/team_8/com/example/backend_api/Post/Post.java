@@ -88,6 +88,10 @@ public class Post {
         return contributor;
     }
 
+    public User getContributor() {
+        return contributor;
+    }
+
     public void setContributor(User contributor) {
         this.contributor = contributor;
     }
