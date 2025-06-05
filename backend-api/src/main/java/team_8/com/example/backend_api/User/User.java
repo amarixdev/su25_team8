@@ -144,6 +144,16 @@ public abstract class User {
         this.following = following;
     }
 
+    // Dynamic role getter based on entity type
+    public String getRole() {
+        if (this.getClass().getSimpleName().equals("Visitor")) {
+            return "VISITOR";
+        } else if (this.getClass().getSimpleName().equals("Contributor")) {
+            return "CONTRIBUTOR";
+        }
+        return null;
+    }
+
     public List<Post> getPosts() {
         return posts;
     }
