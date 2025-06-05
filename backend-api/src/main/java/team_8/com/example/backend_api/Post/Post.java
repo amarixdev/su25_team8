@@ -84,10 +84,6 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
-    public User getAuthor() {
-        return contributor;
-    }
-
     public User getContributor() {
         return contributor;
     }

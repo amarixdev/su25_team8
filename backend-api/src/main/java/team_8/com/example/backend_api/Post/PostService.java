@@ -70,7 +70,7 @@ public class PostService {
             Post postToDelete = postOptional.get();
 
             // Get the User who authored the post
-            User author = postToDelete.getAuthor(); 
+            User author = postToDelete.getContributor();
 
             // Check if the author is a Contributor before decrementing the count
             if (author instanceof Contributor) { 
