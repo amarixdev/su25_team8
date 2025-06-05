@@ -35,8 +35,8 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User contributor;
     
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"id", "user", "post"})
     private List<Comment> comments;
 
     @Column(name = "status")
@@ -106,6 +106,14 @@ public class Post {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+    
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
        // Helper methods for managing bidirectional relationship with Comment
