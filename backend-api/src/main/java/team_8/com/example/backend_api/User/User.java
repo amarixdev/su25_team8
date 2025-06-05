@@ -40,9 +40,6 @@ public abstract class User {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Post> posts = new ArrayList<>();
     
 
     // Constructors
@@ -60,7 +57,6 @@ public abstract class User {
         this.website = website;
         this.following = following;
         this.comments = new ArrayList<>();
-        this.posts = new ArrayList<>();
     }
     
     // Common getters/setters
@@ -152,13 +148,5 @@ public abstract class User {
             return "CONTRIBUTOR";
         }
         return null;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
     }
 }
