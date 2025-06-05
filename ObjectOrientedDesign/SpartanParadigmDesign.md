@@ -47,4 +47,4 @@ A Contributor can respond to comments made on their posts.
 ## 3. UML Class Diagram
 ![UML Class Diagram](https://github.com/uncg-csc340/su25-team0/blob/main/object-oriented-design/class-diagram.png)
 ## 4. Database Schema
-![Database Schema Diagram](https://github.com/amarixdev/su25_team8/blob/main/ObjectOrientedDesign/SpartanParadigmDBSchema.png)
+![Database Schema Diagram](https://github.com/amarixdev/su25_team8/blob/main/ObjectOrientedDesign/SpartanParadigmDBSchema%20(1).png)
