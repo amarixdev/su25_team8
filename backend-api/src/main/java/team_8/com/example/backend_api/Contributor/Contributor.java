@@ -54,10 +54,7 @@ public class Contributor extends User {
     public Integer getTotalPosts() {
         return totalPosts;
     }
-    
-    public void setTotalPosts(Integer totalPosts) {
-        this.totalPosts = totalPosts;
-    }
+
 
     public Integer getTotalViews() {
         return totalViews;
@@ -74,7 +71,6 @@ public class Contributor extends User {
     public void setTotalLikes(Integer totalLikes) {
         this.totalLikes = totalLikes;
     }
-
     
     public Integer getFollowers() {
         return followers;

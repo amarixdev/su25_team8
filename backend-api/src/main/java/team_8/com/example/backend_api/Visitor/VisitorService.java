@@ -86,7 +86,6 @@ public class VisitorService {
         );
         
         // Initialize Contributor-specific fields with defaults
-        contributor.setTotalPosts(0);
         contributor.setTotalViews(0);
         contributor.setTotalLikes(0);
         contributor.setFollowers(0);

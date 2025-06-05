@@ -41,6 +41,7 @@ public class PostService {
         Contributor contributor = contributorRepository.findById(contributorId)
             .orElseThrow(() -> new RuntimeException("Contributor not found with id: " + contributorId));
         contributor.addPost(post);
+        contributor.incrementPosts();
         return postRepository.save(post);
     }
 
