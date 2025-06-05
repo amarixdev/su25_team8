@@ -42,6 +42,7 @@ public class PostService {
     public Post createPost(Post post, Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
             .orElseThrow(() -> new RuntimeException("Contributor not found with id: " + contributorId));
+
         contributor.addPost(post); 
         Post savedPost = postRepository.save(post);
         contributor.incrementPosts();
@@ -74,7 +75,7 @@ public class PostService {
             // Check if the author is a Contributor before decrementing the count
             if (author instanceof Contributor) { 
                  Contributor contributor = (Contributor) author; // Safely cast to Contributor
-                 contributor.setTotalPosts(contributor.getTotalPosts() - 1);   
+                 contributor.decrementPosts();   
                 contributorRepository.save(contributor);
             }  
             
