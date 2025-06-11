@@ -11,16 +11,17 @@ interface ClientLayoutProps {
 const ClientLayout = ({ children }: ClientLayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
+  const isSignupPage = pathname === '/signup';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="relative min-h-screen md:flex">
-      {!isLoginPage && <Sidebar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />}
+      {!isLoginPage && !isSignupPage && <Sidebar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />}
 
       <div className="flex-1 flex flex-col">
         <Header />
         
-        {!isLoginPage && (
+        {!isLoginPage && !isSignupPage && (
           <button 
             className="md:hidden fixed top-4 left-4 z-50 p-2 text-gray-600 hover:text-gray-800 bg-white rounded-md shadow-md"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -33,7 +34,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
           </button>
         )}
 
-        <main className={`pt-16 flex-1 ${!isLoginPage ? 'md:ml-64' : ''}`}>
+        <main className={`pt-16 flex-1 ${!isLoginPage && !isSignupPage ? 'md:ml-64' : ''}`}>
           {children}
         </main>
       </div>

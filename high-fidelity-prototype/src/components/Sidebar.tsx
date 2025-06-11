@@ -38,13 +38,13 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
   }, [pathname]);
   
   // Don't render sidebar on login page
-  if (pathname === '/login') {
+  if (pathname === '/login' || pathname === '/signup') {
     return null;
   }
 
   return (
     <aside 
-      className={`w-64 ${userType == 'admin' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}  p-4 space-y-6 shadow-lg fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out 
+      className={` w-64 ${userType == 'admin' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}  p-4 space-y-6 shadow-lg fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out 
                  md:translate-x-0 md:fixed 
                  ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
