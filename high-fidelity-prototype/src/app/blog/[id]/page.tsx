@@ -1,17 +1,86 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { dummyPosts } from '@/app/dummy_data/dummyPosts';
 
-// Same dummy data as HomePage - in a real app this would come from an API or database
-
+// Dummy comments data
+const dummyComments = [
+  {
+    id: 1,
+    postId: 1,
+    author: "Michael Chen",
+    date: "May 16, 2023",
+    content: "Great article! I've been using Next.js for a few months now and it's incredible how much it simplifies the development process. The automatic code splitting feature alone has improved our app's performance significantly.",
+    avatar: "MC"
+  },
+  {
+    id: 2,
+    postId: 1,
+    author: "Sarah Wilson",
+    date: "May 16, 2023",
+    content: "Thanks for sharing this. I'm particularly interested in the WebAssembly section. Do you have any recommendations for getting started with WASM in web development?",
+    avatar: "SW"
+  },
+  {
+    id: 3,
+    postId: 1,
+    author: "Alex Rodriguez",
+    date: "May 17, 2023",
+    content: "Excellent overview of the current state of web development. The part about server-side rendering really resonated with me - we've seen huge SEO improvements since implementing SSR.",
+    avatar: "AR"
+  },
+  {
+    id: 4,
+    postId: 2,
+    author: "Emma Thompson",
+    date: "May 11, 2023",
+    content: "TypeScript has been a game-changer for our team. The type safety it provides has caught so many bugs before they made it to production. Great explanation of the benefits!",
+    avatar: "ET"
+  },
+  {
+    id: 5,
+    postId: 2,
+    author: "David Park",
+    date: "May 12, 2023",
+    content: "I was hesitant to adopt TypeScript at first, but this article convinced me to give it a try. The learning curve is steep but definitely worth it.",
+    avatar: "DP"
+  },
+  {
+    id: 6,
+    postId: 3,
+    author: "Lisa Garcia",
+    date: "May 6, 2023",
+    content: "As a UX designer, I appreciate how you emphasized the importance of user research and testing. Too many projects skip these crucial steps.",
+    avatar: "LG"
+  }
+];
 
 export default function BlogPostPage() {
   const params = useParams();
   const router = useRouter();
   const postId = parseInt(params.id as string);
+  const [newComment, setNewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const post = dummyPosts.find(p => p.id === postId); ///match postId (id from the url) to the id of the post
+  const comments = dummyComments.filter(comment => comment.postId === postId);
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // In a real app, you would send the comment to your backend
+    console.log('New comment:', newComment);
+    alert('Comment submitted! (This is just a demo)');
+    
+    setNewComment('');
+    setIsSubmitting(false);
+  };
 
   if (!post) {
     return (
@@ -43,10 +112,10 @@ export default function BlogPostPage() {
         Back
       </button>
 
-      <article className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <article className="bg-white rounded-lg shadow-lg overflow-hidden mb-12">
         {/* Hero image */}
         {post.imageUrl && (
-          <div className="relative h-64 md:h-96 w-full bg-gray-200">
+          <div className="relative z-0 h-64 md:h-96 w-full bg-gray-200">
             <img 
               src={post.imageUrl} 
               alt={post.title}
@@ -122,6 +191,89 @@ export default function BlogPostPage() {
           </div>
         </div>
       </article>
+
+      {/* Comments Section */}
+      <div className="bg-white rounded-lg shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Comments ({comments.length})
+        </h2>
+
+        {/* Comment Form */}
+        <form onSubmit={handleCommentSubmit} className="mb-8 pb-8 border-b border-gray-200">
+          <div className="mb-4">
+            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+              Add a comment
+            </label>
+            <textarea
+              id="comment"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Share your thoughts about this article..."
+              disabled={isSubmitting}
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isSubmitting || !newComment.trim()}
+              className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                isSubmitting || !newComment.trim()
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+            >
+              {isSubmitting ? 'Submitting...' : 'Post Comment'}
+            </button>
+          </div>
+        </form>
+
+        {/* Comments List */}
+        <div className="space-y-6">
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment.id} className="flex space-x-4">
+                {/* Avatar */}
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 font-medium text-sm">
+                      {comment.avatar}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Comment Content */}
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h4 className="font-medium text-gray-900">{comment.author}</h4>
+                    <span className="text-gray-500 text-sm">•</span>
+                    <span className="text-gray-500 text-sm">{comment.date}</span>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                  
+                  {/* Comment Actions */}
+                  <div className="flex space-x-4 mt-3">
+                    <button className="text-gray-500 hover:text-blue-600 text-sm font-medium">
+                      Reply
+                    </button>
+                    <button className="text-gray-500 hover:text-red-600 text-sm font-medium">
+                      Like
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p className="text-gray-500">No comments yet. Be the first to share your thoughts!</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 } 
