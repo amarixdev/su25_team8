@@ -43,7 +43,7 @@ const Header = () => {
     router.push('/login');
   };
 
-  if (pathname === '/login') {
+  if (pathname === '/login' || pathname === '/signup') {
     return null;
   }
 
@@ -71,6 +71,22 @@ const Header = () => {
           >
             Admin Dashboard
           </Link>
+        )}
+        {!userType && (
+          <>
+            <Link 
+              href="/login" 
+              className="cursor-pointer hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            >
+              Login
+            </Link>
+            <Link 
+              href="/signup" 
+              className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            >
+              Sign Up
+            </Link>
+          </>
         )}
         {userType && (
           <button

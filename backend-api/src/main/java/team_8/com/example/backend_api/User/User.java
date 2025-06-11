@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import team_8.com.example.backend_api.Comment.Comment;
-import team_8.com.example.backend_api.Post.Post;
 
 
 
@@ -39,8 +38,6 @@ public abstract class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
-
-    
 
     // Constructors
     public User() {}

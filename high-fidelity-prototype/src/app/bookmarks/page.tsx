@@ -52,7 +52,7 @@ export default function BookmarksPage() {
   const [displayedBookmarks, setDisplayedBookmarks] = useState<Bookmark[]>(initialDummyBookmarks);
 
   useEffect(() => {
-    let filtered = initialDummyBookmarks.filter(bookmark => 
+    const filtered = initialDummyBookmarks.filter(bookmark => 
       bookmark.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bookmark.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bookmark.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||

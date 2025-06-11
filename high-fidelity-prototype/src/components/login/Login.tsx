@@ -1,54 +1,114 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const Login = () => {
   const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLoginClick = (type: 'visitor' | 'contributor' | 'admin') => {
-    // For prototype, set a flag in localStorage to simulate being logged in
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userType', type);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // Dispatch custom event to notify other components
-    window.dispatchEvent(new Event('userTypeChanged'));
-    
-    // Navigate to home page
-    router.push('/');
+    if (!username.trim()) {
+      setError('Please enter a username');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Check if user exists by username
+      const response = await fetch(`http://localhost:8080/api/users/login?username=${encodeURIComponent(username)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        console.log('User found:', user);
+
+        // Set login state in localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userType', user.role.toLowerCase()); // VISITOR or CONTRIBUTOR
+        localStorage.setItem('userData', JSON.stringify(user));
+        
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('userTypeChanged'));
+        
+        // Navigate to home page
+        router.push('/');
+      } else if (response.status === 404) {
+        setError('Username not found. Please check your username or sign up for a new account.');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Unable to connect to server. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex-grow flex items-center justify-center p-8">
-      <div className="flex flex-col items-center gap-8">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Welcome Back
+        </h2>
+        <p className="text-gray-600 text-center mb-6">
+          Enter your username to log in
+        </p>
         
-        <div className="flex flex-wrap justify-center gap-4">
-          <button 
-            onClick={() => handleLoginClick('visitor')}
-            className="cursor-pointer w-44 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your username"
+              disabled={isLoading}
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-3">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-md shadow-sm text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              isLoading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+            }`}
           >
-            <span className="flex flex-col items-center">
-              <span>Log in as</span>
-              <span className="font-bold">Visitor</span>
-            </span>
+            {isLoading ? 'Logging in...' : 'Log In'}
           </button>
-          <button 
-            onClick={() => handleLoginClick('contributor')}
-            className="cursor-pointer w-44 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <span className="flex flex-col items-center">
-              <span>Log in as</span>
-              <span className="font-bold">Contributor</span>
-            </span>
-          </button>
-          <button 
-            onClick={() => handleLoginClick('admin')}
-            className="cursor-pointer w-44 px-6 py-3 bg-red-600 text-white font-medium rounded-lg shadow-sm hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          >
-            <span className="flex flex-col items-center">
-              <span>Log in as</span>
-              <span className="font-bold">Admin</span>
-            </span>
-          </button>
+        </form>
+
+        {/* Sign up link */}
+        <div className="text-center pt-6">
+          <p className="text-sm text-gray-600">
+            Don&apos;t have an account?{' '}
+            <a href="/signup" className="text-blue-600 hover:text-blue-800 font-medium">
+              Sign up here
+            </a>
+          </p>
         </div>
       </div>
     </div>
