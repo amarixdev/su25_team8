@@ -7,7 +7,7 @@ interface OverviewTabContentProps {
   stats: {
     totalPosts: number;
     totalViews: number;
-    totalComments: number;
+    totalLikes: number;
   };
   recentPosts: RecentPost[];
   onSeeAllPosts: () => void;
@@ -25,7 +25,7 @@ const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPo
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard title="Total Posts" value={stats.totalPosts} />
         <StatsCard title="Total Views" value={stats.totalViews} />
-        <StatsCard title="Total Comments" value={stats.totalComments} />
+        <StatsCard title="Total Likes" value={stats.totalLikes} />
       </div>
 
       {/* Recent posts */}
