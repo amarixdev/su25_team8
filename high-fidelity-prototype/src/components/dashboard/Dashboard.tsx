@@ -1,35 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardTabs from './DashboardTabs';
 import OverviewTabContent from './OverviewTabContent';
 import MyPostsTabContent from './MyPostsTabContent';
 import AnalyticsTabContent from './AnalyticsTabContent';
+import CreatePostForm from './CreatePostForm';
 import { RecentPost } from './types';
-
-// Dummy data for the dashboard
-const sampleDashData = {
-  totalPosts: 12,
-  totalViews: 3456,
-  totalComments: 89,
-  recentPosts: [
-    { id: 1, title: "The Future of Web Development", views: 1234, comments: 23, date: "May 15, 2023" },
-    { id: 2, title: "Understanding TypeScript", views: 987, comments: 15, date: "May 10, 2023" },
-    { id: 3, title: "The Art of UI/UX Design", views: 756, comments: 12, date: "May 5, 2023" },
-    { id: 4, title: "Mastering React Router", views: 812, comments: 10, date: "May 6, 2023" },
-    { id: 5, title: "Intro to RESTful APIs", views: 934, comments: 9, date: "May 7, 2023" },
-    { id: 6, title: "Diving into GraphQL", views: 720, comments: 11, date: "May 8, 2023" },
-    { id: 7, title: "Building Forms with Formik", views: 688, comments: 7, date: "May 9, 2023" },
-    { id: 8, title: "Understanding Async/Await", views: 1012, comments: 14, date: "May 10, 2023" },
-    { id: 9, title: "Intro to Web Accessibility (a11y)", views: 577, comments: 5, date: "May 11, 2023" },
-    { id: 10, title: "Deploying with Vercel and Netlify", views: 889, comments: 13, date: "May 12, 2023" },
-    { id: 11, title: "Intro to Unit Testing in JavaScript", views: 765, comments: 8, date: "May 13, 2023" },
-    { id: 12, title: "Debugging Like a Pro", views: 954, comments: 16, date: "May 14, 2023" },
-    { id: 13, title: "Exploring Node.js Internals", views: 842, comments: 14, date: "May 15, 2023" },
-    { id: 14, title: "CSS Grid vs Flexbox", views: 920, comments: 18, date: "May 16, 2023" },
-    { id: 15, title: "React Hooks: Beyond useState", views: 1103, comments: 20, date: "May 17, 2023" },
-  ] as RecentPost[] // Added type assertion here
-};
 
 const dashboardTabs = [
   { id: 'overview', label: 'Overview' },
@@ -38,19 +15,96 @@ const dashboardTabs = [
 ];
 
 const Dashboard = () => {
+  // Tab and form visibility state
   const [activeTab, setActiveTab] = useState('overview');
-  const userName = "Contributor";
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  
+  // User and data state
+  const [userName, setUserName] = useState("Contributor");
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    totalViews: 0,
+    totalComments: 0
+  });
+  const [recentPosts, setRecentPosts] = useState<RecentPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Fetch contributor data from backend
+  const fetchContributorData = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const contributorId = userData.id;
+
+      if (!contributorId) {
+        throw new Error('User not logged in');
+      }
+
+      const response = await fetch(`http://localhost:8080/api/contributors/${contributorId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch contributor data');
+      }
+
+      const contributor = await response.json();
+      setUserName(contributor.name || contributor.username);
+      
+      // Update dashboard stats
+      setStats({
+        totalPosts: contributor.totalPosts || 0,
+        totalViews: contributor.totalViews || 0,
+        totalComments: contributor.totalComments || 0
+      });
+
+      // Format posts for display
+      const posts = contributor.posts?.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        views: post.views || 0,
+        comments: post.comments || 0,
+        date: new Date(post.createdAt).toLocaleDateString()
+      })) || [];
+
+      setRecentPosts(posts);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load data on mount
+  useEffect(() => {
+    fetchContributorData();
+  }, []);
+
+  // Handle post creation/update
+  const handlePostCreated = async () => {
+    setShowCreatePost(false);
+    setIsLoading(true);
+    await fetchContributorData();
+    setActiveTab('posts');
+  };
+
+  // Show loading state
+  if (isLoading) {
+    return <div className="text-center py-12">Loading...</div>;
+  }
+
+  // Show error state
+  if (error) {
+    return <div className="text-center py-12 text-red-600">{error}</div>;
+  }
 
   return (
-     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Flex container for welcome and button */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Welcome header */}
       <div className="flex items-center justify-between mb-4">
         <div className="text-2xl font-bold">
           Welcome, {userName}!
         </div>
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
-          onClick={() => alert('Create New Post clicked!')}
+          onClick={() => setShowCreatePost(true)}
         >
           + Create New Post
         </button>
@@ -61,27 +115,39 @@ const Dashboard = () => {
         subtitle="Manage your content and track your performance" 
       />
 
+      {/* Navigation tabs */}
       <DashboardTabs 
         tabs={dashboardTabs} 
         activeTab={activeTab} 
         onTabClick={setActiveTab} 
       />
 
-      {/* Content based on active tab */}
+      {/* Tab content */}
       {activeTab === 'overview' && (
         <OverviewTabContent 
-          stats={sampleDashData} 
-          recentPosts={sampleDashData.recentPosts} 
+          stats={stats} 
+          recentPosts={recentPosts} 
           onSeeAllPosts={() => setActiveTab('posts')}
         />
       )}
 
       {activeTab === 'posts' && (
-        <MyPostsTabContent posts={sampleDashData.recentPosts} /> // Using recentPosts for now
+        <MyPostsTabContent 
+          posts={recentPosts} 
+          onPostUpdated={fetchContributorData}
+        />
       )}
 
       {activeTab === 'analytics' && (
         <AnalyticsTabContent />
+      )}
+
+      {/* Create post modal */}
+      {showCreatePost && (
+        <CreatePostForm
+          onClose={() => setShowCreatePost(false)}
+          onPostCreated={handlePostCreated}
+        />
       )}
     </div>
   );

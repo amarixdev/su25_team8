@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.HashSet;
 
 /**
  * Service class for handling Contributor business logic.
@@ -59,11 +58,11 @@ public class ContributorService {
     
     /**
      * Finds contributors by their academic background
-     * @param background The academic background to search for
+     * @param bio The academic background to search for
      * @return List of contributors with matching background
      */
-    public List<Contributor> getContributorsByAcademicBackground(String background) {
-        return contributorRepository.findByBio(background);
+    public List<Contributor> getContributorsByBio(String bio) {
+        return contributorRepository.findByBio(bio);
     }
     
     /**
@@ -131,7 +130,6 @@ public class ContributorService {
         contributorRepository.deleteById(id);
     }
 
-    
     /**
      * Increments the view count for a contributor
      * @param id The contributor's ID
@@ -202,22 +200,11 @@ public class ContributorService {
      * @throws IllegalArgumentException if validation fails
      */
     private void validateContributor(Contributor contributor) {
-        if (contributor.getUsername() == null || contributor.getEmail() == null) {
-            throw new IllegalArgumentException("Username and email are required");
+        if (contributor.getUsername() == null || contributor.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
         }
-        
-        if (contributorRepository.findByUsername(contributor.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        if (contributorRepository.findByEmail(contributor.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        
-        if (contributor.getDisplayName() == null || contributor.getDisplayName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Display name is required");
-        }
-        if (contributor.getBio() == null || contributor.getBio().trim().isEmpty()) {
-            throw new IllegalArgumentException("Academic background (bio) is required");
+        if (contributor.getEmail() == null || contributor.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
         }
     }
 } 

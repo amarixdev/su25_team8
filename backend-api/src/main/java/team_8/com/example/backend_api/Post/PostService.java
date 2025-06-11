@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team_8.com.example.backend_api.Contributor.Contributor;
 import team_8.com.example.backend_api.Contributor.ContributorRepository;
 import team_8.com.example.backend_api.User.User;
+import org.hibernate.Hibernate;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,18 +70,26 @@ public class PostService {
         if (postOptional.isPresent()) {
             Post postToDelete = postOptional.get();
 
-            // Get the User who authored the post
+            // Get the User who authored the post, and unproxy it to get the real object
             User author = postToDelete.getContributor();
+            User realAuthor = Hibernate.unproxy(author, User.class);
 
-            // Check if the author is a Contributor before decrementing the count
-            if (author instanceof Contributor) { 
-                 Contributor contributor = (Contributor) author; // Safely cast to Contributor
-                 contributor.decrementPosts();   
+            // Cast the real object to Contributor
+            Contributor contributor = (Contributor) realAuthor;
+            
+            // Remove the post from the contributor's list
+            if (contributor.getPosts() != null) {
+                contributor.getPosts().remove(postToDelete);
+            }
+            // Decrement the posts count
+            if (contributor != null && contributor.getTotalPosts() > 0) {
+                contributor.decrementPosts();
                 contributorRepository.save(contributor);
-            }  
+            }
+              
             
             // Delete the post
-            postRepository.deleteById(id);
+            postRepository.delete(postToDelete);
         } else {
             throw new RuntimeException("Post not found with id: " + id);
         }

@@ -2,7 +2,6 @@ package team_8.com.example.backend_api.Post;
 import team_8.com.example.backend_api.Comment.Comment;
 import team_8.com.example.backend_api.User.User;
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -53,6 +53,10 @@ public class Contributor extends User {
         return totalPosts;
     }
 
+    public void setTotalPosts(Integer totalPosts) {
+        this.totalPosts = totalPosts;
+    }
+
     public Integer getTotalViews() {
         return totalViews;
     }
