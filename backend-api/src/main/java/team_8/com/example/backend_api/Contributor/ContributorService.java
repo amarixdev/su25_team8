@@ -3,6 +3,7 @@ package team_8.com.example.backend_api.Contributor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.HashSet;
@@ -20,6 +21,13 @@ public class ContributorService {
     @Autowired
     public ContributorService(ContributorRepository contributorRepository) {
         this.contributorRepository = contributorRepository;
+    }
+    
+    @PostConstruct
+    @Transactional
+    public void initializeStatistics() {
+        // Fix all statistics when application starts
+        fixAllStatistics();
     }
     
     /**
@@ -131,7 +139,24 @@ public class ContributorService {
         contributorRepository.deleteById(id);
     }
 
-    
+    /**
+     * Updates the total posts count for all contributors based on actual post count
+     */
+    @Transactional
+    public void fixTotalPostsCount() {
+        contributorRepository.updateTotalPostsCount();
+    }
+
+    /**
+     * Updates all statistics (posts, views, likes) for all contributors based on actual counts
+     */
+    @Transactional
+    public void fixAllStatistics() {
+        contributorRepository.updateTotalPostsCount();
+        contributorRepository.updateTotalViewsCount();
+        contributorRepository.updateTotalLikesCount();
+    }
+
     /**
      * Increments the view count for a contributor
      * @param id The contributor's ID

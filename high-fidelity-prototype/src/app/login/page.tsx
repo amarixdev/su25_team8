@@ -13,7 +13,7 @@ export default function LoginPage() {
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userType', userType);
     localStorage.setItem('userData', JSON.stringify({
-      id: userType === 'admin' ? 999 : 1,
+      id: userType === 'admin' ? 999 : 998,
       username: `dev_${userType}`,
       displayName: `Developer ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
       email: `dev.${userType}@spartanparadigm.com`,

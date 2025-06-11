@@ -2,6 +2,7 @@ package team_8.com.example.backend_api.Contributor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -35,4 +36,16 @@ public interface ContributorRepository extends JpaRepository<Contributor, Long> 
     // Find top contributors who have more than the minimum number of likes
     @Query("SELECT c FROM Contributor c WHERE c.totalLikes >= :minLikes ORDER BY c.totalLikes DESC")
     List<Contributor> findTopByLikes(@Param("minLikes") Integer minLikes);
+
+    @Modifying
+    @Query("UPDATE Contributor c SET c.totalPosts = (SELECT COUNT(p) FROM Post p WHERE p.contributor.id = c.id)")
+    void updateTotalPostsCount();
+
+    @Modifying
+    @Query("UPDATE Contributor c SET c.totalViews = (SELECT COALESCE(SUM(p.views), 0) FROM Post p WHERE p.contributor.id = c.id)")
+    void updateTotalViewsCount();
+
+    @Modifying
+    @Query("UPDATE Contributor c SET c.totalLikes = (SELECT COALESCE(SUM(p.likes), 0) FROM Post p WHERE p.contributor.id = c.id)")
+    void updateTotalLikesCount();
 } 
