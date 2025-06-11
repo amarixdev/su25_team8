@@ -5,6 +5,7 @@ import DashboardTabs from './DashboardTabs';
 import OverviewTabContent from './OverviewTabContent';
 import MyPostsTabContent from './MyPostsTabContent';
 import AnalyticsTabContent from './AnalyticsTabContent';
+import CreatePostForm from './CreatePostForm';
 import { RecentPost } from './types';
 
 // Dummy data for the dashboard
@@ -39,10 +40,17 @@ const dashboardTabs = [
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showCreatePost, setShowCreatePost] = useState(false);
   const userName = "Contributor";
 
+  const handlePostCreated = () => {
+    // Refresh the posts list
+    // For now, we'll just switch to the posts tab
+    setActiveTab('posts');
+  };
+
   return (
-     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Flex container for welcome and button */}
       <div className="flex items-center justify-between mb-4">
         <div className="text-2xl font-bold">
@@ -50,7 +58,7 @@ const Dashboard = () => {
         </div>
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
-          onClick={() => alert('Create New Post clicked!')}
+          onClick={() => setShowCreatePost(true)}
         >
           + Create New Post
         </button>
@@ -77,11 +85,18 @@ const Dashboard = () => {
       )}
 
       {activeTab === 'posts' && (
-        <MyPostsTabContent posts={sampleDashData.recentPosts} /> // Using recentPosts for now
+        <MyPostsTabContent posts={sampleDashData.recentPosts} />
       )}
 
       {activeTab === 'analytics' && (
         <AnalyticsTabContent />
+      )}
+
+      {showCreatePost && (
+        <CreatePostForm
+          onClose={() => setShowCreatePost(false)}
+          onPostCreated={handlePostCreated}
+        />
       )}
     </div>
   );

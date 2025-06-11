@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RecentPost } from './types'; // Assuming structure is similar to RecentPost
+import CreatePostForm from './CreatePostForm';
 
 interface MyPostsTabContentProps {
   posts: RecentPost[]; // Using RecentPost for now, can be a different type if needed
 }
 
 const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts }) => {
+  const [showCreatePost, setShowCreatePost] = useState(false);
+
+  const handlePostCreated = () => {
+    // TODO: Refresh the posts list
+    setShowCreatePost(false);
+  };
+
   return (
-    
     <div className="bg-white shadow rounded-lg p-6">
-          
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-medium text-gray-900">My Posts</h2>
-        <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
+        <button 
+          onClick={() => setShowCreatePost(true)}
+          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+        >
           Create New Post
         </button>
       </div>
@@ -39,8 +48,14 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts }) => {
             </div>
           </div>
         ))}
-        
       </div>
+
+      {showCreatePost && (
+        <CreatePostForm
+          onClose={() => setShowCreatePost(false)}
+          onPostCreated={handlePostCreated}
+        />
+      )}
     </div>
   );
 };
