@@ -1,6 +1,8 @@
 package team_8.com.example.backend_api.Contributor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -50,9 +52,18 @@ public class ContributorController {
 
 
     @PostMapping
-    public ResponseEntity<Contributor> createContributor(@RequestBody Contributor contributor) {
-        return ResponseEntity.ok(contributorService.createContributor(contributor));
+    public ResponseEntity<Object> createContributor(@RequestBody Contributor contributor) {
+        try {
+            Contributor savedContributor = contributorService.createContributor(contributor);
+            return ResponseEntity.ok(savedContributor);
+        } catch (DataIntegrityViolationException e) {
+            // Handle unique constraint violation by finding the existing user by username
+            return contributorService.getContributorByUsername(contributor.getUsername())
+                .map(user -> ResponseEntity.status(HttpStatus.CONFLICT).body((Object)user))
+                .orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User already exists but could not be retrieved."));
+        }
     }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<Contributor> updateContributor(
