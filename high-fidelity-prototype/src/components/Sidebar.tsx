@@ -11,12 +11,15 @@ interface SidebarProps {
 const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [userType, setUserType] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any>(null);
   
   useEffect(() => {
     // Function to update user type from localStorage
     const updateUserType = () => {
       const storedUserType = localStorage.getItem('userType');
+      const storedUserData = localStorage.getItem('userData');
       setUserType(storedUserType);
+      setUserData(storedUserData ? JSON.parse(storedUserData) : null);
     };
 
     // Initial check
@@ -59,7 +62,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
-     {userType != 'admin' ? <p className="text-sm text-gray-500"> { userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p> : <p className=" text-white max-w-[80px] rounded-2xl px-2 text-center bg-red-600">Admin</p>}
+  
+      <div className={`${userType == 'admin' && 'bg-red-500 p-2 rounded-lg'}`}>
+      {userData ? <p className={`${userType =='admin' && 'text-white'} text-sm font-semibold text-black`}> {`${userData.displayName} (${userType})`}</p> :
+        userType != 'admin' ? <p className="text-sm text-gray-500"> { userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p> : <p className=" text-white max-w-[80px] rounded-2xl px-2 text-center bg-red-600">Admin</p>
+      }
+      {userData && <p className={`${userType == 'admin' && 'text-white/70'} text-sm text-gray-500`}> {`@${userData.username}`}</p>}
+        </div>
+
+  
       <nav className={`space-y-2 ${userType == 'admin' ? 'text-white' : 'text-gray-700'} mt-6`}>
         <Link
           href="/"
