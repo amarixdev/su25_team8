@@ -34,15 +34,15 @@ const Login = () => {
         console.log('User found:', user);
 
         // Set login state in localStorage
-        localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userType', user.role.toLowerCase()); // VISITOR or CONTRIBUTOR
         localStorage.setItem('userData', JSON.stringify(user));
-        
-        // Dispatch custom event to notify other components
-        window.dispatchEvent(new Event('userTypeChanged'));
-        
-        // Navigate to home page
-        router.push('/');
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('userTypeChanged'));
+    
+    // Navigate to home page
+    router.push('/');
       } else if (response.status === 404) {
         setError('Username not found. Please check your username or sign up for a new account.');
       } else {
@@ -88,7 +88,7 @@ const Login = () => {
             </div>
           )}
 
-          <button
+          <button 
             type="submit"
             disabled={isLoading}
             className={`w-full py-3 px-4 rounded-md shadow-sm text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${

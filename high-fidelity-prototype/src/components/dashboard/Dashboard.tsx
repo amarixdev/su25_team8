@@ -36,7 +36,8 @@ const Dashboard = () => {
     try {
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
       const contributorId = userData.id;
-
+      console.log('Contributor ID:', contributorId);
+      console.log('User Data:', userData);
       if (!contributorId) {
         throw new Error('User not logged in');
       }

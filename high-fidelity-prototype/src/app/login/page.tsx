@@ -8,23 +8,55 @@ export default function LoginPage() {
   const [showDevMenu, setShowDevMenu] = useState(false);
   const router = useRouter();
 
-  const handleDevLogin = (userType: 'admin' | 'contributor') => {
+  const handleDevLogin = async (userType: 'admin' | 'contributor') => {
     // Set developer login state
+    try {
+const response = await fetch('http://localhost:8080/api/contributors', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    username: `dev_${userType}`,
+    displayName: `Developer ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
+    email: `dev.${userType}@spartanparadigm.com`,
+    bio: 'This is a developer account',
+    location: 'Greensboro, NC',
+    website: 'https://spartanparadigm.com',
+    profilePicturePath: 'https://via.placeholder.com/150',
+    following: 0,
+    accountAge: 0,
+    postsReads: 0,
+    canUpgradeAccount: false
+  })
+});
+      
+      if (response.status === 409) {
+      const data = await response.json();
+    console.log('Response:', data);
+    console.log("Duplicate key error");
+    localStorage.setItem('userData', JSON.stringify(data));
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userType', userType);
-    localStorage.setItem('userData', JSON.stringify({
-      id: userType === 'admin' ? 999 : 998,
-      username: `dev_${userType}`,
-      displayName: `Developer ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
-      email: `dev.${userType}@spartanparadigm.com`,
-      role: userType.toUpperCase()
-    }));
-    
-    // Dispatch custom event to notify other components
     window.dispatchEvent(new Event('userTypeChanged'));
-    
     // Navigate to home page
     router.push('/');
+    // Show user-friendly message here
+  } else if (!response.ok) {
+  throw new Error('Failed to create developer account');
+  } else {
+    console.log("Developer account created!");
+    const data = await response.json();
+    localStorage.setItem('userData', JSON.stringify(data));
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userType', userType);
+    window.dispatchEvent(new Event('userTypeChanged'));
+    // Navigate to home page
+    router.push('/');
+  }
+    } catch (error) {
+      console.error('Error creating developer account:', error);
+    }
   };
 
   return (
