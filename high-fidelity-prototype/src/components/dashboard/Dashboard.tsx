@@ -24,7 +24,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState({
     totalPosts: 0,
     totalViews: 0,
-    totalComments: 0
+    totalComments: 0,
+    totalLikes: 0
   });
   const [recentPosts, setRecentPosts] = useState<RecentPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +53,8 @@ const Dashboard = () => {
       setStats({
         totalPosts: contributor.totalPosts || 0,
         totalViews: contributor.totalViews || 0,
-        totalComments: contributor.totalComments || 0
+        totalComments: contributor.totalComments || 0,
+        totalLikes: contributor.totalLikes || 0
       });
 
       // Format posts for display
@@ -61,6 +63,7 @@ const Dashboard = () => {
         title: post.title,
         views: post.views || 0,
         comments: post.comments || 0,
+        likes: post.likes || 0,
         date: new Date(post.createdAt).toLocaleDateString()
       })) || [];
 
