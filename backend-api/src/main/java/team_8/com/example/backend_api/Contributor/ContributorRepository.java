@@ -36,16 +36,4 @@ public interface ContributorRepository extends JpaRepository<Contributor, Long> 
     // Find top contributors who have more than the minimum number of likes
     @Query("SELECT c FROM Contributor c WHERE c.totalLikes >= :minLikes ORDER BY c.totalLikes DESC")
     List<Contributor> findTopByLikes(@Param("minLikes") Integer minLikes);
-
-    @Modifying
-    @Query("UPDATE Contributor c SET c.totalPosts = (SELECT COUNT(p) FROM Post p WHERE p.contributor.id = c.id)")
-    void updateTotalPostsCount();
-
-    @Modifying
-    @Query("UPDATE Contributor c SET c.totalViews = (SELECT COALESCE(SUM(p.views), 0) FROM Post p WHERE p.contributor.id = c.id)")
-    void updateTotalViewsCount();
-
-    @Modifying
-    @Query("UPDATE Contributor c SET c.totalLikes = (SELECT COALESCE(SUM(p.likes), 0) FROM Post p WHERE p.contributor.id = c.id)")
-    void updateTotalLikesCount();
 } 

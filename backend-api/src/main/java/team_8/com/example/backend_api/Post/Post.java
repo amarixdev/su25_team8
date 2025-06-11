@@ -43,12 +43,6 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private PostStatus status;
 
-    @Column(name = "views")
-    private Integer views = 0;
-
-    @Column(name = "likes")
-    private Integer likes = 0;
-
     // Getters and Setters
     public Long getId() {
         return id;
@@ -104,22 +98,6 @@ public class Post {
 
     public void setStatus(PostStatus status) {
         this.status = status;
-    }
-
-    public Integer getViews() {
-        return views;
-    }
-
-    public void setViews(Integer views) {
-        this.views = views;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
     }
 
     public String getImagePath() {
