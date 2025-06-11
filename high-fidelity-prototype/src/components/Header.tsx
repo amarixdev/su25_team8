@@ -48,7 +48,7 @@ const Header = () => {
   }
 
   return (
-    <header className={`w-full fixed top-0 left-0 right-0 ${userType == 'admin' ? 'bg-gray-800' : 'bg-white'} shadow-sm h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8`}>
+    <header className={`w-full fixed top-0 left-0 right-0 ${userType == 'admin' ? 'bg-gray-800' : 'bg-white'} shadow-sm h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8 z-50`}>
       <nav className={`flex ccc space-x-8 items-center ${userType == 'admin' ? 'text-white' : 'text-gray-700'}`}>
         <Link 
           href="/leaderboards" 

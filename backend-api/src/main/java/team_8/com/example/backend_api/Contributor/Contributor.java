@@ -98,7 +98,7 @@ public class Contributor extends User {
     public void incrementLikes() {
         this.totalLikes++;
     }
-
+    
     public void incrementFollowers() {
         this.followers++;
     }

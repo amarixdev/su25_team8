@@ -40,7 +40,6 @@ public class UserService {
         user.setLocation(userDetails.getLocation());
         user.setWebsite(userDetails.getWebsite());
         user.setProfilePicturePath(userDetails.getProfilePicturePath());
-        // Potentially update other fields like 'following' based on requirements
 
         return userRepository.save(user);
     }
