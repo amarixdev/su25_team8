@@ -1,13 +1,15 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { RecentPost } from './types';
 
 interface CreatePostFormProps {
   onClose: () => void;
   onPostCreated: () => void;
+  post?: RecentPost; // Optional post for editing mode
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated }) => {
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated, post }) => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -18,13 +20,25 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
     status: 'DRAFT'
   });
 
+  // Pre-fill form data if we're editing an existing post
+  useEffect(() => {
+    if (post) {
+      setFormData({
+        title: post.title,
+        content: post.content || '',
+        imagePath: post.imagePath || '',
+        status: post.status || 'DRAFT'
+      });
+    }
+  }, [post]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
 
     try {
-      // Get the contributor ID from localStorage
+      // Get contributor ID from localStorage
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
       const contributorId = userData.id;
 
@@ -32,8 +46,13 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
         throw new Error('User not logged in');
       }
 
-      const response = await fetch(`http://localhost:8080/api/posts/contributor/${contributorId}`, {
-        method: 'POST',
+      // Use different endpoints for create vs update
+      const url = post 
+        ? `http://localhost:8080/api/posts/${post.id}`
+        : `http://localhost:8080/api/posts/contributor/${contributorId}`;
+
+      const response = await fetch(url, {
+        method: post ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -45,10 +64,10 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
         onClose();
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create post');
+        throw new Error(errorData.message || `Failed to ${post ? 'update' : 'create'} post`);
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to create post');
+      setError(error instanceof Error ? error.message : `Failed to ${post ? 'update' : 'create'} post`);
     } finally {
       setIsSubmitting(false);
     }
@@ -57,8 +76,11 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        {/* Modal header */}
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">Create New Post</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            {post ? 'Edit Post' : 'Create New Post'}
+          </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
@@ -70,6 +92,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           </button>
         </div>
 
+        {/* Form fields */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
@@ -127,12 +150,14 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
             </select>
           </div>
 
+          {/* Error display */}
           {error && (
             <div className="text-red-600 text-sm">
               {error}
             </div>
           )}
 
+          {/* Form actions */}
           <div className="flex justify-end space-x-3">
             <button
               type="button"
@@ -150,7 +175,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
                   : 'bg-indigo-600 hover:bg-indigo-700'
               }`}
             >
-              {isSubmitting ? 'Creating...' : 'Create Post'}
+              {isSubmitting ? (post ? 'Updating...' : 'Creating...') : (post ? 'Update Post' : 'Create Post')}
             </button>
           </div>
         </form>
