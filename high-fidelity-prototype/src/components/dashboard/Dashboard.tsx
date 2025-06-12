@@ -66,7 +66,7 @@ const Dashboard = () => {
         id: post.id,
         title: post.title,
         views: post.views || 0,
-        comments: post.comments || 0,
+        comments: Array.isArray(post.comments) ? post.comments.length : (post.comments || 0),
         likes: post.likes || 0,
         date: new Date(post.createdAt).toLocaleDateString()
       })) || [];

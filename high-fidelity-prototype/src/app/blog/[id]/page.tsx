@@ -10,59 +10,27 @@ interface Post {
   content: string;
   imageUrl: string;
   tags: string[];
+  contributor?: {
+    id: number;
+    name?: string;
+    username?: string;
+  };
 }
 
-// Dummy comments data
-const dummyComments = [
-  {
-    id: 1,
-    postId: 1,
-    author: "Michael Chen",
-    date: "May 16, 2023",
-    content: "Great article! I've been using Next.js for a few months now and it's incredible how much it simplifies the development process. The automatic code splitting feature alone has improved our app's performance significantly.",
-    avatar: "MC"
-  },
-  {
-    id: 2,
-    postId: 1,
-    author: "Sarah Wilson",
-    date: "May 16, 2023",
-    content: "Thanks for sharing this. I'm particularly interested in the WebAssembly section. Do you have any recommendations for getting started with WASM in web development?",
-    avatar: "SW"
-  },
-  {
-    id: 3,
-    postId: 1,
-    author: "Alex Rodriguez",
-    date: "May 17, 2023",
-    content: "Excellent overview of the current state of web development. The part about server-side rendering really resonated with me - we've seen huge SEO improvements since implementing SSR.",
-    avatar: "AR"
-  },
-  {
-    id: 4,
-    postId: 2,
-    author: "Emma Thompson",
-    date: "May 11, 2023",
-    content: "TypeScript has been a game-changer for our team. The type safety it provides has caught so many bugs before they made it to production. Great explanation of the benefits!",
-    avatar: "ET"
-  },
-  {
-    id: 5,
-    postId: 2,
-    author: "David Park",
-    date: "May 12, 2023",
-    content: "I was hesitant to adopt TypeScript at first, but this article convinced me to give it a try. The learning curve is steep but definitely worth it.",
-    avatar: "DP"
-  },
-  {
-    id: 6,
-    postId: 3,
-    author: "Lisa Garcia",
-    date: "May 6, 2023",
-    content: "As a UX designer, I appreciate how you emphasized the importance of user research and testing. Too many projects skip these crucial steps.",
-    avatar: "LG"
-  }
-];
+interface Comment {
+  id: number;
+  content: string;
+  user: {
+    id: number;
+    name?: string;
+    username?: string;
+  };
+  author: string; // Computed field for display
+  avatar: string; // Computed field for initials
+  date: string; // Computed field for display
+}
+
+
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -73,8 +41,9 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  
-  const comments = dummyComments.filter(comment => comment.postId === postId);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState('');
 
   // Fetch post from backend
   const fetchPost = async () => {
@@ -105,7 +74,8 @@ export default function BlogPostPage() {
         }),
         content: backendPost.content,
         imageUrl: backendPost.imagePath || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
-        tags: [] // Backend doesn't have tags yet, so we'll use empty array
+        tags: [], // Backend doesn't have tags yet, so we'll use empty array
+        contributor: backendPost.contributor // Preserve contributor info for author comparison
       };
 
       setPost(transformedPost);
@@ -116,9 +86,47 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post on component mount
+  // Fetch comments from backend
+  const fetchComments = async () => {
+    try {
+      setCommentsLoading(true);
+      const response = await fetch(`http://localhost:8080/api/comments/post/${postId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
+
+      const backendComments = await response.json();
+      
+      // Transform backend comments to match frontend interface
+      const transformedComments: Comment[] = backendComments.map((comment: any) => {
+        const userName = comment.user?.name || comment.user?.username || 'Anonymous';
+        return {
+          id: comment.id,
+          content: comment.content,
+          user: comment.user,
+          author: userName,
+          avatar: userName.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
+          date: new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) // Backend Comment doesn't have createdAt, using current date
+        };
+      });
+
+      setComments(transformedComments);
+    } catch (error) {
+      setCommentsError(error instanceof Error ? error.message : 'Failed to load comments');
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
+  // Load post and comments on component mount
   useEffect(() => {
     fetchPost();
+    fetchComments();
   }, [postId]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -127,15 +135,40 @@ export default function BlogPostPage() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In a real app, you would send the comment to your backend
-    console.log('New comment:', newComment);
-    alert('Comment submitted! (This is just a demo)');
-    
-    setNewComment('');
-    setIsSubmitting(false);
+    try {
+      // Get current user data
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const userId = userData.id;
+      
+      if (!userId) {
+        alert('Please log in to post comments');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8080/api/comments/${postId}/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newComment.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit comment');
+      }
+
+      // Refresh comments after successful submission
+      await fetchComments();
+      setNewComment('');
+      
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+      alert('Failed to submit comment. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Show loading state
@@ -281,8 +314,20 @@ export default function BlogPostPage() {
       {/* Comments Section */}
       <div className="bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          Comments ({comments.length})
+          Comments ({commentsLoading ? '...' : comments.length})
         </h2>
+
+        {commentsError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-600">{commentsError}</p>
+            <button
+              onClick={fetchComments}
+              className="mt-2 text-red-700 hover:text-red-800 font-medium text-sm"
+            >
+              Try again
+            </button>
+          </div>
+        )}
 
         {/* Comment Form */}
         <form onSubmit={handleCommentSubmit} className="mb-8 pb-8 border-b border-gray-200">
@@ -317,39 +362,58 @@ export default function BlogPostPage() {
 
         {/* Comments List */}
         <div className="space-y-6">
-          {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment.id} className="flex space-x-4">
-                {/* Avatar */}
-                <div className="flex-shrink-0">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-medium text-sm">
-                      {comment.avatar}
-                    </span>
+          {commentsLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading comments...</p>
+            </div>
+          ) : comments.length > 0 ? (
+            comments.map((comment) => {
+              // Check if this comment is by the post author
+              const isAuthorComment = post && comment.user.id === post.contributor?.id;
+              
+              return (
+                <div key={comment.id} className={`flex space-x-4 ${isAuthorComment ? 'bg-blue-50 border border-blue-200 rounded-lg p-4' : ''}`}>
+                  {/* Avatar */}
+                  <div className="flex-shrink-0">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      isAuthorComment ? 'bg-blue-200 ring-2 ring-blue-400' : 'bg-blue-100'
+                    }`}>
+                      <span className={`font-medium text-sm ${
+                        isAuthorComment ? 'text-blue-800' : 'text-blue-600'
+                      }`}>
+                        {comment.avatar}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                
-                {/* Comment Content */}
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <h4 className="font-medium text-gray-900">{comment.author}</h4>
-                    <span className="text-gray-500 text-sm">•</span>
-                    <span className="text-gray-500 text-sm">{comment.date}</span>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">{comment.content}</p>
                   
-                  {/* Comment Actions */}
-                  <div className="flex space-x-4 mt-3">
-                    <button className="text-gray-500 hover:text-blue-600 text-sm font-medium">
-                      Reply
-                    </button>
-                    <button className="text-gray-500 hover:text-red-600 text-sm font-medium">
-                      Like
-                    </button>
+                  {/* Comment Content */}
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h4 className="font-medium text-gray-900">{comment.author}</h4>
+                      {isAuthorComment && (
+                        <span className="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">
+                          Author
+                        </span>
+                      )}
+                      <span className="text-gray-500 text-sm">•</span>
+                      <span className="text-gray-500 text-sm">{comment.date}</span>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                    
+                    {/* Comment Actions */}
+                    <div className="flex space-x-4 mt-3">
+                      <button className="text-gray-500 hover:text-blue-600 text-sm font-medium">
+                        Reply
+                      </button>
+                      <button className="text-gray-500 hover:text-red-600 text-sm font-medium">
+                        Like
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-8">
               <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
