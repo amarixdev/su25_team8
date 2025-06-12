@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import BlogPost from './BlogPost';
 import { useState } from 'react';
 import { dummyPosts } from '@/app/dummy_data/dummyPosts';
