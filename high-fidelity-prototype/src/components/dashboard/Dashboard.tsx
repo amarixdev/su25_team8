@@ -7,6 +7,7 @@ import MyPostsTabContent from './MyPostsTabContent';
 import AnalyticsTabContent from './AnalyticsTabContent';
 import CreatePostForm from './CreatePostForm';
 import { RecentPost } from './types';
+import { dummyPosts } from '../../app/dummy_data/dummyPosts';
 
 const dashboardTabs = [
   { id: 'overview', label: 'Overview' },
@@ -30,6 +31,8 @@ const Dashboard = () => {
   const [recentPosts, setRecentPosts] = useState<RecentPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isCreatingManyPosts, setIsCreatingManyPosts] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Fetch contributor data from backend
   const fetchContributorData = async () => {
@@ -63,7 +66,7 @@ const Dashboard = () => {
         id: post.id,
         title: post.title,
         views: post.views || 0,
-        comments: post.comments || 0,
+        comments: Array.isArray(post.comments) ? post.comments.length : (post.comments || 0),
         likes: post.likes || 0,
         date: new Date(post.createdAt).toLocaleDateString()
       })) || [];
@@ -81,12 +84,70 @@ const Dashboard = () => {
     fetchContributorData();
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (showDropdown && !target.closest('.relative')) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showDropdown]);
+
   // Handle post creation/update
   const handlePostCreated = async () => {
     setShowCreatePost(false);
     setIsLoading(true);
     await fetchContributorData();
     setActiveTab('posts');
+  };
+
+  // Handle creating many posts from dummy data
+  const handleCreateManyPosts = async () => {
+    try {
+      setIsCreatingManyPosts(true);
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const contributorId = userData.id;
+      
+      if (!contributorId) {
+        throw new Error('User not logged in');
+      }
+
+      // Create posts one by one
+      for (const dummyPost of dummyPosts) {
+        const postData = {
+          title: dummyPost.title,
+          content: dummyPost.content,
+          imagePath: dummyPost.imageUrl,
+          status: 'PUBLISHED' // Default status
+        };
+
+        const response = await fetch(`http://localhost:8080/api/posts/contributor/${contributorId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData)
+        });
+
+        if (!response.ok) {
+          console.error(`Failed to create post: ${dummyPost.title}`);
+        }
+      }
+
+      // Refresh data after creating all posts
+      await fetchContributorData();
+      setActiveTab('posts');
+      alert(`Successfully created ${dummyPosts.length} posts!`);
+    } catch (error) {
+      console.error('Error creating posts:', error);
+      alert('Failed to create posts. Please try again.');
+    } finally {
+      setIsCreatingManyPosts(false);
+    }
   };
 
   // Show loading state
@@ -106,12 +167,41 @@ const Dashboard = () => {
         <div className="text-2xl font-bold">
           Welcome, {userName}!
         </div>
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
-          onClick={() => setShowCreatePost(true)}
-        >
-          + Create New Post
-        </button>
+        <div className="flex gap-2 items-center">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
+            onClick={() => setShowCreatePost(true)}
+          >
+            + Create New Post
+          </button>
+          
+          {/* Dropdown menu */}
+          <div className="relative">
+            <button
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-3 rounded shadow transition"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              ⋯
+            </button>
+            
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                <div className="py-1">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      handleCreateManyPosts();
+                      setShowDropdown(false);
+                    }}
+                    disabled={isCreatingManyPosts}
+                  >
+                    {isCreatingManyPosts ? 'Creating Posts...' : '+ Create Many Posts (Developer mode)'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <DashboardHeader 
