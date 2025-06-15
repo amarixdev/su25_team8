@@ -98,9 +98,11 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                       {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}
                     </span>
                   </div>
-                  <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                    Follow
-                  </button>
+                  {user.role === 'CONTRIBUTOR' && (
+                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
+                      Follow
+                    </button>
+                  )}
                 </div>
                 
                 <p className="text-gray-600 text-sm mt-1">@{user.username}</p>

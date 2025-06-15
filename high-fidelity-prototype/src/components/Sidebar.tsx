@@ -12,6 +12,20 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [userType, setUserType] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
+
+  // Helper function to check if a link is active
+  const isActiveLink = (linkPath: string) => {
+    if (linkPath === '/') {
+      return pathname === '/';
+    }
+    if (linkPath === '/followers') {
+      return pathname.startsWith('/followers');
+    }
+    if (linkPath === '/find') {
+      return pathname.startsWith('/followers') && window.location.search.includes('tab=find');
+    }
+    return pathname.startsWith(linkPath);
+  };
   
   useEffect(() => {
     // Function to update user type from localStorage
@@ -64,17 +78,74 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
       </div>
   
       <div className={`${userType == 'admin' && 'bg-red-500 p-2 rounded-lg'}`}>
-      {userData ? <p className={`${userType =='admin' && 'text-white'} text-sm font-semibold text-black`}> {`${userData.displayName} (${userType})`}</p> :
-        userType != 'admin' ? <p className="text-sm text-gray-500"> { userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}</p> : <p className=" text-white max-w-[80px] rounded-2xl px-2 text-center bg-red-600">Admin</p>
-      }
-      {userData && <p className={`${userType == 'admin' && 'text-white/70'} text-sm text-gray-500`}> {`@${userData.username}`}</p>}
-        </div>
+        {userData ? (
+          <Link 
+            href={`/profile/${userData.username}`}
+            className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            {/* Profile Image */}
+            <div className="flex-shrink-0">
+              {userData.profilePicturePath ? (
+                <img
+                  src={userData.profilePicturePath}
+                  alt={userData.displayName}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : null}
+              {!userData.profilePicturePath && (
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                  {userData.displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
+                </div>
+              )}
+            </div>
+            
+            {/* User Info */}
+            <div className="flex-1 min-w-0">
+              <p className={`${userType =='admin' && 'text-white'} text-sm font-semibold text-black truncate`}>
+                {userData.displayName}
+              </p>
+              <p className={`${userType == 'admin' && 'text-white/70'} text-xs text-gray-500 truncate`}>
+                @{userData.username}
+              </p>
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${
+                userType === 'admin' ? 'bg-red-600 text-white' :
+                userType === 'contributor' ? 'bg-purple-100 text-purple-800' : 
+                'bg-blue-100 text-blue-800'
+              }`}>
+                {userType === 'admin' ? 'Admin' : userType === 'contributor' ? 'Contributor' : 'Visitor'}
+              </span>
+            </div>
+          </Link>
+        ) : (
+          userType != 'admin' ? (
+            <p className="text-sm text-gray-500">
+              {userType === "contributor" ? "Contributor" : userType === "visitor" ? "Visitor" : ""}
+            </p>
+          ) : (
+            <p className="text-white max-w-[80px] rounded-2xl px-2 text-center bg-red-600">Admin</p>
+          )
+        )}
+      </div>
 
   
       <nav className={`space-y-2 ${userType == 'admin' ? 'text-white' : 'text-gray-700'} mt-6`}>
         <Link
           href="/"
-          className={`${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} flex items-center space-x-3 p-2 rounded-md  cursor-pointer`}
+          className={`flex items-center space-x-3 p-2 rounded-md cursor-pointer transition-colors ${
+            isActiveLink('/') 
+              ? userType == 'admin' 
+                ? 'bg-gray-600 text-white' 
+                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+              : userType == 'admin' 
+                ? 'hover:bg-gray-600' 
+                : 'hover:bg-gray-100'
+          }`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
@@ -92,7 +163,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
         </Link>
         <Link
           href="/search"
-          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"}  cursor-pointer`}
+          className={`flex items-center space-x-3 p-2 rounded-md cursor-pointer transition-colors ${
+            isActiveLink('/search') 
+              ? userType == 'admin' 
+                ? 'bg-gray-600 text-white' 
+                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+              : userType == 'admin' 
+                ? 'hover:bg-gray-600' 
+                : 'hover:bg-gray-100'
+          }`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
@@ -111,7 +190,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
         <Link
           href="/bookmarks"
-          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} cursor-pointer`}
+          className={`flex items-center space-x-3 p-2 rounded-md cursor-pointer transition-colors ${
+            isActiveLink('/bookmarks') 
+              ? userType == 'admin' 
+                ? 'bg-gray-600 text-white' 
+                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+              : userType == 'admin' 
+                ? 'hover:bg-gray-600' 
+                : 'hover:bg-gray-100'
+          }`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
@@ -130,7 +217,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
       { userType != 'admin'  &&  <Link
           href="/profile"
-          className={`flex items-center space-x-3 p-2 rounded-md ${userType == 'admin' ? "hover:bg-gray-600" : "hover:bg-gray-100"} cursor-pointer`}
+          className={`flex items-center space-x-3 p-2 rounded-md cursor-pointer transition-colors ${
+            isActiveLink('/profile') 
+              ? userType == 'admin' 
+                ? 'bg-gray-600 text-white' 
+                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+              : userType == 'admin' 
+                ? 'hover:bg-gray-600' 
+                : 'hover:bg-gray-100'
+          }`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <svg
