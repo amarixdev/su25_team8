@@ -107,7 +107,7 @@ function FollowersContent() {
   const [isSearching, setIsSearching] = useState(false);
   const [followers, setFollowers] = useState<RealUser[]>([]);
   const [following, setFollowing] = useState<RealUser[]>([]);
-  const [isLoadingConnections, setIsLoadingConnections] = useState(false);
+  const [isLoadingConnections, setIsLoadingConnections] = useState(true);
 
   useEffect(() => {
     setActiveTab(tabParam === 'following' ? 'following' : tabParam === 'find' ? 'find' : 'followers');
@@ -120,24 +120,29 @@ function FollowersContent() {
     }
   }, [currentUser]);
 
-  // Load followers and following when currentUser changes
+  // Load followers and following data
   useEffect(() => {
+    // This effect runs when the user changes or when follow counts change,
+    // indicating that we might need to refresh our data.
     if (currentUser) {
       loadConnections();
+    } else {
+      // Clear data on logout
+      setFollowers([]);
+      setFollowing([]);
+      setIsLoadingConnections(false);
     }
-  }, [currentUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, followingCount, followersCount]);
 
   const loadConnections = async () => {
     if (!currentUser) return;
-
-    setIsLoadingConnections(true);
   
     try {
-      // Load following (contributors the current user follows)
+      // These calls will be instant if data is in the cache.
       const followingData = await FollowService.getFollowing(currentUser.id);
       setFollowing(followingData.map(contributor => ({ ...contributor, role: 'CONTRIBUTOR' })));
 
-      // Load followers (only for contributors)
       if (currentUser.userType === 'contributor') {
         const followersData = await FollowService.getFollowers(currentUser.id);
         setFollowers(followersData);
@@ -145,11 +150,12 @@ function FollowersContent() {
     } catch (error) {
       console.error('Error loading connections:', error);
     } finally {
+      // We always turn off the loading spinner after the first fetch.
+      // On subsequent re-fetches (after a follow/unfollow), the UI will just
+      // update seamlessly without a loading spinner.
       setIsLoadingConnections(false);
     }
   };
-
-
 
   // Search function for Find Account tab
   const searchAllAccounts = async (query: string) => {

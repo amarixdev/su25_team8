@@ -24,6 +24,10 @@ export interface Contributor extends User {
   posts?: any[];
 }
 
+// Simple cache for followers/following lists only
+const followersCache = new Map<number, User[]>();
+const followingCache = new Map<number, Contributor[]>();
+
 export class FollowService {
   /**
    * Follow a contributor
@@ -38,13 +42,9 @@ export class FollowService {
       });
 
       if (response.ok) {
-        // increment followingCount in localStorage
-        try {
-          const stored = JSON.parse(localStorage.getItem('userData') || '{}');
-          stored.followingCount = (stored.followingCount || 0) + 1;
-          localStorage.setItem('userData', JSON.stringify(stored));
-          window.dispatchEvent(new Event('userTypeChanged'));
-        } catch (e) { /* ignore */ }
+        // Clear cache for affected lists
+        followingCache.delete(userId);
+        followersCache.delete(contributorId);
         return { success: true, message: 'Successfully followed contributor' };
       } else {
         const errorText = await response.text();
@@ -69,14 +69,9 @@ export class FollowService {
       });
 
       if (response.ok) {
-        // decrement followingCount in localStorage
-        try {
-          const stored = JSON.parse(localStorage.getItem('userData') || '{}');
-          const current = stored.followingCount || 0;
-          stored.followingCount = current > 0 ? current - 1 : 0;
-          localStorage.setItem('userData', JSON.stringify(stored));
-          window.dispatchEvent(new Event('userTypeChanged'));
-        } catch (e) { /* ignore */ }
+        // Clear cache for affected lists
+        followingCache.delete(userId);
+        followersCache.delete(contributorId);
         return { success: true, message: 'Successfully unfollowed contributor' };
       } else {
         const errorText = await response.text();
@@ -106,13 +101,21 @@ export class FollowService {
   }
 
   /**
-   * Get user's following list
+   * Get user's following list (cached)
    */
   static async getFollowing(userId: number): Promise<Contributor[]> {
+    // Check cache first
+    if (followingCache.has(userId)) {
+      return followingCache.get(userId)!;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/users/${userId}/following`);
       if (response.ok) {
-        return await response.json();
+        const data = await response.json();
+        // Cache the result
+        followingCache.set(userId, data);
+        return data;
       }
       return [];
     } catch (error) {
@@ -122,19 +125,35 @@ export class FollowService {
   }
 
   /**
-   * Get contributor's followers
+   * Get contributor's followers (cached)
    */
   static async getFollowers(contributorId: number): Promise<User[]> {
+    // Check cache first
+    if (followersCache.has(contributorId)) {
+      return followersCache.get(contributorId)!;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/contributors/${contributorId}/followers`);
       if (response.ok) {
-        return await response.json();
+        const data = await response.json();
+        // Cache the result
+        followersCache.set(contributorId, data);
+        return data;
       }
       return [];
     } catch (error) {
       console.error('Error fetching followers list:', error);
       return [];
     }
+  }
+
+  /**
+   * Clear all caches (useful for logout or data refresh)
+   */
+  static clearCache(): void {
+    followersCache.clear();
+    followingCache.clear();
   }
 
   /**
@@ -155,4 +174,4 @@ export class FollowService {
       return null;
     }
   }
-} 
+}
