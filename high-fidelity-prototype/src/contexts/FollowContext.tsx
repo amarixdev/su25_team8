@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { FollowService } from '../services/followService';
 
 interface FollowContextType {
-  followingCount: number;
-  followersCount: number;
+  followingCount: number | null;
+  followersCount: number | null;
   followingStatus: { [key: number]: boolean };
   followLoading: { [key: number]: boolean };
   currentUser: { id: number; userType: string } | null;
@@ -29,8 +29,8 @@ interface FollowProviderProps {
 }
 
 export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
-  const [followingCount, setFollowingCount] = useState<number>(0);
-  const [followersCount, setFollowersCount] = useState<number>(0);
+  const [followingCount, setFollowingCount] = useState<number | null>(null);
+  const [followersCount, setFollowersCount] = useState<number | null>(null);
   const [followingStatus, setFollowingStatus] = useState<{ [key: number]: boolean }>({});
   const [followLoading, setFollowLoading] = useState<{ [key: number]: boolean }>({});
   const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
@@ -169,7 +169,7 @@ export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
   }, [currentUser]);
 
   const value: FollowContextType = {
-    followingCount,
+    followingCount ,
     followersCount,
     followingStatus,
     followLoading,

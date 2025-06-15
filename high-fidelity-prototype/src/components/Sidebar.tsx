@@ -272,7 +272,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Following</span>
-                <span className="text-sm font-medium text-indigo-600">{followingCount}</span>
+                <span className={`${!followingCount && 'animate-pulse'} text-sm font-medium text-indigo-600`}>{followingCount ? followingCount : "..."}</span>
               </div>
             </Link>
             <Link
@@ -287,7 +287,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Followers</span>
-                {userType === "contributor" ? <span className="text-sm font-medium text-indigo-600">{followersCount}</span> : 
+                {userType === "contributor" ? <span className={`${!followersCount && 'animate-pulse'} text-sm font-medium text-indigo-600`}>{followersCount ? followersCount : "..."}</span> : 
                 <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-indigo-700 transition-colors">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 

@@ -37,7 +37,7 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
-      <div className="flex items-center space-x-4">
+      <Link href={`/profile/${user.username}`} className="flex items-center space-x-4">
         {/* Profile Picture */}
         <div className="flex-shrink-0">
           {user.profilePicturePath ? (
@@ -63,9 +63,9 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  <a href={`/profile/${user.username}`} className="hover:text-blue-600 transition-colors">
+                  <div className="hover:text-blue-600 transition-colors">
                     {user.displayName}
-                  </a>
+                  </div>
                 </h3>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                   user.role === 'CONTRIBUTOR' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
@@ -88,7 +88,7 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
             </div>
           )}
         </div>
-      </div>
+      </Link>
     </div>
   );
 };
@@ -301,9 +301,9 @@ function FollowersContent() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Connections</h1>
         
-        <FollowersTabs activeTab={activeTab} setActiveTab={setActiveTab} /> 
-        <FollowersSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} activeTab={activeTab} />
-        
+        <FollowersTabs activeTab={activeTab} setActiveTab={setActiveTab} setSearchTerm={setSearchTerm} /> 
+{        <FollowersSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} activeTab={activeTab} />
+}        
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="p-6">
             {activeTab === 'find' ? (

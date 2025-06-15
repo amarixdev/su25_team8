@@ -94,7 +94,6 @@ export class FollowService {
   static async isFollowing(userId: number, contributorId: number): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/users/${userId}/following/${contributorId}`);
-      
       if (response.ok) {
         const result = await response.json();
         return result === true;
@@ -112,7 +111,6 @@ export class FollowService {
   static async getFollowing(userId: number): Promise<Contributor[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/users/${userId}/following`);
-      
       if (response.ok) {
         return await response.json();
       }
@@ -129,7 +127,6 @@ export class FollowService {
   static async getFollowers(contributorId: number): Promise<User[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/contributors/${contributorId}/followers`);
-      
       if (response.ok) {
         return await response.json();
       }
@@ -147,7 +144,7 @@ export class FollowService {
     try {
       const userData = localStorage.getItem('userData');
       const userType = localStorage.getItem('userType');
-      
+
       if (userData && userType) {
         const user = JSON.parse(userData);
         return { id: user.id, userType };

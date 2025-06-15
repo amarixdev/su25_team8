@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface VisitorSignupData {
   displayName: string;
@@ -303,9 +304,9 @@ const Signup = () => {
       <div className="text-center pt-4">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+          <Link href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
             Sign in here
-          </a>
+          </Link>
         </p>
       </div>
     </form>
