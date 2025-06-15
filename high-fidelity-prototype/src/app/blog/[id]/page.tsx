@@ -45,6 +45,17 @@ export default function BlogPostPage() {
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [commentsError, setCommentsError] = useState('');
 
+  // Function to increment view count
+  const incrementViewCount = async (contributorId: number) => {
+    try {
+      await fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Failed to increment view count:', error);
+    }
+  };
+
   // Fetch post from backend
   const fetchPost = async () => {
     try {
@@ -79,6 +90,11 @@ export default function BlogPostPage() {
       };
 
       setPost(transformedPost);
+
+      // Increment view count if we have a contributor ID
+      if (backendPost.contributor?.id) {
+        await incrementViewCount(backendPost.contributor.id);
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to load post');
     } finally {
