@@ -39,7 +39,7 @@ export default function UserProfilePage() {
   const router = useRouter();
   const username = params.username as string;
   const { updateFollowCounts } = useFollow();
-  
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,16 +56,17 @@ export default function UserProfilePage() {
 
   // Fetch user data from backend
   const fetchUserByUsername = async () => {
+   console.log("fetching user by username", username);
     try {
       setIsLoading(true);
       setIsFollowLoading(true);
       console.log("isFollowLoading", isFollowLoading);
-      // First try to find the user in contributors
-      let response = await fetch('http://localhost:8080/api/contributors');
-      if (response.ok) {
-        const contributors = await response.json();
-        const contributor = contributors.find((c: any) => c.username === username);
-        if (contributor) {
+      
+      // Try to find the user as a contributor first
+      try {
+        const contributorResponse = await fetch(`http://localhost:8080/api/contributors/username/${username}`);
+        if (contributorResponse.ok) {
+          const contributor = await contributorResponse.json();
           const userData = { 
             ...contributor, 
             role: 'CONTRIBUTOR',
@@ -82,14 +83,15 @@ export default function UserProfilePage() {
           }
           return;
         }
+      } catch (error) {
+        console.log('Not found as contributor, trying visitor...');
       }
 
-      // If not found in contributors, try visitors
-      response = await fetch('http://localhost:8080/api/visitors');
-      if (response.ok) {
-        const visitors = await response.json();
-        const visitor = visitors.find((v: any) => v.username === username);
-        if (visitor) {
+      // If not found as contributor, try as visitor
+      try {
+        const visitorResponse = await fetch(`http://localhost:8080/api/visitors/username/${username}`);
+        if (visitorResponse.ok) {
+          const visitor = await visitorResponse.json();
           const userData = { 
             ...visitor, 
             role: 'VISITOR',
@@ -98,9 +100,11 @@ export default function UserProfilePage() {
           setUser(userData);
           return;
         }
+      } catch (error) {
+        console.log('Not found as visitor either');
       }
 
-      // User not found
+      // User not found in either collection
       setError('User not found');
       
     } catch (error) {
@@ -108,7 +112,6 @@ export default function UserProfilePage() {
       console.error('Error fetching user:', error);
     } finally {
       setIsLoading(false);
-
     }
   };
 
@@ -176,6 +179,12 @@ export default function UserProfilePage() {
 
   // Load user data on component mount and when currentUser changes
   useEffect(() => {
+    if (username === userData?.username) {
+      setIsOwnProfile(true);
+      setUser(userData);
+      setIsLoading(false);
+      return;
+    }
     if (currentUser !== undefined) { // Only fetch when currentUser is determined
       fetchUserByUsername();
     }

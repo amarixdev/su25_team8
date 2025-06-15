@@ -36,6 +36,12 @@ public class VisitorController {
         return visitorService.getVisitorById(id);
     }
 
+    @GetMapping("/api/visitors/username/{username}")
+    public Visitor getVisitorByUsername(@PathVariable String username) {
+        return visitorService.getVisitorByUsername(username)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Visitor not found"));
+    }
+
     @PostMapping("/api/visitors")
     public Visitor createVisitor(@RequestBody Visitor visitor) {
         return visitorService.createVisitor(visitor);

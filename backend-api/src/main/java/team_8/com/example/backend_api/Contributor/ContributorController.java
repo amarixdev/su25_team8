@@ -35,6 +35,13 @@ public class ContributorController {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Contributor> getContributorByUsername(@PathVariable String username) {
+        return contributorService.getContributorByUsername(username)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
     ///ANALYTICS ENDPOINTS
     @GetMapping("/top/posts")
     public ResponseEntity<List<Contributor>> getTopContributorsByPosts(@RequestParam Integer minPosts) {
