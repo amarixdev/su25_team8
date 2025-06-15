@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 interface FollowersTabsProps {
-  activeTab: 'followers' | 'following';
-  setActiveTab: (tab: 'followers' | 'following') => void;
+  activeTab: 'followers' | 'following' | 'find';
+  setActiveTab: (tab: 'followers' | 'following' | 'find') => void;
 }
 
 const FollowersTabs: React.FC<FollowersTabsProps> = ({ activeTab, setActiveTab }) => {
@@ -31,6 +31,17 @@ const FollowersTabs: React.FC<FollowersTabsProps> = ({ activeTab, setActiveTab }
           onClick={() => setActiveTab('followers')} // Updates state
         >
           Followers
+        </Link>
+        <Link
+          href="/followers?tab=find"
+          className={`${
+            activeTab === 'find'
+              ? 'border-indigo-500 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm cursor-pointer`}
+          onClick={() => setActiveTab('find')}
+        >
+          Find Account
         </Link>
       </nav>
     </div>

@@ -1,9 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import UpgradeCompleteCard from '../../components/upgrade/UpgradeCompleteCard';
+// Import components that need to be created
+// These components will need to be created in the respective directories
 import RequirementsCard from '../../components/upgrade/RequirementsCard';
 import BenefitsCard from '../../components/upgrade/BenefitsCard';
 import UpgradeButton from '../../components/upgrade/UpgradeButton';
+import UpgradeCompleteCard from '../../components/upgrade/UpgradeCompleteCard';
 
 // Define the Requirement interface, as it's used by RequirementsCard and this page
 interface Requirement {

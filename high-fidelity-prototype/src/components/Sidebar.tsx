@@ -195,6 +195,15 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                   <span>Upgrade</span>
                 </button>}
               </div>
+          </Link>
+          <Link
+              href={"/find"}
+              className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960"><path d="M440-480q-66 0-113-47t-47-113 47-113 113-47 113 47 47 113-47 113-113 47m0-80q33 0 56.5-23.5T520-640t-23.5-56.5T440-720t-56.5 23.5T360-640t23.5 56.5T440-560M884-20 756-148q-21 12-45 20t-51 8q-75 0-127.5-52.5T480-300t52.5-127.5T660-480t127.5 52.5T840-300q0 27-8 51t-20 45L940-76zM660-200q42 0 71-29t29-71-29-71-71-29-71 29-29 71 29 71 71 29m-540 40v-111q0-34 17-63t47-44q51-26 115-44t142-18q-12 18-20.5 38.5T407-359q-60 5-107 20.5T221-306q-10 5-15.5 14.5T200-271v31h207q5 22 13.5 42t20.5 38zm287-80"/></svg>              <div className="flex justify-between items-center flex-1">
+                <span>Find Account</span>
+              </div>
             </Link>
 
 
