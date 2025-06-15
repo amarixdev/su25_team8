@@ -126,12 +126,15 @@ function FollowersContent() {
     // indicating that we might need to refresh our data.
     if (currentUser) {
       loadConnections();
+      console.log('loading connections');
     } else {
+      console.log('clearing data');
       // Clear data on logout
       setFollowers([]);
       setFollowing([]);
       setIsLoadingConnections(false);
     }
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser, followingCount, followersCount]);
 

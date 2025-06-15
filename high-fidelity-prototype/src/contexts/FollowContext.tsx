@@ -12,6 +12,7 @@ interface FollowContextType {
   toggleFollow: (contributorId: number) => Promise<boolean>;
   checkFollowStatus: (contributorIds: number[]) => Promise<void>;
   setFollowStatus: (contributorId: number, isFollowing: boolean) => void;
+  resetFollowData: () => void;
 }
 
 const FollowContext = createContext<FollowContextType | undefined>(undefined);
@@ -37,9 +38,10 @@ export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
 
   // Initialize current user
   useEffect(() => {
+    console.log('Running useEffect in FollowContext');
     const user = FollowService.getCurrentUser();
     setCurrentUser(user);
-  }, []);
+  }, [localStorage.getItem('isLoggedIn')]);
 
   // Update follow counts
   const updateFollowCounts = useCallback(async () => {
@@ -161,6 +163,15 @@ export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
     setFollowingStatus(prev => ({ ...prev, [contributorId]: isFollowing }));
   };
 
+  // Reset all follow-related data (used on logout)
+  const resetFollowData = useCallback(() => {
+    setFollowingCount(null);
+    setFollowersCount(null);
+    setFollowingStatus({});
+    setFollowLoading({});
+    setCurrentUser(null);
+  }, []);
+
   // Update counts when current user changes
   useEffect(() => {
     if (currentUser) {
@@ -178,6 +189,7 @@ export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
     toggleFollow,
     checkFollowStatus,
     setFollowStatus,
+    resetFollowData,
   };
 
   return (
