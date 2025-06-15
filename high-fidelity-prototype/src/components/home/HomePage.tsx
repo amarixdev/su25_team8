@@ -48,7 +48,14 @@ const HomePage = () => {
         tags: [] // Backend doesn't have tags yet, so we'll use empty array
       }));
 
-      setPosts(transformedPosts);
+      // Sort posts by creation date (newest first)
+      const sortedPosts = transformedPosts.sort((a, b) => {
+        const dateA = new Date(backendPosts.find((p: any) => p.id === a.id)?.createdAt || 0);
+        const dateB = new Date(backendPosts.find((p: any) => p.id === b.id)?.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      setPosts(sortedPosts);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to load posts');
     } finally {
