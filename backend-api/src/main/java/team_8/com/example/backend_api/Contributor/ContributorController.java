@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team_8.com.example.backend_api.User.User;
 import java.util.List;
 
 /**
@@ -89,14 +90,15 @@ public class ContributorController {
         return ResponseEntity.ok(contributorService.incrementLikes(id));
     }
 
-    @PostMapping("/{id}/followers")
-    public ResponseEntity<Contributor> incrementFollowers(@PathVariable Long id) {
-        return ResponseEntity.ok(contributorService.incrementFollowers(id));
-    }
-
-    @DeleteMapping("/{id}/followers")
-    public ResponseEntity<Contributor> decrementFollowers(@PathVariable Long id) {
-        return ResponseEntity.ok(contributorService.decrementFollowers(id));
+    // Get followers of a contributor
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<List<User>> getFollowers(@PathVariable Long id) {
+        try {
+            List<User> followers = contributorService.getFollowers(id);
+            return ResponseEntity.ok(followers);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 } 

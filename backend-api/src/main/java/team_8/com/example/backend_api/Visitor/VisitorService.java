@@ -81,14 +81,15 @@ public class VisitorService {
             visitor.getEmail(),
             visitor.getBio(),
             visitor.getLocation(),
-            visitor.getWebsite(),
-            visitor.getFollowing()
+            visitor.getWebsite()
         );
         
         // Initialize Contributor-specific fields with defaults
         contributor.setTotalViews(0);
         contributor.setTotalLikes(0);
-        contributor.setFollowers(0);
+        
+        // Transfer the following relationships from visitor to contributor
+        contributor.setFollowing(visitor.getFollowing());
     
         // Delete the old Visitor record
         visitorRepository.delete(visitor);

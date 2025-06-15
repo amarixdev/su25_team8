@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FollowService } from '../../services/followService';
 
 export interface SearchUser {
   id: number;
@@ -13,7 +14,7 @@ export interface SearchUser {
   role: 'CONTRIBUTOR' | 'VISITOR';
   // Contributor specific
   totalPosts?: number;
-  followers?: number;
+  followersCount?: number; // Changed from followers to followersCount
   // Visitor specific
   accountAge?: number;
   postsReads?: number;
@@ -26,6 +27,66 @@ interface SearchGridProps {
 }
 
 const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading }) => {
+  const [followingStatus, setFollowingStatus] = useState<{ [key: number]: boolean }>({});
+  const [followLoading, setFollowLoading] = useState<{ [key: number]: boolean }>({});
+  const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
+
+  // Get current user info on component mount
+  useEffect(() => {
+    const user = FollowService.getCurrentUser();
+    setCurrentUser(user);
+  }, []);
+
+  // Check follow status for all contributors when users change
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      if (!currentUser || users.length === 0) return;
+
+      const contributors = users.filter(user => user.role === 'CONTRIBUTOR');
+      const statusPromises = contributors.map(async (contributor) => {
+        if (contributor.id === currentUser.id) return { [contributor.id]: false }; // Can't follow yourself
+        const isFollowing = await FollowService.isFollowing(currentUser.id, contributor.id);
+        return { [contributor.id]: isFollowing };
+      });
+
+      const statuses = await Promise.all(statusPromises);
+      const statusMap = statuses.reduce((acc, status) => ({ ...acc, ...status }), {});
+      setFollowingStatus(statusMap);
+    };
+
+    checkFollowStatus();
+  }, [users, currentUser]);
+
+  const handleFollowToggle = async (contributorId: number) => {
+    if (!currentUser || contributorId === currentUser.id) return;
+
+    setFollowLoading(prev => ({ ...prev, [contributorId]: true }));
+    
+    try {
+      const isCurrentlyFollowing = followingStatus[contributorId];
+      let result;
+      
+      if (isCurrentlyFollowing) {
+        result = await FollowService.unfollowContributor(currentUser.id, contributorId);
+      } else {
+        result = await FollowService.followContributor(currentUser.id, contributorId);
+      }
+
+      if (result.success) {
+        setFollowingStatus(prev => ({
+          ...prev,
+          [contributorId]: !isCurrentlyFollowing
+        }));
+      } else {
+        console.error('Follow action failed:', result.message);
+      }
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+    } finally {
+      setFollowLoading(prev => ({ ...prev, [contributorId]: false }));
+    }
+  };
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
@@ -73,11 +134,23 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
             <div className="flex items-start space-x-4">
               {/* Profile Picture */}
               <div className="flex-shrink-0">
-                {/* TODO: Add profile picture */}
+                {user.profilePicturePath ? (
+                  <Image
+                    src={user.profilePicturePath}
+                    alt={user.displayName}
+                    width={64}
+                    height={64}
+                    className="rounded-full object-cover border-2 border-gray-200"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                ) : (
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
                     {getInitials(user.displayName)}
                   </div>
-                
+                )}
               </div>
 
               {/* User Info */}
@@ -98,9 +171,22 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                       {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}
                     </span>
                   </div>
-                  {user.role === 'CONTRIBUTOR' && (
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                      Follow
+                  {user.role === 'CONTRIBUTOR' && currentUser && user.id !== currentUser.id && (
+                    <button 
+                      onClick={() => handleFollowToggle(user.id)}
+                      disabled={followLoading[user.id]}
+                      className={`px-4 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors ${
+                        followingStatus[user.id]
+                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      } ${followLoading[user.id] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {followLoading[user.id] 
+                        ? 'Loading...' 
+                        : followingStatus[user.id] 
+                          ? 'Unfollow' 
+                          : 'Follow'
+                      }
                     </button>
                   )}
                 </div>
@@ -125,7 +211,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <span>{user.followers || 0} followers</span>
+                        <span>{user.followersCount || 0} followers</span>
                       </div>
                     </>
                   ) : (

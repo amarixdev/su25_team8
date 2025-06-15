@@ -3,8 +3,10 @@ package team_8.com.example.backend_api.Contributor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team_8.com.example.backend_api.User.User;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 /**
  * Service class for handling Contributor business logic.
@@ -163,35 +165,15 @@ public class ContributorService {
     }
 
     /**
-     * Increments the follower count for a contributor
+     * Gets the followers of a contributor
      * @param id The contributor's ID
-     * @return The updated contributor
-     * @throws IllegalArgumentException if contributor not found
+     * @return List of users following the contributor
+     * @throws RuntimeException if contributor not found
      */
-    @Transactional
-    public Contributor incrementFollowers(Long id) {
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.incrementFollowers();
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
-    }
-    
-    /**
-     * Decrements the follower count for a contributor
-     * @param id The contributor's ID
-     * @return The updated contributor
-     * @throws IllegalArgumentException if contributor not found
-     */
-    @Transactional
-    public Contributor decrementFollowers(Long id) {
-        return contributorRepository.findById(id)
-            .map(contributor -> {
-                contributor.decrementFollowers();
-                return contributorRepository.save(contributor);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Contributor not found with id: " + id));
+    public List<User> getFollowers(Long id) {
+        Contributor contributor = contributorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contributor not found with id: " + id));
+        return new ArrayList<>(contributor.getFollowers());
     }
 
     /**

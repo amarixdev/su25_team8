@@ -23,8 +23,7 @@ const response = await fetch('http://localhost:8080/api/contributors', {
     bio: 'This is a developer account',
     location: 'Greensboro, NC',
     website: 'https://spartanparadigm.com',
-    profilePicturePath: 'https://via.placeholder.com/150',
-    following: 0,
+    profilePicturePath: null,
     accountAge: 0,
     postsReads: 0,
     canUpgradeAccount: false

@@ -4,25 +4,111 @@ import { useSearchParams } from 'next/navigation';
 // import UserCard from '@/components/followers/UserCard'; // UserCard is now used by UserGrid
 import FollowersTabs from '../../components/followers/FollowersTabs';
 import FollowersSearch from '../../components/followers/FollowersSearch';
-import UserGrid, { MockUser } from '../../components/followers/UserGrid';
 import UpgradeToContributorPrompt from '../../components/followers/UpgradeToContributorPrompt';
 import SearchGrid, { SearchUser } from '../../components/followers/SearchGrid';
+import { FollowService } from '../../services/followService';
+import Link from 'next/link';
 
-// Mock user data - can be moved to a service or API call
-const mockUsers: MockUser[] = [
-  { id: 1, name: 'John Smith', username: 'johnsmith', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 2, name: 'Sarah Johnson', username: 'sarahj', avatar: '/placeholder-avatar.png', isFollowing: false },
-  { id: 3, name: 'Michael Brown', username: 'mikebrown', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 4, name: 'Emily Davis', username: 'emilyd', avatar: '/placeholder-avatar.png', isFollowing: false },
-  { id: 5, name: 'David Wilson', username: 'davidw', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 6, name: 'Lisa Taylor', username: 'lisat', avatar: '/placeholder-avatar.png', isFollowing: false },
-  { id: 7, name: 'Robert Martinez', username: 'robertm', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 8, name: 'Jennifer Garcia', username: 'jenniferg', avatar: '/placeholder-avatar.png', isFollowing: false },
-  { id: 9, name: 'Daniel Anderson', username: 'daniela', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 10, name: 'Michelle Thomas', username: 'michellet', avatar: '/placeholder-avatar.png', isFollowing: false },
-  { id: 11, name: 'James Rodriguez', username: 'jamesr', avatar: '/placeholder-avatar.png', isFollowing: true },
-  { id: 12, name: 'Patricia Martinez', username: 'patriciam', avatar: '/placeholder-avatar.png', isFollowing: false },
-];
+// Create a real user display component for followers/following
+interface RealUser {
+  id: number;
+  displayName: string;
+  username: string;
+  email: string;
+  profilePicturePath?: string;
+  bio?: string;
+  location?: string;
+  role: string;
+  // Contributor specific fields
+  totalPosts?: number;
+  totalViews?: number;
+  totalLikes?: number;
+}
+
+interface RealUserCardProps {
+  user: RealUser;
+  onUnfollow?: (userId: number) => void;
+  showUnfollowButton?: boolean;
+}
+
+const RealUserCard: React.FC<RealUserCardProps> = ({ user, onUnfollow, showUnfollowButton }) => {
+  const [isUnfollowing, setIsUnfollowing] = useState(false);
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const handleUnfollow = async () => {
+    if (!onUnfollow || isUnfollowing) return;
+    
+    setIsUnfollowing(true);
+    try {
+      await onUnfollow(user.id);
+    } finally {
+      setIsUnfollowing(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+      <div className="flex items-center space-x-4">
+        {/* Profile Picture */}
+        <div className="flex-shrink-0">
+          {user.profilePicturePath ? (
+            <img
+              src={user.profilePicturePath}
+              alt={user.displayName}
+              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
+              {getInitials(user.displayName)}
+            </div>
+          )}
+        </div>
+
+        {/* User Info */}
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                <a href={`/profile/${user.username}`} className="hover:text-blue-600 transition-colors">
+                  {user.displayName}
+                </a>
+              </h3>
+              <p className="text-gray-600 text-sm">@{user.username}</p>
+              {user.bio && (
+                <p className="text-gray-700 text-sm mt-1 line-clamp-2">{user.bio}</p>
+              )}
+            </div>
+            
+            {showUnfollowButton && (
+              <button
+                onClick={handleUnfollow}
+                disabled={isUnfollowing}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md transition-colors disabled:opacity-50"
+              >
+                {isUnfollowing ? 'Unfollowing...' : 'Unfollow'}
+              </button>
+            )}
+          </div>
+
+          {/* Stats for contributors */}
+          {user.role === 'CONTRIBUTOR' && (
+            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+              <span>{user.totalPosts || 0} posts</span>
+              <span>{user.totalViews || 0} views</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function FollowersContent() {
   const searchParams = useSearchParams();
@@ -35,18 +121,68 @@ function FollowersContent() {
   const [userType, setUserType] = useState<'visitor' | 'contributor'>('visitor');
   const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
+  const [followers, setFollowers] = useState<RealUser[]>([]);
+  const [following, setFollowing] = useState<RealUser[]>([]);
+  const [isLoadingConnections, setIsLoadingConnections] = useState(false);
 
   useEffect(() => {
     setActiveTab(tabParam === 'following' ? 'following' : tabParam === 'find' ? 'find' : 'followers');
   }, [tabParam]);
   
   useEffect(() => {
-    const currentUserType = localStorage.getItem('userType') as 'visitor' | 'contributor';
-    if (currentUserType === 'contributor') {
-      setUserType('contributor');
+    const user = FollowService.getCurrentUser();
+    setCurrentUser(user);
+    
+    if (user) {
+      const currentUserType = user.userType as 'visitor' | 'contributor';
+      setUserType(currentUserType);
     }
-    // In a real app, this might also fetch based on activeTab (followers/following)
   }, []);
+
+  // Load followers and following when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      loadConnections();
+    }
+  }, [currentUser]);
+
+  const loadConnections = async () => {
+    if (!currentUser) return;
+
+    setIsLoadingConnections(true);
+    try {
+      // Load following (contributors the current user follows)
+      const followingData = await FollowService.getFollowing(currentUser.id);
+      setFollowing(followingData.map(contributor => ({ ...contributor, role: 'CONTRIBUTOR' })));
+
+      // Load followers (only for contributors)
+      if (currentUser.userType === 'contributor') {
+        const followersData = await FollowService.getFollowers(currentUser.id);
+        setFollowers(followersData);
+      }
+    } catch (error) {
+      console.error('Error loading connections:', error);
+    } finally {
+      setIsLoadingConnections(false);
+    }
+  };
+
+  const handleUnfollow = async (contributorId: number) => {
+    if (!currentUser) return;
+
+    try {
+      const result = await FollowService.unfollowContributor(currentUser.id, contributorId);
+      if (result.success) {
+        // Remove from following list
+        setFollowing(prev => prev.filter(user => user.id !== contributorId));
+      } else {
+        console.error('Unfollow failed:', result.message);
+      }
+    } catch (error) {
+      console.error('Error unfollowing:', error);
+    }
+  };
 
   // Search function for Find Account tab
   const searchAllAccounts = async (query: string) => {
@@ -83,7 +219,7 @@ function FollowersContent() {
             location: user.location,
             role: 'CONTRIBUTOR' as const,
             totalPosts: user.totalPosts,
-            followers: user.followers
+            followersCount: 0 // Will be calculated dynamically in SearchGrid
           }));
         allUsers.push(...filteredContributors);
       }
@@ -139,16 +275,59 @@ function FollowersContent() {
     }
   }, [searchTerm, activeTab]);
 
-  const filteredUsers = mockUsers.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  // Filter followers/following based on search term
+  const filteredFollowers = followers.filter(user => 
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) || 
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  // Further filter based on whether they are following the current user or being followed by the current user
-  // This logic is simplified; in a real app, you'd fetch the correct list (followers/following)
-  const displayUsers = activeTab === 'following' 
-    ? filteredUsers.filter(u => u.isFollowing) // Show who the current user is following
-    : filteredUsers; // Show who is following the current user (mock data doesn't distinguish this fully)
+
+  const filteredFollowing = following.filter(user => 
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const renderConnectionsList = () => {
+    if (isLoadingConnections) {
+      return (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading connections...</p>
+        </div>
+      );
+    }
+
+    const users = activeTab === 'following' ? filteredFollowing : filteredFollowers;
+    const title = activeTab === 'following' ? 'Following' : 'Followers';
+
+    if (users.length === 0) {
+      return (
+        <div className="text-center py-8 space-y-4">
+          <p className="text-gray-500">
+            {searchTerm ? `No ${title.toLowerCase()} found matching "${searchTerm}"` : `No ${title.toLowerCase()} yet`}
+          </p>
+          <Link href="/find" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Find accounts to follow</Link>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <h2 className="text-lg font-medium text-gray-900 mb-6">
+          {title} ({users.length})
+        </h2>
+        <div className="space-y-4">
+          {users.map(user => (
+            <RealUserCard 
+              key={user.id} 
+              user={user}
+              onUnfollow={activeTab === 'following' ? handleUnfollow : undefined}
+              showUnfollowButton={activeTab === 'following'}
+            />
+          ))}
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8">
@@ -165,7 +344,7 @@ function FollowersContent() {
             ) : userType === 'visitor' && activeTab === 'followers' ? (
               <UpgradeToContributorPrompt />
             ) : (
-              <UserGrid users={displayUsers} activeTab={activeTab as 'followers' | 'following'} userType={userType} />
+              renderConnectionsList()
             )}
           </div>
         </div>

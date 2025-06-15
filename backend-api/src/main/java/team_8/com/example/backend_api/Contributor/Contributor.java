@@ -2,8 +2,11 @@ package team_8.com.example.backend_api.Contributor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import team_8.com.example.backend_api.Post.Post;
 // import team_8.com.example.backend_api.Post.Post; // No longer needed here directly if posts list is removed
@@ -31,21 +34,26 @@ public class Contributor extends User {
     @Column(name = "total_likes")
     private Integer totalLikes = 0;
     
-    @Column(name = "followers")
-    private Integer followers = 0;
+
     
     // Posts list for contributors
     @OneToMany(mappedBy = "contributor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"contributor", "author"})
     private List<Post> posts = new ArrayList<>();
 
+    // Followers relationship - Contributors can have Users as followers
+    @ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<User> followers = new HashSet<>();
+
     // Constructors
     public Contributor() {
         super();
     }
     
-    public Contributor(String profilePicturePath, String displayName, String username, String email, String bio, String location, String website, int following) {
-        super(profilePicturePath, displayName, username, email, bio, location, website, following);
+    public Contributor(String profilePicturePath, String displayName, String username, String email, String bio, String location, String website) {
+        super(profilePicturePath, displayName, username, email, bio, location, website);
+        this.followers = new HashSet<>();
     }
 
     // Statistics getters and setters
@@ -73,12 +81,16 @@ public class Contributor extends User {
         this.totalLikes = totalLikes;
     }
     
-    public Integer getFollowers() {
+    public Set<User> getFollowers() {
         return followers;
     }
     
-    public void setFollowers(Integer followers) {
+    public void setFollowers(Set<User> followers) {
         this.followers = followers;
+    }
+
+    public int getFollowersCount() {
+        return followers.size();
     }
 
     public List<Post> getPosts() {
@@ -102,15 +114,17 @@ public class Contributor extends User {
     public void incrementLikes() {
         this.totalLikes++;
     }
-    
-    public void incrementFollowers() {
-        this.followers++;
+
+    public void addFollower(User user) {
+        this.followers.add(user);
     }
-    
-    public void decrementFollowers() {
-        if (this.followers > 0) {
-            this.followers--;
-        }
+
+    public void removeFollower(User user) {
+        this.followers.remove(user);
+    }
+
+    public boolean hasFollower(User user) {
+        return this.followers.contains(user);
     }
 
     public void incrementPosts() { // Method to increment the explicit totalPosts counter

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { FollowService } from '../../../services/followService';
 
 interface BaseUser {
   id: number;
@@ -12,7 +13,7 @@ interface BaseUser {
   bio?: string;
   location?: string;
   website?: string;
-  following: number;
+  followingCount?: number;
   role: string;
 }
 
@@ -26,7 +27,7 @@ interface Contributor extends BaseUser {
   totalPosts: number;
   totalViews: number;
   totalLikes: number;
-  followers: number;
+  followersCount?: number;
   posts?: any[];
 }
 
@@ -41,6 +42,15 @@ export default function UserProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
+
+  // Get current user info
+  useEffect(() => {
+    const user = FollowService.getCurrentUser();
+    setCurrentUser(user);
+  }, []);
 
   // Fetch user data from backend
   const fetchUserByUsername = async () => {
@@ -53,7 +63,19 @@ export default function UserProfilePage() {
         const contributors = await response.json();
         const contributor = contributors.find((c: any) => c.username === username);
         if (contributor) {
-          setUser({ ...contributor, role: 'CONTRIBUTOR' });
+          const userData = { 
+            ...contributor, 
+            role: 'CONTRIBUTOR',
+            followersCount: await getFollowersCount(contributor.id),
+            followingCount: await getFollowingCount(contributor.id)
+          };
+          setUser(userData);
+          
+          // Check if current user is following this contributor
+          if (currentUser && currentUser.id !== contributor.id) {
+            const followStatus = await FollowService.isFollowing(currentUser.id, contributor.id);
+            setIsFollowing(followStatus);
+          }
           return;
         }
       }
@@ -64,7 +86,12 @@ export default function UserProfilePage() {
         const visitors = await response.json();
         const visitor = visitors.find((v: any) => v.username === username);
         if (visitor) {
-          setUser({ ...visitor, role: 'VISITOR' });
+          const userData = { 
+            ...visitor, 
+            role: 'VISITOR',
+            followingCount: await getFollowingCount(visitor.id)
+          };
+          setUser(userData);
           return;
         }
       }
@@ -80,6 +107,57 @@ export default function UserProfilePage() {
     }
   };
 
+  // Get followers count for a contributor
+  const getFollowersCount = async (contributorId: number): Promise<number> => {
+    try {
+      const followers = await FollowService.getFollowers(contributorId);
+      return followers.length;
+    } catch (error) {
+      console.error('Error getting followers count:', error);
+      return 0;
+    }
+  };
+
+  // Get following count for any user
+  const getFollowingCount = async (userId: number): Promise<number> => {
+    try {
+      const following = await FollowService.getFollowing(userId);
+      return following.length;
+    } catch (error) {
+      console.error('Error getting following count:', error);
+      return 0;
+    }
+  };
+
+  // Handle follow/unfollow action
+  const handleFollowToggle = async () => {
+    if (!currentUser || !user || !isContributor(user)) return;
+
+    setIsFollowLoading(true);
+    try {
+      let result;
+      if (isFollowing) {
+        result = await FollowService.unfollowContributor(currentUser.id, user.id);
+      } else {
+        result = await FollowService.followContributor(currentUser.id, user.id);
+      }
+
+      if (result.success) {
+        setIsFollowing(!isFollowing);
+        // Update the followers count
+        const newFollowersCount = await getFollowersCount(user.id);
+        setUser(prev => prev ? { ...prev, followersCount: newFollowersCount } : null);
+      } else {
+        console.error('Follow action failed:', result.message);
+        // You might want to show a toast or error message here
+      }
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+    } finally {
+      setIsFollowLoading(false);
+    }
+  };
+
   // Check if this is the current user's own profile
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -88,10 +166,12 @@ export default function UserProfilePage() {
     }
   }, [username]);
 
-  // Load user data on component mount
+  // Load user data on component mount and when currentUser changes
   useEffect(() => {
-    fetchUserByUsername();
-  }, [username]);
+    if (currentUser !== undefined) { // Only fetch when currentUser is determined
+      fetchUserByUsername();
+    }
+  }, [username, currentUser]);
 
   const isContributor = (user: User): user is Contributor => {
     return user.role === 'CONTRIBUTOR';
@@ -209,9 +289,17 @@ export default function UserProfilePage() {
                       Edit Profile
                     </button>
                   ) : (
-                    isContributor(user) && (
-                      <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium">
-                        Follow
+                    isContributor(user) && currentUser && (
+                      <button 
+                        onClick={handleFollowToggle}
+                        disabled={isFollowLoading}
+                        className={`px-4 py-2 rounded-md font-medium cursor-pointer transition-colors ${
+                          isFollowing 
+                            ? 'bg-gray-100 hover:bg-gray-200 text-gray-800' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        } ${isFollowLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isFollowLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}
                       </button>
                     )
                   )}
@@ -269,11 +357,11 @@ export default function UserProfilePage() {
                   <div className="text-sm text-gray-600">Views</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{user.followers}</div>
+                  <div className="text-2xl font-bold text-gray-900">{user.followersCount || 0}</div>
                   <div className="text-sm text-gray-600">Followers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{user.following}</div>
+                  <div className="text-2xl font-bold text-gray-900">{user.followingCount || 0}</div>
                   <div className="text-sm text-gray-600">Following</div>
                 </div>
               </>
@@ -284,7 +372,7 @@ export default function UserProfilePage() {
                   <div className="text-sm text-gray-600">Posts Read</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{user.following}</div>
+                  <div className="text-2xl font-bold text-gray-900">{user.followingCount || 0}</div>
                   <div className="text-sm text-gray-600">Following</div>
                 </div>
                 <div className="text-center">
