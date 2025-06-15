@@ -74,7 +74,7 @@ export default function BlogPostPage() {
         }),
         content: backendPost.content,
         imageUrl: backendPost.imagePath || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
-        tags: [], // Backend doesn't have tags yet, so we'll use empty array
+        tags: [],
         contributor: backendPost.contributor // Preserve contributor info for author comparison
       };
 
@@ -85,6 +85,13 @@ export default function BlogPostPage() {
       setIsLoading(false);
     }
   };
+
+  // Load post and comments on component mount
+  useEffect(() => {
+    fetchPost();
+    fetchComments();
+  }, [postId]);
+
 
   // Fetch comments from backend
   const fetchComments = async () => {
@@ -98,7 +105,6 @@ export default function BlogPostPage() {
 
       const backendComments = await response.json();
       
-      // Transform backend comments to match frontend interface
       const transformedComments: Comment[] = backendComments.map((comment: any) => {
         const userName = comment.user?.name || comment.user?.username || 'Anonymous';
         return {
@@ -111,7 +117,7 @@ export default function BlogPostPage() {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          }) // Backend Comment doesn't have createdAt, using current date
+          }) 
         };
       });
 
@@ -123,11 +129,6 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post and comments on component mount
-  useEffect(() => {
-    fetchPost();
-    fetchComments();
-  }, [postId]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

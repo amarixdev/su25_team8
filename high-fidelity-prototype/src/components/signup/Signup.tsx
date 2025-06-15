@@ -70,13 +70,26 @@ const Signup = () => {
 
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    } else {
+      const email = formData.email.trim();
+      const atIndex = email.indexOf('@');
+      const lastDotIndex = email.lastIndexOf('.');
+      
+      if (atIndex === -1 || atIndex === 0 || atIndex === email.length - 1 ||
+          lastDotIndex === -1 || lastDotIndex <= atIndex + 1 || lastDotIndex === email.length - 1 ||
+          email.includes('..') || email.includes('@.') || email.includes('.@')) {
+        newErrors.email = 'Please enter a valid email address';
+      }
     }
 
     // Optional website URL validation
-    if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
-      newErrors.website = 'Please enter a valid URL (starting with http:// or https://)';
+    if (formData.website) {
+      const website = formData.website.trim();
+      if (!website.startsWith('http://') && !website.startsWith('https://')) {
+        newErrors.website = 'Please enter a valid URL (starting with http:// or https://)';
+      } else if (website === 'http://' || website === 'https://') {
+        newErrors.website = 'Please enter a valid URL (starting with http:// or https://)';
+      }
     }
 
     setErrors(newErrors);
@@ -111,7 +124,6 @@ const Signup = () => {
 
       console.log('Creating visitor:', visitorData);
 
-      // Make actual API call to create visitor
       const response = await fetch('http://localhost:8080/api/visitors', {
         method: 'POST',
         headers: {
@@ -128,10 +140,9 @@ const Signup = () => {
       const createdVisitor = await response.json();
       console.log('Visitor created successfully:', createdVisitor);
 
-      // Show success message or redirect
       alert('Account created successfully! Welcome to SpartanParadigm.');
       
-      // Navigate to login page so user can log in
+      // Navigate to login page 
       router.push('/login');
 
     } catch (error) {

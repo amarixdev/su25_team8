@@ -51,6 +51,6 @@ public class Visitor extends User {
     }
 
     public void setCanUpgradeAccount(boolean canUpgradeAccount) {
-        this.canUpgradeAccount = canUpgradeAccount;
+        this.canUpgradeAccount = true;
     }
 }
