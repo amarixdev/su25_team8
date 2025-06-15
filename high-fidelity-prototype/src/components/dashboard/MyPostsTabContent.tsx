@@ -3,7 +3,7 @@ import { RecentPost } from './types'; // Defines the shape of a post object
 import CreatePostForm from './CreatePostForm';
 
 // MyPostsTabContent: Displays the contributor's posts and allows creating, editing, and deleting posts.
-// Displays a list of the contributor’s posts with live stats (views, likes, comments).
+// Displays a list of the contributor’s posts 
 // Allows users to create, edit, and delete posts.
 // When editing, fetches the full post (including content) from the backend before opening the form.
 // Shows error messages and disables buttons during delete operations for better UX.
