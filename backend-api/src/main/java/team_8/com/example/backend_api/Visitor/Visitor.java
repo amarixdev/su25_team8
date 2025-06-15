@@ -25,10 +25,6 @@ public class Visitor extends User {
         this.canUpgradeAccount = canUpgradeAccount;
     }
 
-    public void upgradeToContributor() {
-        
-    }
-
     // Getters and setters
     public int getAccountAge() {
         return accountAge;

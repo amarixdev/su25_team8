@@ -305,7 +305,7 @@ function FollowersContent() {
           <p className="text-gray-500">
             {searchTerm ? `No ${title.toLowerCase()} found matching "${searchTerm}"` : `No ${title.toLowerCase()} yet`}
           </p>
-          <Link href="/find" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Find accounts to follow</Link>
+          <Link href="/find" className="text-white px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700">Find accounts to follow</Link>
         </div>
       );
     }

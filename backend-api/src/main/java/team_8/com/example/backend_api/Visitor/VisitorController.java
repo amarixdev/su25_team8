@@ -1,6 +1,7 @@
 package team_8.com.example.backend_api.Visitor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import team_8.com.example.backend_api.Contributor.Contributor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -51,11 +53,12 @@ public class VisitorController {
 
     @PutMapping("/api/visitors/{id}/upgrade")
     public Contributor upgradeToContributor(@PathVariable Long id) {
-        return visitorService.upgradeAccount(id);
+        try {
+            return visitorService.upgradeAccount(id);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
-    @GetMapping("/api/visitors/{id}/upgrade")
-    public void upgradeAccount(@PathVariable Long id) {
-      //serve upgrade account page
-    }
 }

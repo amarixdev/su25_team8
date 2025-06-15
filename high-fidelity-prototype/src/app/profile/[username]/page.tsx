@@ -271,11 +271,7 @@ export default function UserProfilePage() {
                     }`}>
                       {isContributor(user) ? 'Contributor' : 'Visitor'}
                     </span>
-                    {!isContributor(user) && (user as Visitor).accountAge && (
-                      <span className="text-gray-500 text-sm">
-                        Joined {formatJoinDate((user as Visitor).accountAge)}
-                      </span>
-                    )}
+
                   </div>
                 </div>
 

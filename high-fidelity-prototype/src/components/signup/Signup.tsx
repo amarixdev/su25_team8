@@ -11,7 +11,6 @@ interface VisitorSignupData {
   location: string;
   website: string;
   profilePicturePath: string;
-  following: number;
   // Visitor-specific fields
   accountAge: number;
   postsReads: number;
@@ -28,11 +27,10 @@ const Signup = () => {
     location: '',
     website: '',
     profilePicturePath: '',
-    following: 0,
     // Initialize visitor-specific fields
     accountAge: 0,
     postsReads: 0,
-    canUpgradeAccount: false
+    canUpgradeAccount: true
   });
 
   const [errors, setErrors] = useState<Partial<VisitorSignupData>>({});
@@ -115,7 +113,6 @@ const Signup = () => {
         location: formData.location || null,
         website: formData.website || null,
         profilePicturePath: formData.profilePicturePath || null,
-        following: formData.following,
         // Visitor-specific fields
         accountAge: formData.accountAge,
         postsReads: formData.postsReads,
