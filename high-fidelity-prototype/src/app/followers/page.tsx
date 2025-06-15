@@ -7,6 +7,7 @@ import FollowersSearch from '../../components/followers/FollowersSearch';
 import UpgradeToContributorPrompt from '../../components/followers/UpgradeToContributorPrompt';
 import SearchGrid, { SearchUser } from '../../components/followers/SearchGrid';
 import { FollowService } from '../../services/followService';
+import { useFollow } from '../../contexts/FollowContext';
 import Link from 'next/link';
 
 // Create a real user display component for followers/following
@@ -27,26 +28,11 @@ interface RealUser {
 
 interface RealUserCardProps {
   user: RealUser;
-  onUnfollow?: (userId: number) => void;
-  showUnfollowButton?: boolean;
 }
 
-const RealUserCard: React.FC<RealUserCardProps> = ({ user, onUnfollow, showUnfollowButton }) => {
-  const [isUnfollowing, setIsUnfollowing] = useState(false);
-
+const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
-  const handleUnfollow = async () => {
-    if (!onUnfollow || isUnfollowing) return;
-    
-    setIsUnfollowing(true);
-    try {
-      await onUnfollow(user.id);
-    } finally {
-      setIsUnfollowing(false);
-    }
   };
 
   return (
@@ -75,26 +61,23 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user, onUnfollow, showUnfol
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                <a href={`/profile/${user.username}`} className="hover:text-blue-600 transition-colors">
-                  {user.displayName}
-                </a>
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  <a href={`/profile/${user.username}`} className="hover:text-blue-600 transition-colors">
+                    {user.displayName}
+                  </a>
+                </h3>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  user.role === 'CONTRIBUTOR' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}
+                </span>
+              </div>
               <p className="text-gray-600 text-sm">@{user.username}</p>
               {user.bio && (
                 <p className="text-gray-700 text-sm mt-1 line-clamp-2">{user.bio}</p>
               )}
             </div>
-            
-            {showUnfollowButton && (
-              <button
-                onClick={handleUnfollow}
-                disabled={isUnfollowing}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md transition-colors disabled:opacity-50"
-              >
-                {isUnfollowing ? 'Unfollowing...' : 'Unfollow'}
-              </button>
-            )}
           </div>
 
           {/* Stats for contributors */}
@@ -113,6 +96,7 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user, onUnfollow, showUnfol
 function FollowersContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
+  const { followingCount, followersCount, currentUser } = useFollow();
   
   const [activeTab, setActiveTab] = useState<'followers' | 'following' | 'find'>(
     tabParam === 'following' ? 'following' : tabParam === 'find' ? 'find' : 'followers'
@@ -121,7 +105,6 @@ function FollowersContent() {
   const [userType, setUserType] = useState<'visitor' | 'contributor'>('visitor');
   const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
   const [followers, setFollowers] = useState<RealUser[]>([]);
   const [following, setFollowing] = useState<RealUser[]>([]);
   const [isLoadingConnections, setIsLoadingConnections] = useState(false);
@@ -131,14 +114,11 @@ function FollowersContent() {
   }, [tabParam]);
   
   useEffect(() => {
-    const user = FollowService.getCurrentUser();
-    setCurrentUser(user);
-    
-    if (user) {
-      const currentUserType = user.userType as 'visitor' | 'contributor';
+    if (currentUser) {
+      const currentUserType = currentUser.userType as 'visitor' | 'contributor';
       setUserType(currentUserType);
     }
-  }, []);
+  }, [currentUser]);
 
   // Load followers and following when currentUser changes
   useEffect(() => {
@@ -151,6 +131,7 @@ function FollowersContent() {
     if (!currentUser) return;
 
     setIsLoadingConnections(true);
+  
     try {
       // Load following (contributors the current user follows)
       const followingData = await FollowService.getFollowing(currentUser.id);
@@ -168,21 +149,7 @@ function FollowersContent() {
     }
   };
 
-  const handleUnfollow = async (contributorId: number) => {
-    if (!currentUser) return;
 
-    try {
-      const result = await FollowService.unfollowContributor(currentUser.id, contributorId);
-      if (result.success) {
-        // Remove from following list
-        setFollowing(prev => prev.filter(user => user.id !== contributorId));
-      } else {
-        console.error('Unfollow failed:', result.message);
-      }
-    } catch (error) {
-      console.error('Error unfollowing:', error);
-    }
-  };
 
   // Search function for Find Account tab
   const searchAllAccounts = async (query: string) => {
@@ -285,6 +252,8 @@ function FollowersContent() {
     user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) || 
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+
 
   const renderConnectionsList = () => {
     if (isLoadingConnections) {
@@ -313,15 +282,13 @@ function FollowersContent() {
     return (
       <>
         <h2 className="text-lg font-medium text-gray-900 mb-6">
-          {title} ({users.length})
+          {title} ({activeTab === 'following' ? followingCount : followersCount})
         </h2>
         <div className="space-y-4">
           {users.map(user => (
             <RealUserCard 
               key={user.id} 
               user={user}
-              onUnfollow={activeTab === 'following' ? handleUnfollow : undefined}
-              showUnfollowButton={activeTab === 'following'}
             />
           ))}
         </div>

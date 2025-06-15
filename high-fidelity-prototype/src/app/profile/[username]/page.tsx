@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FollowService } from '../../../services/followService';
+import { useFollow } from '../../../contexts/FollowContext';
 
 interface BaseUser {
   id: number;
@@ -37,13 +38,14 @@ export default function UserProfilePage() {
   const params = useParams();
   const router = useRouter();
   const username = params.username as string;
+  const { updateFollowCounts } = useFollow();
   
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
 
   // Get current user info
@@ -56,7 +58,8 @@ export default function UserProfilePage() {
   const fetchUserByUsername = async () => {
     try {
       setIsLoading(true);
-      
+      setIsFollowLoading(true);
+      console.log("isFollowLoading", isFollowLoading);
       // First try to find the user in contributors
       let response = await fetch('http://localhost:8080/api/contributors');
       if (response.ok) {
@@ -75,6 +78,7 @@ export default function UserProfilePage() {
           if (currentUser && currentUser.id !== contributor.id) {
             const followStatus = await FollowService.isFollowing(currentUser.id, contributor.id);
             setIsFollowing(followStatus);
+            setIsFollowLoading(false);
           }
           return;
         }
@@ -104,6 +108,7 @@ export default function UserProfilePage() {
       console.error('Error fetching user:', error);
     } finally {
       setIsLoading(false);
+
     }
   };
 
@@ -144,12 +149,15 @@ export default function UserProfilePage() {
 
       if (result.success) {
         setIsFollowing(!isFollowing);
-        // Update the followers count
+        
+        // Update the followers count for the profile being viewed
         const newFollowersCount = await getFollowersCount(user.id);
         setUser(prev => prev ? { ...prev, followersCount: newFollowersCount } : null);
+
+        // Update the FollowContext counts which will sync with Sidebar
+        await updateFollowCounts();
       } else {
         console.error('Follow action failed:', result.message);
-        // You might want to show a toast or error message here
       }
     } catch (error) {
       console.error('Error toggling follow status:', error);
@@ -218,6 +226,9 @@ export default function UserProfilePage() {
       </div>
     );
   }
+
+  // Debug logging
+  console.log('Render - isFollowLoading:', isFollowLoading);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -289,11 +300,13 @@ export default function UserProfilePage() {
                       <button 
                         onClick={handleFollowToggle}
                         disabled={isFollowLoading}
-                        className={`px-4 py-2 rounded-md font-medium cursor-pointer transition-colors ${
+                        className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                          isFollowLoading ? 'bg-gray-400 cursor-not-allowed opacity-50' : 'cursor-pointer'
+                        } ${
                           isFollowing 
                             ? 'bg-gray-100 hover:bg-gray-200 text-gray-800' 
                             : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        } ${isFollowLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        } ${isFollowLoading && isFollowing ? 'hover:bg-gray-100' : ''} ${isFollowLoading && !isFollowing ? 'hover:bg-blue-600' : ''}`}
                       >
                         {isFollowLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}
                       </button>

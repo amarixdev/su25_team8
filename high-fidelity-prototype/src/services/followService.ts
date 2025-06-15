@@ -38,6 +38,13 @@ export class FollowService {
       });
 
       if (response.ok) {
+        // increment followingCount in localStorage
+        try {
+          const stored = JSON.parse(localStorage.getItem('userData') || '{}');
+          stored.followingCount = (stored.followingCount || 0) + 1;
+          localStorage.setItem('userData', JSON.stringify(stored));
+          window.dispatchEvent(new Event('userTypeChanged'));
+        } catch (e) { /* ignore */ }
         return { success: true, message: 'Successfully followed contributor' };
       } else {
         const errorText = await response.text();
@@ -62,6 +69,14 @@ export class FollowService {
       });
 
       if (response.ok) {
+        // decrement followingCount in localStorage
+        try {
+          const stored = JSON.parse(localStorage.getItem('userData') || '{}');
+          const current = stored.followingCount || 0;
+          stored.followingCount = current > 0 ? current - 1 : 0;
+          localStorage.setItem('userData', JSON.stringify(stored));
+          window.dispatchEvent(new Event('userTypeChanged'));
+        } catch (e) { /* ignore */ }
         return { success: true, message: 'Successfully unfollowed contributor' };
       } else {
         const errorText = await response.text();

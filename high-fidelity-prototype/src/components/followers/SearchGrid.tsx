@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FollowService } from '../../services/followService';
 
 export interface SearchUser {
   id: number;
@@ -27,65 +26,6 @@ interface SearchGridProps {
 }
 
 const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading }) => {
-  const [followingStatus, setFollowingStatus] = useState<{ [key: number]: boolean }>({});
-  const [followLoading, setFollowLoading] = useState<{ [key: number]: boolean }>({});
-  const [currentUser, setCurrentUser] = useState<{ id: number; userType: string } | null>(null);
-
-  // Get current user info on component mount
-  useEffect(() => {
-    const user = FollowService.getCurrentUser();
-    setCurrentUser(user);
-  }, []);
-
-  // Check follow status for all contributors when users change
-  useEffect(() => {
-    const checkFollowStatus = async () => {
-      if (!currentUser || users.length === 0) return;
-
-      const contributors = users.filter(user => user.role === 'CONTRIBUTOR');
-      const statusPromises = contributors.map(async (contributor) => {
-        if (contributor.id === currentUser.id) return { [contributor.id]: false }; // Can't follow yourself
-        const isFollowing = await FollowService.isFollowing(currentUser.id, contributor.id);
-        return { [contributor.id]: isFollowing };
-      });
-
-      const statuses = await Promise.all(statusPromises);
-      const statusMap = statuses.reduce((acc, status) => ({ ...acc, ...status }), {});
-      setFollowingStatus(statusMap);
-    };
-
-    checkFollowStatus();
-  }, [users, currentUser]);
-
-  const handleFollowToggle = async (contributorId: number) => {
-    if (!currentUser || contributorId === currentUser.id) return;
-
-    setFollowLoading(prev => ({ ...prev, [contributorId]: true }));
-    
-    try {
-      const isCurrentlyFollowing = followingStatus[contributorId];
-      let result;
-      
-      if (isCurrentlyFollowing) {
-        result = await FollowService.unfollowContributor(currentUser.id, contributorId);
-      } else {
-        result = await FollowService.followContributor(currentUser.id, contributorId);
-      }
-
-      if (result.success) {
-        setFollowingStatus(prev => ({
-          ...prev,
-          [contributorId]: !isCurrentlyFollowing
-        }));
-      } else {
-        console.error('Follow action failed:', result.message);
-      }
-    } catch (error) {
-      console.error('Error toggling follow status:', error);
-    } finally {
-      setFollowLoading(prev => ({ ...prev, [contributorId]: false }));
-    }
-  };
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -171,24 +111,8 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                       {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}
                     </span>
                   </div>
-                  {user.role === 'CONTRIBUTOR' && currentUser && user.id !== currentUser.id && (
-                    <button 
-                      onClick={() => handleFollowToggle(user.id)}
-                      disabled={followLoading[user.id]}
-                      className={`px-4 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors ${
-                        followingStatus[user.id]
-                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                          : 'bg-blue-600 hover:bg-blue-700 text-white'
-                      } ${followLoading[user.id] ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {followLoading[user.id] 
-                        ? 'Loading...' 
-                        : followingStatus[user.id] 
-                          ? 'Unfollow' 
-                          : 'Follow'
-                      }
-                    </button>
-                  )}
+
+
                 </div>
                 
                 <p className="text-gray-600 text-sm mt-1">@{user.username}</p>

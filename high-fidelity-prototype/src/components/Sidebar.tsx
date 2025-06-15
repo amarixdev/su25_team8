@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useFollow } from '../contexts/FollowContext';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
@@ -12,6 +13,11 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [userType, setUserType] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
+  const { followingCount, followersCount } = useFollow();
+  
+  // Debug logging
+  console.log('Sidebar - followingCount from context:', followingCount);
+  console.log('Sidebar - followersCount from context:', followersCount);
 
   // Helper function to check if a link is active
   const isActiveLink = (linkPath: string) => {
@@ -26,6 +32,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
     }
     return pathname.startsWith(linkPath);
   };
+
+
   
   useEffect(() => {
     // Function to update user type from localStorage
@@ -53,6 +61,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
       window.removeEventListener('userTypeChanged', updateUserType);
     };
   }, [pathname]);
+
+
   
   // Don't render sidebar on login page
   if (pathname === '/login' || pathname === '/signup') {
@@ -262,7 +272,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Following</span>
-                <span className="text-sm font-medium text-indigo-600">{userData?.followingCount}</span>
+                <span className="text-sm font-medium text-indigo-600">{followingCount}</span>
               </div>
             </Link>
             <Link
@@ -277,7 +287,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Followers</span>
-                {userType === "contributor" ? <span className="text-sm font-medium text-indigo-600">{userData?.followersCount}</span> : 
+                {userType === "contributor" ? <span className="text-sm font-medium text-indigo-600">{followersCount}</span> : 
                 <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-indigo-700 transition-colors">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
