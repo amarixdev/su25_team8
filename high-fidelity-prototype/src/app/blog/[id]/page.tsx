@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 interface Post {
@@ -44,13 +44,26 @@ export default function BlogPostPage() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [commentsError, setCommentsError] = useState('');
+  const hasIncrementedView = useRef(false);
 
   // Function to increment view count
   const incrementViewCount = async (contributorId: number) => {
+    // Only increment if we haven't already for this session
+    if (hasIncrementedView.current) {
+      console.log('View count already incremented for this session');
+      return;
+    }
+
     try {
-      await fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
+      console.log('Incrementing view count for contributor:', contributorId);
+      const response = await fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
         method: 'POST',
       });
+      if (!response.ok) {
+        throw new Error('Failed to increment view count');
+      }
+      console.log('Successfully incremented view count');
+      hasIncrementedView.current = true;
     } catch (error) {
       console.error('Failed to increment view count:', error);
     }
@@ -60,6 +73,7 @@ export default function BlogPostPage() {
   const fetchPost = async () => {
     try {
       setIsLoading(true);
+      console.log('Fetching post:', postId);
       const response = await fetch(`http://localhost:8080/api/posts/${postId}`);
       
       if (!response.ok) {
@@ -72,6 +86,7 @@ export default function BlogPostPage() {
       }
 
       const backendPost = await response.json();
+      console.log('Received post data:', backendPost);
       
       // Transform backend post to match frontend interface
       const transformedPost: Post = {
@@ -96,7 +111,7 @@ export default function BlogPostPage() {
         await incrementViewCount(backendPost.contributor.id);
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to load post');
+      setError(error instanceof Error ? error.message : 'Failed to fetch post');
     } finally {
       setIsLoading(false);
     }
@@ -139,11 +154,11 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post and comments on component mount
+  // Load post on component mount
   useEffect(() => {
+    console.log('Component mounted, fetching post');
     fetchPost();
-    fetchComments();
-  }, [postId]);
+  }, [postId]); // Only re-fetch if postId changes
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
