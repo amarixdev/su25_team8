@@ -48,6 +48,9 @@ public class Post {
     @Column(name = "likes", nullable = false)
     private Integer likes = 0;
 
+    @Column(name = "views", nullable = false)
+    private Integer views = 0;
+
     // Users who liked this post
     @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -136,6 +139,18 @@ public class Post {
 
     public void incrementLikes() {
         this.likes = (this.likes == null) ? 1 : this.likes + 1;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
+    }
+
+    public void incrementViews() {
+        this.views = (this.views == null) ? 1 : this.views + 1;
     }
 
     public Set<User> getLikedByUsers() {

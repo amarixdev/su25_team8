@@ -50,24 +50,40 @@ export default function BlogPostPage() {
 
   // Function to increment view count
   const incrementViewCount = async (contributorId: number) => {
-    // Only increment if we haven't already for this session
+    console.log('incrementViewCount called:', {
+      contributorId,
+      postId,
+      hasIncrementedView: hasIncrementedView.current
+    });
+
+    // Prevent duplicate increments
     if (hasIncrementedView.current) {
-      console.log('View count already incremented for this session');
+      console.log('View already incremented, skipping');
       return;
     }
 
     try {
-      console.log('Incrementing view count for contributor:', contributorId);
+      console.log('Making API call to increment view count for contributor:', contributorId);
+      hasIncrementedView.current = true; // Set flag immediately to prevent race conditions
+      
       const response = await fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
         method: 'POST',
       });
+      
+      console.log('View increment response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to increment view count');
+        const errorText = await response.text();
+        console.error('View increment failed:', response.status, errorText);
+        hasIncrementedView.current = false; // Reset flag on error
+        throw new Error(`Failed to increment view count: ${response.status} ${errorText}`);
       }
-      console.log('Successfully incremented view count');
-      hasIncrementedView.current = true;
+      
+      const result = await response.json();
+      console.log('Successfully incremented view count, result:', result);
     } catch (error) {
-      console.error('Failed to increment view count:', error);
+      console.error('Error incrementing view count:', error);
+      hasIncrementedView.current = false; // Reset flag on error
     }
   };
 
@@ -172,13 +188,6 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post and comments on component mount
-  useEffect(() => {
-    fetchPost();
-    fetchComments();
-  }, [postId]);
-
-
   // Fetch comments from backend
   const fetchComments = async () => {
     try {
@@ -215,10 +224,12 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post on component mount
+  // Load post and comments on component mount
   useEffect(() => {
     console.log('Component mounted, fetching post');
+    hasIncrementedView.current = false; // Reset flag when navigating to different post
     fetchPost();
+    fetchComments();
   }, [postId]); // Only re-fetch if postId changes
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
