@@ -63,26 +63,43 @@ export default function BlogPostPage() {
     }
 
     try {
-      console.log('Making API call to increment view count for contributor:', contributorId);
+      console.log('Making API calls to increment view counts for post and contributor');
       hasIncrementedView.current = true; // Set flag immediately to prevent race conditions
       
-      const response = await fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
-        method: 'POST',
+      // Increment both post views and contributor views
+      const [postResponse, contributorResponse] = await Promise.all([
+        fetch(`http://localhost:8080/api/posts/${postId}/views`, {
+          method: 'POST',
+        }),
+        fetch(`http://localhost:8080/api/contributors/${contributorId}/views`, {
+          method: 'POST',
+        })
+      ]);
+      
+      console.log('View increment response statuses:', {
+        post: postResponse.status,
+        contributor: contributorResponse.status
       });
       
-      console.log('View increment response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('View increment failed:', response.status, errorText);
+      if (!postResponse.ok || !contributorResponse.ok) {
+        const postError = !postResponse.ok ? await postResponse.text() : null;
+        const contributorError = !contributorResponse.ok ? await contributorResponse.text() : null;
+        console.error('View increment failed:', { postError, contributorError });
         hasIncrementedView.current = false; // Reset flag on error
-        throw new Error(`Failed to increment view count: ${response.status} ${errorText}`);
+        throw new Error(`Failed to increment view counts`);
       }
       
-      const result = await response.json();
-      console.log('Successfully incremented view count, result:', result);
+      const [postResult, contributorResult] = await Promise.all([
+        postResponse.json(),
+        contributorResponse.json()
+      ]);
+      
+      console.log('Successfully incremented view counts:', {
+        post: postResult,
+        contributor: contributorResult
+      });
     } catch (error) {
-      console.error('Error incrementing view count:', error);
+      console.error('Error incrementing view counts:', error);
       hasIncrementedView.current = false; // Reset flag on error
     }
   };
