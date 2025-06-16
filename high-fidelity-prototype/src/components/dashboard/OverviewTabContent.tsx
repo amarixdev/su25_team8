@@ -1,6 +1,7 @@
 import React from 'react';
 import StatsCard from './StatsCard';
 import RecentPostsSection from './RecentPostsSection';
+import DailyAdviceWidget from './DailyAdviceWidget';
 import { RecentPost } from './types';
 
 // OverviewTabContent: Main dashboard component that displays statistics and recent posts
@@ -34,6 +35,9 @@ const OverviewTabContent: React.FC<OverviewTabContentProps> = ({ stats, recentPo
         <StatsCard title="Total Views" value={stats.totalViews} />
         <StatsCard title="Total Likes" value={stats.totalLikes} />
       </div>
+
+      {/* Daily Inspiration Widget */}
+      <DailyAdviceWidget />
 
       {/* Recent posts section: Shows latest posts with option to view all */}
       <RecentPostsSection 
