@@ -2,6 +2,8 @@ package team_8.com.example.backend_api.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,18 +34,37 @@ public abstract class User {
     private String bio;
     private String location;
     private String website;
-    private int following;
     
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    // Following relationship - Users can follow Contributors
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_following",
+        joinColumns = @JoinColumn(name = "follower_id"),
+        inverseJoinColumns = @JoinColumn(name = "contributor_id")
+    )
+    @JsonIgnore
+    private Set<team_8.com.example.backend_api.Contributor.Contributor> following = new HashSet<>();
+
+    // Liked posts relationship - Users can like Posts
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_liked_posts",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    @JsonIgnore
+    private Set<team_8.com.example.backend_api.Post.Post> likedPosts = new HashSet<>();
+
     // Constructors
     public User() {}
   
     public User(String profilePicturePath, String displayName, String username, String email, 
-            String bio, String location, String website, int following) {
+            String bio, String location, String website) {
 
         this.profilePicturePath = profilePicturePath;
         this.displayName = displayName;
@@ -52,8 +73,9 @@ public abstract class User {
         this.bio = bio;
         this.location = location;
         this.website = website;
-        this.following = following;
         this.comments = new ArrayList<>();
+        this.following = new HashSet<>();
+        this.likedPosts = new HashSet<>();
     }
     
     // Common getters/setters
@@ -129,12 +151,48 @@ public abstract class User {
         this.comments = comments;
     }
 
-    public int getFollowing() {
+    public Set<team_8.com.example.backend_api.Contributor.Contributor> getFollowing() {
         return following;
     }
 
-    public void setFollowing(int following) {
+    public void setFollowing(Set<team_8.com.example.backend_api.Contributor.Contributor> following) {
         this.following = following;
+    }
+
+    public int getFollowingCount() {
+        return following.size();
+    }
+
+    public void followContributor(team_8.com.example.backend_api.Contributor.Contributor contributor) {
+        this.following.add(contributor);
+    }
+
+    public void unfollowContributor(team_8.com.example.backend_api.Contributor.Contributor contributor) {
+        this.following.remove(contributor);
+    }
+
+    public boolean isFollowing(team_8.com.example.backend_api.Contributor.Contributor contributor) {
+        return this.following.contains(contributor);
+    }
+
+    public Set<team_8.com.example.backend_api.Post.Post> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(Set<team_8.com.example.backend_api.Post.Post> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    public void likePost(team_8.com.example.backend_api.Post.Post post) {
+        this.likedPosts.add(post);
+    }
+
+    public void unlikePost(team_8.com.example.backend_api.Post.Post post) {
+        this.likedPosts.remove(post);
+    }
+
+    public boolean isLiking(team_8.com.example.backend_api.Post.Post post) {
+        return this.likedPosts.contains(post);
     }
 
     // Dynamic role getter based on entity type

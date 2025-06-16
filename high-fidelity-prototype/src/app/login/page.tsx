@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Login from '../../components/login/Login';
 // import Header from '@/components/Header'; // Assuming Header might be used later
 
@@ -23,8 +24,7 @@ const response = await fetch('http://localhost:8080/api/contributors', {
     bio: 'This is a developer account',
     location: 'Greensboro, NC',
     website: 'https://spartanparadigm.com',
-    profilePicturePath: 'https://via.placeholder.com/150',
-    following: 0,
+    profilePicturePath: null,
     accountAge: 0,
     postsReads: 0,
     canUpgradeAccount: false
@@ -108,7 +108,7 @@ const response = await fetch('http://localhost:8080/api/contributors', {
       <footer className="mt-12 text-center text-sm text-gray-500">
         <p>&copy; {new Date().getFullYear()} SpartanParadigm. All rights reserved.</p>
         <p className="mt-1">
-          <a href="/terms" className="hover:text-blue-600">Terms of Service</a> | <a href="/privacy" className="hover:text-blue-600">Privacy Policy</a>
+          <Link href="/terms" className="hover:text-blue-600">Terms of Service</Link> | <Link href="/privacy" className="hover:text-blue-600">Privacy Policy</Link>
         </p>
       </footer>
     </div>

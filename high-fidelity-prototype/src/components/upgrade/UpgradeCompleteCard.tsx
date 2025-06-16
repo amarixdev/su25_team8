@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-const ApplicationSubmittedCard = () => {
+const UpgradeCompleteCard = () => {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="p-6 text-center">
@@ -10,16 +10,16 @@ const ApplicationSubmittedCard = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-lg font-medium text-gray-900 mb-2">Application Submitted!</h2>
+        <h2 className="text-lg font-medium text-gray-900 mb-2">Upgrade Complete!</h2>
         <p className="text-gray-600 mb-4">
-          Your application to become a contributor is being reviewed. We&apos;ll notify you once it&apos;s approved.
+          Congratulations! You are now a contributor. You can start publishing articles and building your following.
         </p>
         <Link href="/" className="text-indigo-600 hover:text-indigo-800 font-medium">
-          Return to Home
+          Start Exploring
         </Link>
       </div>
     </div>
   );
 };
 
-export default ApplicationSubmittedCard; 
+export default UpgradeCompleteCard; 

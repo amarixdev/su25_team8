@@ -55,4 +55,34 @@ public class PostController {
         postService.deletePost(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Post> likePost(@PathVariable Long id) {
+        try {
+            Post likedPost = postService.incrementLikes(id);
+            return ResponseEntity.ok(likedPost);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{postId}/toggle-like/{userId}")
+    public ResponseEntity<Post> toggleLike(@PathVariable Long postId, @PathVariable Long userId) {
+        try {
+            Post post = postService.toggleLike(postId, userId);
+            return ResponseEntity.ok(post);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{postId}/liked-by/{userId}")
+    public ResponseEntity<Boolean> isPostLikedByUser(@PathVariable Long postId, @PathVariable Long userId) {
+        try {
+            boolean isLiked = postService.isPostLikedByUser(postId, userId);
+            return ResponseEntity.ok(isLiked);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 } 

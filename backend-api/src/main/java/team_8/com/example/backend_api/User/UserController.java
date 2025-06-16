@@ -59,6 +59,50 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Follow a contributor
+    @PostMapping("/api/users/{userId}/follow/{contributorId}")
+    public ResponseEntity<String> followContributor(@PathVariable Long userId, @PathVariable Long contributorId) {
+        try {
+            userService.followContributor(userId, contributorId);
+            return ResponseEntity.ok("Successfully followed contributor");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Unfollow a contributor
+    @DeleteMapping("/api/users/{userId}/follow/{contributorId}")
+    public ResponseEntity<String> unfollowContributor(@PathVariable Long userId, @PathVariable Long contributorId) {
+        try {
+            userService.unfollowContributor(userId, contributorId);
+            return ResponseEntity.ok("Successfully unfollowed contributor");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Get list of contributors a user is following
+    @GetMapping("/api/users/{userId}/following")
+    public ResponseEntity<List<team_8.com.example.backend_api.Contributor.Contributor>> getFollowing(@PathVariable Long userId) {
+        try {
+            List<team_8.com.example.backend_api.Contributor.Contributor> following = userService.getFollowing(userId);
+            return ResponseEntity.ok(following);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Check if user is following a contributor
+    @GetMapping("/api/users/{userId}/following/{contributorId}")
+    public ResponseEntity<Boolean> isFollowing(@PathVariable Long userId, @PathVariable Long contributorId) {
+        try {
+            boolean isFollowing = userService.isFollowing(userId, contributorId);
+            return ResponseEntity.ok(isFollowing);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
 
 

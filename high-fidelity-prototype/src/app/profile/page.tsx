@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import ProfileTabs from '../../components/profile/ProfileTabs';
-import ProfileImageSection from '../../components/profile/ProfileImageSection';
-import ProfileInformationFormFields, { ProfileFormData } from '../../components/profile/ProfileInformationFormFields';
-import EmailNotifications from '../../components/profile/EmailNotifications';
-import DisplayPreferences from '../../components/profile/DisplayPreferences';
-import FormActions from '../../components/profile/FormActions';
+import ProfileTabs from '../../components/edit-profile/ProfileTabs';
+import ProfileImageSection from '../../components/edit-profile/ProfileImageSection';
+import ProfileInformationFormFields, { ProfileFormData } from '../../components/edit-profile/ProfileInformationFormFields';
+import EmailNotifications from '../../components/edit-profile/EmailNotifications';
+import DisplayPreferences from '../../components/edit-profile/DisplayPreferences';
+import FormActions from '../../components/edit-profile/FormActions';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('profile');
