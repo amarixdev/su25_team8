@@ -2,11 +2,14 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { FollowService } from '@/services/followService';
+import { useFollow } from '@/contexts/FollowContext';
 
 const Header = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const { resetFollowData } = useFollow();
 
   useEffect(() => {
     // Function to update user type from localStorage
@@ -36,6 +39,11 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userType');
+    localStorage.removeItem('userData'); // also clear userData
+    
+    // Clear the dedicated follow/following cache & context state
+    FollowService.clearCache();
+    resetFollowData();
     
     // Dispatch custom event to notify other components
     window.dispatchEvent(new Event('userTypeChanged'));

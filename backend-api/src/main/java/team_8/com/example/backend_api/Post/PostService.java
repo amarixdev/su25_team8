@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team_8.com.example.backend_api.Contributor.Contributor;
 import team_8.com.example.backend_api.Contributor.ContributorRepository;
 import team_8.com.example.backend_api.User.User;
+import team_8.com.example.backend_api.User.UserRepository;
 import org.hibernate.Hibernate;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private ContributorRepository contributorRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -93,5 +96,59 @@ public class PostService {
         } else {
             throw new RuntimeException("Post not found with id: " + id);
         }
+    }
+
+    public Post incrementLikes(Long id) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+        
+        post.incrementLikes();
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public Post toggleLike(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+        
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        // Get the contributor who authored this post
+        User author = post.getContributor();
+        User realAuthor = Hibernate.unproxy(author, User.class);
+        Contributor contributor = (Contributor) realAuthor;
+
+        if (user.isLiking(post)) {
+            // Unlike the post
+            user.unlikePost(post);
+            post.removeLikedByUser(user);
+            post.setLikes(Math.max(0, post.getLikes() - 1));
+            
+            // Decrement contributor's total likes
+            contributor.setTotalLikes(Math.max(0, contributor.getTotalLikes() - 1));
+        } else {
+            // Like the post
+            user.likePost(post);
+            post.addLikedByUser(user);
+            post.incrementLikes();
+            
+            // Increment contributor's total likes
+            contributor.incrementLikes();
+        }
+
+        userRepository.save(user);
+        contributorRepository.save(contributor);
+        return postRepository.save(post);
+    }
+
+    public boolean isPostLikedByUser(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+        
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        return user.isLiking(post);
     }
 } 

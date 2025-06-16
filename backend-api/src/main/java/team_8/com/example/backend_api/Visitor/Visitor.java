@@ -18,15 +18,11 @@ public class Visitor extends User {
     // Constructor with all User fields and Visitor specific fields
     public Visitor(String profilePicturePath, String displayName, String username, String email, 
                    String bio, String location, String website,
-                   int accountAge, int postsReads, boolean canUpgradeAccount, int following) {
-        super(profilePicturePath, displayName, username, email, bio, location, website, following);
+                   int accountAge, int postsReads, boolean canUpgradeAccount) {
+        super(profilePicturePath, displayName, username, email, bio, location, website);
         this.accountAge = accountAge;
         this.postsReads = postsReads;
         this.canUpgradeAccount = canUpgradeAccount;
-    }
-
-    public void upgradeToContributor() {
-        
     }
 
     // Getters and setters
@@ -51,6 +47,6 @@ public class Visitor extends User {
     }
 
     public void setCanUpgradeAccount(boolean canUpgradeAccount) {
-        this.canUpgradeAccount = canUpgradeAccount;
+        this.canUpgradeAccount = true;
     }
 }

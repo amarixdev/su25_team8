@@ -10,6 +10,8 @@ interface Post {
   content: string;
   imageUrl: string;
   tags: string[];
+  likes: number;
+  isLiked: boolean;
   contributor?: {
     id: number;
     name?: string;
@@ -62,6 +64,23 @@ export default function BlogPostPage() {
 
       const backendPost = await response.json();
       
+      // Get current user for like status checking
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const currentUserId = userData.id;
+      
+      let isLiked = false;
+      // Check if current user has liked this post
+      if (currentUserId) {
+        try {
+          const likeResponse = await fetch(`http://localhost:8080/api/posts/${postId}/liked-by/${currentUserId}`);
+          if (likeResponse.ok) {
+            isLiked = await likeResponse.json();
+          }
+        } catch (error) {
+          console.error('Error checking like status:', error);
+        }
+      }
+      
       // Transform backend post to match frontend interface
       const transformedPost: Post = {
         id: backendPost.id,
@@ -74,7 +93,9 @@ export default function BlogPostPage() {
         }),
         content: backendPost.content,
         imageUrl: backendPost.imagePath || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
-        tags: [], // Backend doesn't have tags yet, so we'll use empty array
+        tags: [],
+        likes: backendPost.likes || 0,
+        isLiked: isLiked,
         contributor: backendPost.contributor // Preserve contributor info for author comparison
       };
 
@@ -85,6 +106,47 @@ export default function BlogPostPage() {
       setIsLoading(false);
     }
   };
+
+  // Handle like functionality
+  const handleLike = async () => {
+    if (!post) return;
+    
+    try {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const currentUserId = userData.id;
+      
+      if (!currentUserId) {
+        alert('Please log in to like posts');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}/toggle-like/${currentUserId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const updatedPost = await response.json();
+        // Update the post state
+        setPost(prevPost => prevPost ? {
+          ...prevPost,
+          likes: updatedPost.likes,
+          isLiked: !prevPost.isLiked // Toggle the liked state
+        } : null);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+
+  // Load post and comments on component mount
+  useEffect(() => {
+    fetchPost();
+    fetchComments();
+  }, [postId]);
+
 
   // Fetch comments from backend
   const fetchComments = async () => {
@@ -98,7 +160,6 @@ export default function BlogPostPage() {
 
       const backendComments = await response.json();
       
-      // Transform backend comments to match frontend interface
       const transformedComments: Comment[] = backendComments.map((comment: any) => {
         const userName = comment.user?.name || comment.user?.username || 'Anonymous';
         return {
@@ -111,7 +172,7 @@ export default function BlogPostPage() {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          }) // Backend Comment doesn't have createdAt, using current date
+          }) 
         };
       });
 
@@ -123,11 +184,6 @@ export default function BlogPostPage() {
     }
   };
 
-  // Load post and comments on component mount
-  useEffect(() => {
-    fetchPost();
-    fetchComments();
-  }, [postId]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -295,10 +351,24 @@ export default function BlogPostPage() {
                 More Articles
               </button>
               <div className="flex space-x-4">
-                <button className="text-gray-500 hover:text-gray-700">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <button 
+                  onClick={handleLike}
+                  className={`flex items-center space-x-2 transition-colors cursor-pointer ${
+                    post.isLiked 
+                      ? 'text-red-500 hover:text-red-600' 
+                      : 'text-gray-500 hover:text-red-500'
+                  }`}
+                >
+                  <svg 
+                    className="w-6 h-6" 
+                    fill={post.isLiked ? "currentColor" : "none"} 
+                    stroke={post.isLiked ? "none" : "currentColor"} 
+                    strokeWidth={post.isLiked ? 0 : 2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
+                  <span className="text-sm font-medium">{post.likes}</span>
                 </button>
                 <button className="text-gray-500 hover:text-gray-700">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

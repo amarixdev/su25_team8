@@ -3,8 +3,11 @@ import team_8.com.example.backend_api.Comment.Comment;
 import team_8.com.example.backend_api.User.User;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "posts")
@@ -41,6 +44,14 @@ public class Post {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private PostStatus status;
+
+    @Column(name = "likes", nullable = false)
+    private Integer likes = 0;
+
+    // Users who liked this post
+    @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<User> likedByUsers = new HashSet<>();
 
     // Getters and Setters
     public Long getId() {
@@ -113,6 +124,38 @@ public class Post {
     
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public void incrementLikes() {
+        this.likes = (this.likes == null) ? 1 : this.likes + 1;
+    }
+
+    public Set<User> getLikedByUsers() {
+        return likedByUsers;
+    }
+
+    public void setLikedByUsers(Set<User> likedByUsers) {
+        this.likedByUsers = likedByUsers;
+    }
+
+    public void addLikedByUser(User user) {
+        this.likedByUsers.add(user);
+    }
+
+    public void removeLikedByUser(User user) {
+        this.likedByUsers.remove(user);
+    }
+
+    public boolean isLikedByUser(User user) {
+        return this.likedByUsers.contains(user);
     }
 
        // Helper methods for managing bidirectional relationship with Comment
