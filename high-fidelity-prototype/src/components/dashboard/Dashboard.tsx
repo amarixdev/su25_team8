@@ -178,24 +178,45 @@ const Dashboard = () => {
           {/* Dropdown menu */}
           <div className="relative">
             <button
-              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-3 rounded shadow transition"
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-3 rounded shadow transition cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={() => setShowDropdown(!showDropdown)}
+              disabled={isCreatingManyPosts}
             >
-              ⋯
+              {isCreatingManyPosts ? (
+                <div className="flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span className="text-sm">Creating...</span>
+                </div>
+              ) : (
+                '⋯'
+              )}
             </button>
             
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
                 <div className="py-1">
                   <button
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     onClick={() => {
                       handleCreateManyPosts();
                       setShowDropdown(false);
                     }}
                     disabled={isCreatingManyPosts}
                   >
-                    {isCreatingManyPosts ? 'Creating Posts...' : '+ Create Many Posts (Developer mode)'}
+                    {isCreatingManyPosts ? (
+                      <div className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Creating Posts...</span>
+                      </div>
+                    ) : (
+                      '+ Create Many Posts (Developer mode)'
+                    )}
                   </button>
                 </div>
               </div>
