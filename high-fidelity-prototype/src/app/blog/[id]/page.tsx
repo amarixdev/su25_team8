@@ -215,14 +215,11 @@ export default function BlogPostPage() {
     }
   };
 
-<<<<<<< HEAD
   // Load post on component mount
   useEffect(() => {
     console.log('Component mounted, fetching post');
     fetchPost();
   }, [postId]); // Only re-fetch if postId changes
-=======
->>>>>>> origin/main
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
