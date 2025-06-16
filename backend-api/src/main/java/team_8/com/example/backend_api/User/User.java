@@ -50,6 +50,16 @@ public abstract class User {
     @JsonIgnore
     private Set<team_8.com.example.backend_api.Contributor.Contributor> following = new HashSet<>();
 
+    // Liked posts relationship - Users can like Posts
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_liked_posts",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    @JsonIgnore
+    private Set<team_8.com.example.backend_api.Post.Post> likedPosts = new HashSet<>();
+
     // Constructors
     public User() {}
   
@@ -65,6 +75,7 @@ public abstract class User {
         this.website = website;
         this.comments = new ArrayList<>();
         this.following = new HashSet<>();
+        this.likedPosts = new HashSet<>();
     }
     
     // Common getters/setters
@@ -162,6 +173,26 @@ public abstract class User {
 
     public boolean isFollowing(team_8.com.example.backend_api.Contributor.Contributor contributor) {
         return this.following.contains(contributor);
+    }
+
+    public Set<team_8.com.example.backend_api.Post.Post> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(Set<team_8.com.example.backend_api.Post.Post> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    public void likePost(team_8.com.example.backend_api.Post.Post post) {
+        this.likedPosts.add(post);
+    }
+
+    public void unlikePost(team_8.com.example.backend_api.Post.Post post) {
+        this.likedPosts.remove(post);
+    }
+
+    public boolean isLiking(team_8.com.example.backend_api.Post.Post post) {
+        return this.likedPosts.contains(post);
     }
 
     // Dynamic role getter based on entity type

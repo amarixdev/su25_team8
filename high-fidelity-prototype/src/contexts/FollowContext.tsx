@@ -41,7 +41,7 @@ export const FollowProvider: React.FC<FollowProviderProps> = ({ children }) => {
     console.log('Running useEffect in FollowContext');
     const user = FollowService.getCurrentUser();
     setCurrentUser(user);
-  }, [localStorage.getItem('isLoggedIn')]);
+  }, [typeof localStorage !== 'undefined' ? localStorage.getItem('isLoggedIn') : null]);
 
   // Update follow counts
   const updateFollowCounts = useCallback(async () => {
