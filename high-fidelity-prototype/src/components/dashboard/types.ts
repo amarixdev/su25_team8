@@ -4,6 +4,7 @@ export interface RecentPost {
   views: number;
   content: string;
   imagePath: string;
+  likes: number;
   status: string;
   comments: number;
   date: string;

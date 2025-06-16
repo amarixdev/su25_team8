@@ -1,7 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import { RecentPost } from './types';
+
+// CreatePostForm: Form component for creating or editing a blog post.
+// Now supports both creating and editing posts.
+// Pre-fills the form with post data when editing.
+// Uses a loading state (isSubmitting) to prevent double submissions and show feedback.
+// Calls parent callbacks (onPostCreated, onClose) to refresh the dashboard and close the form after submission.
 
 interface CreatePostFormProps {
   onClose: () => void;
@@ -10,7 +16,7 @@ interface CreatePostFormProps {
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated, post }) => {
-  const router = useRouter();
+ //const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({

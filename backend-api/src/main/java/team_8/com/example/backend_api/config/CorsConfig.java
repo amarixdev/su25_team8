@@ -1,25 +1,25 @@
 package team_8.com.example.backend_api.config;
 
-import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.web.cors.CorsConfiguration;
+//import org.springframework.web.cors.CorsConfigurationSource;
+//import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000") // Your frontend URL
+                .allowedOrigins("http://localhost:3000") 
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-
+}
+/*  Redundant config, needed if we add spring security  
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -32,4 +32,5 @@ public class CorsConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/api/**", configuration);
         return source;
     }
-} 
+ */
+ 

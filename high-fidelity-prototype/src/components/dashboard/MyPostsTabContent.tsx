@@ -1,26 +1,36 @@
 import React, { useState } from 'react';
-import { RecentPost } from './types'; // Assuming structure is similar to RecentPost
+import { RecentPost } from './types'; // Defines the shape of a post object
 import CreatePostForm from './CreatePostForm';
 
+// MyPostsTabContent: Displays the contributor's posts and allows creating, editing, and deleting posts.
+// Displays a list of the contributor’s posts 
+// Allows users to create, edit, and delete posts.
+// When editing, fetches the full post (including content) from the backend before opening the form.
+// Shows error messages and disables buttons during delete operations for better UX.
+
 interface MyPostsTabContentProps {
-  posts: RecentPost[]; // Using RecentPost for now, can be a different type if needed
-  onPostUpdated: () => void; // Add callback for post updates
+  posts: RecentPost[]; // List of posts to display
+  onPostUpdated: () => void; // Callback to refresh posts after changes
 }
 
 const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpdated }) => {
-  // State for managing create/edit forms and operations
+  // State for showing the create post form
   const [showCreatePost, setShowCreatePost] = useState(false);
+  // State for tracking which post is being edited
   const [editingPost, setEditingPost] = useState<RecentPost | null>(null);
+  // State for showing a loading indicator when deleting
   const [isDeleting, setIsDeleting] = useState(false);
+  // State for error messages
   const [error, setError] = useState('');
 
-  // Close create form and refresh posts
+  // Called after a post is created or edited to refresh the list
   const handlePostCreated = () => {
     setShowCreatePost(false);
     onPostUpdated();
   };
 
-  // Open edit form with selected post
+  // Opens the edit form for a selected post
+  // fetches the full post before editing
   const handleEdit = async (postSummary: RecentPost) => {
     try {
       const response = await fetch(`http://localhost:8080/api/posts/${postSummary.id}`);
@@ -32,25 +42,20 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
     }
   };
 
-  // Delete post with confirmation
+  // Deletes a post and refreshes the list
   const handleDelete = async (postId: number) => {
-    // Double check before deleting
     if (!confirm('Are you sure you want to delete this post?')) {
       return;
     }
-
     setIsDeleting(true);
     setError('');
-
     try {
       const response = await fetch(`http://localhost:8080/api/posts/${postId}`, {
         method: 'DELETE',
       });
-
       if (!response.ok) {
         throw new Error('Failed to delete post');
       }
-
       onPostUpdated();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to delete post');
@@ -59,6 +64,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
     }
   };
 
+  // Render the posts list and forms
   return (
     <div className="bg-white shadow rounded-lg p-6">
       {/* Header with create button */}
@@ -72,14 +78,14 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
         </button>
       </div>
 
-      {/* Error message display */}
+      {/* Show error message if there is one */}
       {error && (
         <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-md">
           {error}
         </div>
       )}
 
-      {/* Posts list */}
+      {/* List of posts with edit and delete buttons */}
       <div className="space-y-4">
         {posts.map((post) => (
           <div key={post.id} className="border rounded-lg p-4">
@@ -88,7 +94,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
                 <h3 className="text-lg font-medium text-gray-900">{post.title}</h3>
                 <p className="text-sm text-gray-500">Published on {post.date}</p>
               </div>
-              {/* Edit/Delete buttons */}
+              {/* Edit and Delete buttons for each post */}
               <div className="flex space-x-2">
                 <button 
                   onClick={() => handleEdit(post)}
@@ -105,16 +111,17 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
                 </button>
               </div>
             </div>
-            {/* Post stats */}
+            {/* Show post stats */}
             <div className="mt-2 flex space-x-4 text-sm text-gray-500">
               <span>{post.views} views</span>
+              <span>{post.likes} likes</span>
               <span>{post.comments} comments</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Create/Edit forms */}
+      {/* Show the create post form if needed */}
       {showCreatePost && (
         <CreatePostForm
           onClose={() => setShowCreatePost(false)}
@@ -122,6 +129,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
         />
       )}
 
+      {/* Show the edit post form if needed */}
       {editingPost && (
         <CreatePostForm
           onClose={() => setEditingPost(null)}

@@ -151,4 +151,12 @@ public class PostService {
 
         return user.isLiking(post);
     }
+
+    public Post incrementViews(Long id) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+        
+        post.incrementViews();
+        return postRepository.save(post);
+    }
 } 

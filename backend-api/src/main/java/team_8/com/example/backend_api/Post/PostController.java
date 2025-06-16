@@ -85,4 +85,14 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/{id}/views")
+    public ResponseEntity<Post> incrementViews(@PathVariable Long id) {
+        try {
+            Post post = postService.incrementViews(id);
+            return ResponseEntity.ok(post);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 } 
