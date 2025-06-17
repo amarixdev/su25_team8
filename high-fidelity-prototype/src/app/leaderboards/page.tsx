@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import LoadingState from '../../components/LoadingState';
 // Removed Link and Image imports as they are now in child components
 import LeaderboardSection, { Contributor } from '../../components/leaderboards/LeaderboardSection';
 import ContributorOfTheMonth from '../../components/leaderboards/ContributorOfTheMonth';
@@ -150,10 +151,7 @@ export default function LeaderboardsPage() {
             <p className="mt-2 text-lg text-gray-600">See who&apos;s making the biggest impact in our community.</p>
           </div>
           
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <span className="ml-4 text-lg text-gray-600">Loading leaderboards...</span>
-          </div>
+          <LoadingState message="Loading leaderboards..." />
         </div>
       </div>
     );

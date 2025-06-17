@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FollowService } from '../../../services/followService';
 import { useFollow } from '../../../contexts/FollowContext';
+import LoadingState from '../../../components/LoadingState';
 
 interface BaseUser {
   id: number;
@@ -208,10 +209,7 @@ export default function UserProfilePage() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
-        </div>
+        <LoadingState message="Loading profile..." />
       </div>
     );
   }

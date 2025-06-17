@@ -8,6 +8,7 @@ import AnalyticsTabContent from './AnalyticsTabContent';
 import CreatePostForm from './CreatePostForm';
 import { RecentPost } from './types';
 import { dummyPosts } from '../../app/dummy_data/dummyPosts';
+import LoadingState from '../LoadingState';
 
 const dashboardTabs = [
   { id: 'overview', label: 'Overview' },
@@ -152,7 +153,11 @@ const Dashboard = () => {
 
   // Show loading state
   if (isLoading) {
-    return <div className="text-center py-12">Loading...</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <LoadingState message="Loading dashboard..." />
+      </div>
+    );
   }
 
   // Show error state
