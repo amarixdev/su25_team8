@@ -83,8 +83,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                  ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
       <div className="flex justify-between items-center mb-4">
-        <Link href="/" className="text-xl font-bold hover:text-blue-600">
-          SpartanParadigm
+        <Link href="/" className="text-xl font-bold hover:opacity-80 transition-opacity cursor-pointer">
+          <span className="text-blue">Spartan</span><span className="text-gold">Paradigm</span>
         </Link>
         <button 
           className="md:hidden text-gray-600 hover:text-gray-800"

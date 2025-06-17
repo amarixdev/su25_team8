@@ -18,6 +18,19 @@
   --color-blue-800: #1e40af;
   --color-blue-900: #1e3a8a;
   --color-blue: #1e40af;
+  
+  /* Custom golden color palette */
+  --color-gold-50:  #fffeec;
+  --color-gold-100: #fff9c2;
+  --color-gold-200: #fff48a;
+  --color-gold-300: #ffeb3b;
+  --color-gold-400: #fcd200;
+  --color-gold-500: #fbbf00;  /* A rich yellow with good visibility */
+  --color-gold-600: #e6ac00;
+  --color-gold-700: #cc9900;
+  --color-gold-800: #a37800;
+  --color-gold-900: #805f00;
+  --color-gold:      #fbbf00;
 }
 
 @media (prefers-color-scheme: dark) {
