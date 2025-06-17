@@ -8,7 +8,7 @@ const Pagination: React.FC = () => {
         <button className="px-3 py-1 rounded-md border border-gray-300 text-gray-500 hover:bg-gray-50">
           Previous
         </button>
-        <button className="px-3 py-1 rounded-md bg-indigo-600 text-white">1</button>
+        <button className="px-3 py-1 rounded-md bg-blue-600 text-white">1</button>
         <button className="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">2</button>
         <button className="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">3</button>
         <span className="px-2 text-gray-500">...</span>

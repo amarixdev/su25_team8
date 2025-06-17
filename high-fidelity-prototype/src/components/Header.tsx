@@ -60,14 +60,14 @@ const Header = () => {
       <nav className={`flex ccc space-x-8 items-center ${userType == 'admin' ? 'text-white' : 'text-gray-700'}`}>
         <Link 
           href="/leaderboards" 
-          className={`cursor-pointer hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
+          className={`cursor-pointer hover:text-blue-600 px-3 py-2 text-sm font-medium`}
         >
           Leaderboards
         </Link>
         {userType === 'contributor' && (
           <Link 
             href="/dashboard" 
-            className="cursor-pointer  hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            className="cursor-pointer  hover:text-blue-600 px-3 py-2 text-sm font-medium"
           >
             Dashboard
           </Link>
@@ -75,7 +75,7 @@ const Header = () => {
         {userType === 'admin' && (
           <Link 
             href="/admin" 
-            className="cursor-pointer  hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+            className="cursor-pointer  hover:text-blue-600 px-3 py-2 text-sm font-medium"
           >
             Admin Dashboard
           </Link>
@@ -84,13 +84,13 @@ const Header = () => {
           <>
             <Link 
               href="/login" 
-              className="cursor-pointer hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+              className="cursor-pointer hover:text-blue-600 px-3 py-2 text-sm font-medium"
             >
               Login
             </Link>
             <Link 
               href="/signup" 
-              className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium rounded-lg transition-colors"
             >
               Sign Up
             </Link>
@@ -99,7 +99,7 @@ const Header = () => {
         {userType && (
           <button
             onClick={handleLogout}
-            className={`cursor-pointer ${userType == 'admin' ? 'text-white' : 'text-gray-700'} hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
+            className={`cursor-pointer ${userType == 'admin' ? 'text-white' : 'text-gray-700'} hover:text-blue-600 px-3 py-2 text-sm font-medium`}
           >
             Log Out
           </button>

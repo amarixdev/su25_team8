@@ -12,7 +12,7 @@ const ViewToggleButtons: React.FC<ViewToggleButtonsProps> = ({ view, setView }) 
         onClick={() => setView('grid')}
         title="Grid view"
         className={`p-2 rounded-md ${
-          view === 'grid' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500 hover:bg-gray-100'
+          view === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:bg-gray-100'
         }`}
       >
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -23,7 +23,7 @@ const ViewToggleButtons: React.FC<ViewToggleButtonsProps> = ({ view, setView }) 
         onClick={() => setView('list')}
         title="List view"
         className={`p-2 rounded-md ${
-          view === 'list' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500 hover:bg-gray-100'
+          view === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:bg-gray-100'
         }`}
       >
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

@@ -51,7 +51,7 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
               }}
             />
           ) : (
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
               {getInitials(user.displayName)}
             </div>
           )}
@@ -68,7 +68,7 @@ const RealUserCard: React.FC<RealUserCardProps> = ({ user }) => {
                   </div>
                 </h3>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  user.role === 'CONTRIBUTOR' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                  user.role === 'CONTRIBUTOR' ? 'bg-blue-100 text-blue-800' : 'bg-blue-100 text-blue-800'
                 }`}>
                   {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}
                 </span>
@@ -283,7 +283,7 @@ function FollowersContent() {
           <p className="text-gray-500">
             {searchTerm ? `No ${title.toLowerCase()} found matching "${searchTerm}"` : `No ${title.toLowerCase()} yet`}
           </p>
-          <Link href="/find" className="text-white px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700">Find accounts to follow</Link>
+          <Link href="/find" className="text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700">Find accounts to follow</Link>
         </div>
       );
     }

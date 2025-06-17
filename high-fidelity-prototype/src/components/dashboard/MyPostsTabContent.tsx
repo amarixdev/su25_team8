@@ -72,7 +72,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
         <h2 className="text-lg font-medium text-gray-900">My Posts</h2>
         <button 
           onClick={() => setShowCreatePost(true)}
-          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
         >
           Create New Post
         </button>
@@ -98,7 +98,7 @@ const MyPostsTabContent: React.FC<MyPostsTabContentProps> = ({ posts, onPostUpda
               <div className="flex space-x-2">
                 <button 
                   onClick={() => handleEdit(post)}
-                  className="text-indigo-600 hover:text-indigo-900 text-sm font-medium cursor-pointer"
+                  className="text-blue-600 hover:text-blue-900 text-sm font-medium cursor-pointer"
                 >
                   Edit
                 </button>

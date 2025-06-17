@@ -271,7 +271,7 @@ export default function UserProfilePage() {
                   }}
                 />
               ) : (
-                <div className="w-30 h-30 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-30 h-30 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   {getInitials(user.displayName)}
                 </div>
               )}
@@ -286,7 +286,7 @@ export default function UserProfilePage() {
                   <div className="flex items-center gap-4 mt-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       isContributor(user) 
-                        ? 'bg-purple-100 text-purple-800' 
+                        ? 'bg-blue-100 text-blue-800' 
                         : 'bg-blue-100 text-blue-800'
                     }`}>
                       {isContributor(user) ? 'Contributor' : 'Visitor'}

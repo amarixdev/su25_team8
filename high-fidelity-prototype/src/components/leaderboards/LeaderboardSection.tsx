@@ -43,11 +43,11 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ title, data, me
           <li key={contributor.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
             <div className="flex items-center">
               <span className="text-lg font-medium text-gray-600 mr-3">{index + 1}.</span>
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
                 {getInitials(contributor.display_name)}
               </div>
               <div>
-                <Link href={`/profile/${contributor.username}`} className="text-indigo-600 hover:text-indigo-800 font-medium">
+                <Link href={`/profile/${contributor.username}`} className="text-blue-600 hover:text-blue-800 font-medium">
                   {contributor.display_name}
                 </Link>
                 <p className="text-sm text-gray-500">@{contributor.username}</p>

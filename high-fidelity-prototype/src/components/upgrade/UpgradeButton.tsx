@@ -15,7 +15,7 @@ const UpgradeButton: React.FC<UpgradeButtonProps> = ({ onUpgrade, allRequirement
           disabled={!allRequirementsMet || isSubmitting}
           className={`px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white 
             ${allRequirementsMet 
-              ? 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' 
+              ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' 
               : 'bg-gray-300 cursor-not-allowed'}`}
         >
           {isSubmitting ? (

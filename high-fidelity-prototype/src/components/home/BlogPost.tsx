@@ -46,7 +46,7 @@ const BlogPost = ({ id, title, author, date, content, imageUrl, tags = [] }: Blo
             {tags.map((tag, index) => (
               <span 
                 key={index} 
-                className="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full"
+                className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full"
               >
                 {tag}
               </span>
