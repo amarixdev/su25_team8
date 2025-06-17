@@ -19,7 +19,7 @@ const RecentPostsSection: React.FC<RecentPostsSectionProps> = ({ recentPosts, on
             <li key={post.id} className="px-4 py-4 sm:px-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-indigo-600 truncate">{post.title}</p>
+                  <p className="text-sm font-medium text-blue-600 truncate">{post.title}</p>
                   <p className="mt-1 text-sm text-gray-500">Published on {post.date}</p>
                 </div>
                 <div className="ml-4 flex-shrink-0 flex space-x-4">

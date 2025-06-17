@@ -14,7 +14,7 @@ const UpgradeCompleteCard = () => {
         <p className="text-gray-600 mb-4">
           Congratulations! You are now a contributor. You can start publishing articles and building your following.
         </p>
-        <Link href="/" className="text-indigo-600 hover:text-indigo-800 font-medium">
+        <Link href="/" className="text-blue-600 hover:text-blue-800 font-medium">
           Start Exploring
         </Link>
       </div>

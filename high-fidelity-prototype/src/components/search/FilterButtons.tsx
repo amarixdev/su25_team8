@@ -18,7 +18,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({ activeFilter, onFilterCha
             onClick={() => onFilterChange(filter)}
             className={`px-4 py-2 text-sm font-medium rounded-full ${
               activeFilter === filter
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-blue-600 text-white'
                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
             }`}
           >

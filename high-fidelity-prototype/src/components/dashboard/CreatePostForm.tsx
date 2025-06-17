@@ -109,7 +109,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated,
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               required
             />
           </div>
@@ -123,7 +123,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated,
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               required
             />
           </div>
@@ -137,7 +137,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated,
               id="imagePath"
               value={formData.imagePath}
               onChange={(e) => setFormData({ ...formData, imagePath: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             />
           </div>
 
@@ -149,7 +149,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated,
               id="status"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             >
               <option value="DRAFT">Draft</option>
               <option value="PUBLISHED">Published</option>
@@ -177,8 +177,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated,
               disabled={isSubmitting}
               className={`px-4 py-2 text-sm font-medium text-white rounded-md ${
                 isSubmitting
-                  ? 'bg-indigo-400 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700'
+                  ? 'bg-blue-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
               {isSubmitting ? (post ? 'Updating...' : 'Creating...') : (post ? 'Update Post' : 'Create Post')}

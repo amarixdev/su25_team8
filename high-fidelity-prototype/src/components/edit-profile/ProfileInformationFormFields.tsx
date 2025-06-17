@@ -35,7 +35,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
           id="displayName"
           value={formData.displayName}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       <div>
@@ -52,7 +52,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
             id="username"
             value={formData.username}
             onChange={handleChange}
-            className="block w-full border border-gray-300 rounded-none rounded-r-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="block w-full border border-gray-300 rounded-none rounded-r-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
           id="email"
           value={formData.email}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       <div className="sm:col-span-2">
@@ -79,7 +79,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
           rows={4}
           value={formData.bio}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
         <p className="mt-2 text-sm text-gray-500">
           Brief description for your profile. URLs are hyperlinked.
@@ -95,7 +95,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
           id="location"
           value={formData.location}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       <div>
@@ -108,7 +108,7 @@ const ProfileInformationFormFields: React.FC<ProfileInformationFormFieldsProps> 
           id="website"
           value={formData.website}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       {/* Social Links editing can be added here as a separate sub-component if needed */}

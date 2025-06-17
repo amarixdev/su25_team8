@@ -24,7 +24,7 @@ const DailyAdviceWidget: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200 shadow-sm">
+    <div className="bg-gradient-to-r from-blue-50 to-blue-50 rounded-lg p-6 border border-blue-200 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
           💡 Daily Inspiration
@@ -32,7 +32,7 @@ const DailyAdviceWidget: React.FC = () => {
         <button 
           onClick={fetchAdvice}
           disabled={isLoading}
-          className="text-indigo-600 hover:text-indigo-800 font-medium text-sm px-3 py-1 rounded-md hover:bg-indigo-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-blue-600 hover:text-blue-800 font-medium text-sm px-3 py-1 rounded-md hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? '...' : '🔄 New'}
         </button>

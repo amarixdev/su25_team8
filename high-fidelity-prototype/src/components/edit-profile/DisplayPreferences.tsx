@@ -30,7 +30,7 @@ const DisplayPreferences: React.FC<DisplayPreferencesProps> = ({
             name="theme"
             value={theme}
             onChange={onThemeChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
           >
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -47,7 +47,7 @@ const DisplayPreferences: React.FC<DisplayPreferencesProps> = ({
             name="fontSize"
             value={fontSize}
             onChange={onFontSizeChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
           >
             <option value="small">Small</option>
             <option value="medium">Medium</option>

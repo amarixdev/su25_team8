@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FollowService } from '../../../services/followService';
 import { useFollow } from '../../../contexts/FollowContext';
+import LoadingState from '../../../components/LoadingState';
 
 interface BaseUser {
   id: number;
@@ -208,10 +209,7 @@ export default function UserProfilePage() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
-        </div>
+        <LoadingState message="Loading profile..." />
       </div>
     );
   }
@@ -271,7 +269,7 @@ export default function UserProfilePage() {
                   }}
                 />
               ) : (
-                <div className="w-30 h-30 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-30 h-30 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   {getInitials(user.displayName)}
                 </div>
               )}
@@ -286,7 +284,7 @@ export default function UserProfilePage() {
                   <div className="flex items-center gap-4 mt-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       isContributor(user) 
-                        ? 'bg-purple-100 text-purple-800' 
+                        ? 'bg-blue-100 text-blue-800' 
                         : 'bg-blue-100 text-blue-800'
                     }`}>
                       {isContributor(user) ? 'Contributor' : 'Visitor'}

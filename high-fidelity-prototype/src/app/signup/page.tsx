@@ -8,7 +8,7 @@ export default function SignupPage() {
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 md:p-12">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">
-            Join <span className="text-blue-600">SpartanParadigm</span>
+            Join <span className="text-blue">Spartan</span><span className="text-gold">Paradigm</span>
           </h1>
           <p className="mt-3 text-gray-600 text-lg">
             Create your account to start sharing knowledge.

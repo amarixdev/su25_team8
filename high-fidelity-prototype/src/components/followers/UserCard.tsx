@@ -22,7 +22,7 @@ export default function UserCard({
   return (
     <div className="flex flex-col items-center">
       <Link href={`/profile/${username}`} className="group">
-        <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 mb-2 group-hover:ring-2 group-hover:ring-indigo-500">
+        <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 mb-2 group-hover:ring-2 group-hover:ring-blue-500">
           <Image
             src={avatar}
             alt={name}
@@ -45,8 +45,8 @@ export default function UserCard({
         <button
           className={`mt-2 px-3 py-1 text-xs font-medium rounded-full ${
             isFollowing
-              ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700'
+              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
         >
           {isFollowing ? 'Following' : 'Follow'}

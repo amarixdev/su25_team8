@@ -87,7 +87,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                     }}
                   />
                 ) : (
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
                     {getInitials(user.displayName)}
                   </div>
                 )}
@@ -105,7 +105,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ users, searchTerm, isLoading })
                     </Link>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       user.role === 'CONTRIBUTOR' 
-                        ? 'bg-purple-100 text-purple-800' 
+                        ? 'bg-blue-100 text-blue-800' 
                         : 'bg-blue-100 text-blue-800'
                     }`}>
                       {user.role === 'CONTRIBUTOR' ? 'Contributor' : 'Visitor'}

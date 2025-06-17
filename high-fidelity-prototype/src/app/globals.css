@@ -1,11 +1,36 @@
 @import "tailwindcss";
 
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Custom blue color palette - lighter navy */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #1e40af;
+  --color-blue-600: #1d4ed8;
+  --color-blue-700: #1e3a8a;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue: #1e40af;
+  
+  /* Custom golden color palette */
+  --color-gold-50:  #fffeec;
+  --color-gold-100: #fff9c2;
+  --color-gold-200: #fff48a;
+  --color-gold-300: #ffeb3b;
+  --color-gold-400: #fcd200;
+  --color-gold-500: #fbbf00;  /* A rich yellow with good visibility */
+  --color-gold-600: #e6ac00;
+  --color-gold-700: #cc9900;
+  --color-gold-800: #a37800;
+  --color-gold-900: #805f00;
+  --color-gold:      #fbbf00;
 }
 
 @media (prefers-color-scheme: dark) {

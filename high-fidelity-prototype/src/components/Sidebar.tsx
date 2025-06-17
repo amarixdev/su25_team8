@@ -83,8 +83,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                  ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
       <div className="flex justify-between items-center mb-4">
-        <Link href="/" className="text-xl font-bold hover:text-indigo-600">
-          SpartanParadigm
+        <Link href="/" className="text-xl font-bold hover:opacity-80 transition-opacity cursor-pointer">
+          <span className="text-blue">Spartan</span><span className="text-gold">Paradigm</span>
         </Link>
         <button 
           className="md:hidden text-gray-600 hover:text-gray-800"
@@ -116,7 +116,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                 />
               ) : null}
               {!userData.profilePicturePath && (
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
                   {userData.displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
                 </div>
               )}
@@ -132,7 +132,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
               </p>
               <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${
                 userType === 'admin' ? 'bg-red-600 text-white' :
-                userType === 'contributor' ? 'bg-purple-100 text-purple-800' : 
+                userType === 'contributor' ? 'bg-blue-100 text-blue-800' : 
                 'bg-blue-100 text-blue-800'
               }`}>
                 {userType === 'admin' ? 'Admin' : userType === 'contributor' ? 'Contributor' : 'Visitor'}
@@ -158,7 +158,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
             isActiveLink('/') 
               ? userType == 'admin' 
                 ? 'bg-gray-600 text-white' 
-                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+                : 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
               : userType == 'admin' 
                 ? 'hover:bg-gray-600' 
                 : 'hover:bg-gray-100'
@@ -184,7 +184,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
             isActiveLink('/search') 
               ? userType == 'admin' 
                 ? 'bg-gray-600 text-white' 
-                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+                : 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
               : userType == 'admin' 
                 ? 'hover:bg-gray-600' 
                 : 'hover:bg-gray-100'
@@ -211,7 +211,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
             isActiveLink('/bookmarks') 
               ? userType == 'admin' 
                 ? 'bg-gray-600 text-white' 
-                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+                : 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
               : userType == 'admin' 
                 ? 'hover:bg-gray-600' 
                 : 'hover:bg-gray-100'
@@ -238,7 +238,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
             isActiveLink('/profile') 
               ? userType == 'admin' 
                 ? 'bg-gray-600 text-white' 
-                : 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+                : 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
               : userType == 'admin' 
                 ? 'hover:bg-gray-600' 
                 : 'hover:bg-gray-100'
@@ -263,7 +263,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
           {userType != 'admin' && <div className="mt-6 pt-6 border-t">
             <div className="px-2 mb-3">
               <div className="flex items-center">
-                <span className="text-sm font-bold text-indigo-600">Community</span>
+                <span className="text-sm font-bold text-blue-600">Community</span>
               </div>
             </div>
 
@@ -272,14 +272,14 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none">
 <path d="M8.5 8.5C8.5 6.56625 10.0662 5 12 5C13.9338 5 15.5 6.56625 15.5 8.5C15.5 10.4338 13.9338 12 12 12C10.0662 12 8.5 10.4338 8.5 8.5Z" fill="#000000"/>
 <path d="M12 13.75C9.66375 13.75 5 14.9225 5 17.25V19H19V17.25C19 14.9225 14.3363 13.75 12 13.75Z" fill="#000000"/>
 <path d="M21.4025 8.58002L21.99 9.17168L18.6567 12.505L16.99 10.8425L17.5817 10.255L18.6567 11.3259L21.4025 8.58002Z" fill="#000000"/>
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Following</span>
-                <span className={`${(followingCount === null && !userData?.followingCount) && 'animate-pulse'} text-sm font-medium text-indigo-600`}>{
+                <span className={`${(followingCount === null && !userData?.followingCount) && 'animate-pulse'} text-sm font-medium text-blue-600`}>{
                   followingCount ?? userData?.followingCount ?? '...'
                 }</span>
               </div>
@@ -289,17 +289,17 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none">
 <path d="M8.5 8.5C8.5 6.56625 10.0662 5 12 5C13.9338 5 15.5 6.56625 15.5 8.5C15.5 10.4338 13.9338 12 12 12C10.0662 12 8.5 10.4338 8.5 8.5Z" fill="#000000"/>
 <path d="M12 13.75C9.66375 13.75 5 14.9225 5 17.25V19H19V17.25C19 14.9225 14.3363 13.75 12 13.75Z" fill="#000000"/>
 <path d="M21.4025 8.58002L21.99 9.17168L18.6567 12.505L16.99 10.8425L17.5817 10.255L18.6567 11.3259L21.4025 8.58002Z" fill="#000000"/>
 </svg>
               <div className="flex justify-between items-center flex-1">
                 <span>Followers</span>
-                {userType === "contributor" ? <span className={`${(followersCount === null && !userData?.followersCount) && 'animate-pulse'} text-sm font-medium text-indigo-600`}>{
+                {userType === "contributor" ? <span className={`${(followersCount === null && !userData?.followersCount) && 'animate-pulse'} text-sm font-medium text-blue-600`}>{
                   followersCount ?? userData?.followersCount ?? '...'
                 }</span> : 
-                <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-xs font-medium rounded hover:from-indigo-600 hover:to-indigo-700 transition-colors">
+                <button className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-xs font-medium rounded hover:from-blue-600 hover:to-blue-700 transition-colors">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     className="h-3 w-3" 

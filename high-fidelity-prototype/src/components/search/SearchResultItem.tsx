@@ -19,7 +19,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({ result }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-start">
-        <h3 className="text-lg font-medium text-indigo-600">{result.title}</h3>
+        <h3 className="text-lg font-medium text-blue-600">{result.title}</h3>
         <div className="flex space-x-2">
           <span className="flex items-center text-gray-500 text-sm">
             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -40,7 +40,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({ result }) => {
       <p className="mt-3 text-gray-700">{result.excerpt}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {result.tags.map((tag, index) => (
-          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {tag}
           </span>
         ))}

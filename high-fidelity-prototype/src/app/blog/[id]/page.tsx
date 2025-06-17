@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { generateTLDR, TLDRSummary } from '../../../utils/openai';
+import LoadingState from '../../../components/LoadingState';
 
 interface Post {
   id: number;
@@ -327,10 +328,7 @@ export default function BlogPostPage() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading post...</p>
-        </div>
+        <LoadingState message="Loading your article..." />
       </div>
     );
   }
@@ -608,10 +606,12 @@ export default function BlogPostPage() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Generating AI summary...</p>
-              </div>
+              <LoadingState 
+                message="Generating AI summary..." 
+                size="sm" 
+                showBrand={false}
+                className="py-8"
+              />
             )}
           </div>
         </div>
@@ -669,10 +669,12 @@ export default function BlogPostPage() {
         {/* Comments List */}
         <div className="space-y-6">
           {commentsLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading comments...</p>
-            </div>
+            <LoadingState 
+              message="Loading comments..." 
+              size="sm" 
+              showBrand={false}
+              className="py-8"
+            />
           ) : comments.length > 0 ? (
             comments.map((comment) => {
               // Check if this comment is by the post author

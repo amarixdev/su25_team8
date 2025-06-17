@@ -30,25 +30,25 @@ const ContributorOfTheMonth: React.FC<ContributorOfTheMonthProps> = ({ contribut
   
   if (!contributor) {
     return (
-      <div className="mb-10 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xl rounded-lg p-8 text-center">
+      <div className="mb-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-xl rounded-lg p-8 text-center">
         <h2 className="text-3xl font-bold mb-2">Contributor of the Month</h2>
-        <p className="text-indigo-200">Not yet announced. Stay tuned!</p>
+        <p className="text-blue-200">Not yet announced. Stay tuned!</p>
       </div>
     );
   }
 
   return (
-    <div className="mb-10 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xl rounded-lg p-8">
+    <div className="mb-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-xl rounded-lg p-8">
       <h2 className="text-3xl font-bold mb-2 text-center">Contributor of the Month</h2>
       <div className="flex flex-col items-center">
-        <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 border-4 border-white shadow-lg">
+        <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 border-4 border-white shadow-lg">
           {getInitials(contributor.display_name)}
         </div>
         <Link href={`/profile/${contributor.username}`} className="text-2xl font-semibold hover:underline">
           {contributor.display_name}
         </Link>
-        <p className="text-indigo-200">@{contributor.username}</p>
-        <p className="mt-3 text-center text-indigo-100 max-w-md">
+        <p className="text-blue-200">@{contributor.username}</p>
+        <p className="mt-3 text-center text-blue-100 max-w-md">
           Highlighting exceptional performance and engagement. Keep up the great work!
         </p>
       </div>

@@ -97,7 +97,7 @@ const response = await fetch('http://localhost:8080/api/contributors', {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">
-            Welcome to <span className="text-blue-600">SpartanParadigm</span>
+                          Welcome to <span className="text-blue">Spartan</span><span className="text-gold">Paradigm</span>
           </h1>
           <p className="mt-3 text-gray-600 text-lg">
             Sign in to access your account.
