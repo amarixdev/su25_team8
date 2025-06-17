@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { generateTLDR, TLDRSummary } from '../../../utils/openai';
 
 interface Post {
   id: number;
@@ -47,6 +48,12 @@ export default function BlogPostPage() {
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [commentsError, setCommentsError] = useState('');
   const hasIncrementedView = useRef(false);
+  
+  // TLDR state
+  const [tldrSummary, setTldrSummary] = useState<TLDRSummary | null>(null);
+  const [isTldrLoading, setIsTldrLoading] = useState(false);
+  const [tldrError, setTldrError] = useState('');
+  const [showTldrModal, setShowTldrModal] = useState(false);
 
   // Function to increment view count
   const incrementViewCount = async (contributorId: number) => {
@@ -291,6 +298,31 @@ export default function BlogPostPage() {
     }
   };
 
+  // Handle TLDR generation
+  const handleTldrClick = async () => {
+    if (!post) return;
+    
+    // If we already have a summary, just toggle the section
+    if (tldrSummary) {
+      setShowTldrModal(!showTldrModal); // Reusing this state for inline display
+      return;
+    }
+
+    setIsTldrLoading(true);
+    setTldrError('');
+    setShowTldrModal(true); // Show section immediately with loading state
+
+    try {
+      const summary = await generateTLDR(post.content, post.title);
+      console.log('🔍 Generated summary:', summary);
+      setTldrSummary(summary);
+    } catch (error) {
+      setTldrError(error instanceof Error ? error.message : 'Failed to generate summary');
+    } finally {
+      setIsTldrLoading(false);
+    }
+  };
+
   // Show loading state
   if (isLoading) {
     return (
@@ -408,12 +440,41 @@ export default function BlogPostPage() {
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-gray-200">
             <div className="flex justify-between items-center">
-              <button
-                onClick={() => router.push('/')}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-2 rounded-md font-medium"
-              >
-                More Articles
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => router.push('/')}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-2 rounded-md font-medium cursor-pointer"
+                >
+                  More Articles
+                </button>
+                
+                {/* TLDR Button */}
+                <button
+                  onClick={handleTldrClick}
+                  disabled={isTldrLoading}
+                  className="active:scale-95 relative bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-700 hover:to-blue-700 disabled:from-blue-500 disabled:to-blue-400 text-white px-6 py-2 rounded-md font-medium cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed"
+                >
+                  <div className="flex items-center gap-2">
+                    {isTldrLoading ? (
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg>
+                    )}
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-bold leading-none">
+                        {isTldrLoading ? 'Generating...' : (showTldrModal && tldrSummary ? 'Hide Summary' : 'Summarize')}
+                      </span>
+
+                    </div>
+                  </div>
+                </button>
+              </div>
+              
               <div className="flex space-x-4">
                 <button 
                   onClick={handleLike}
@@ -434,7 +495,7 @@ export default function BlogPostPage() {
                   </svg>
                   <span className="text-sm font-medium">{post.likes}</span>
                 </button>
-                <button className="text-gray-500 hover:text-gray-700">
+                <button className="text-gray-500 hover:text-gray-700 cursor-pointer">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                   </svg>
@@ -444,6 +505,117 @@ export default function BlogPostPage() {
           </div>
         </div>
       </article>
+
+      {/* TLDR Section - Inline above comments */}
+      <div 
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          showTldrModal ? 'max-h-screen opacity-100 mb-8' : 'max-h-0 opacity-0 mb-0'
+        }`}
+      >
+        <div className="bg-gradient-to-r from-blue-50 to-blue-50 rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-opacity-20 p-2 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-stars" viewBox="0 0 16 16">
+                    <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">TLDR</h3>
+                  <p className="text-blue-100 text-sm">Generated with AI</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowTldrModal(false)}
+                className="text-white hover:text-blue-200 p-2 hover:bg-white hover:bg-opacity-10 rounded-lg transition-colors cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-6 bg-white">
+            {tldrError ? (
+              <div className="text-center py-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                  <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
+                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h4 className="text-lg font-semibold text-red-800 mb-2">Error Generating Summary</h4>
+                  <p className="text-red-600 text-sm mb-4">{tldrError}</p>
+                  <div className="flex gap-2 justify-center">
+                    <button
+                      onClick={handleTldrClick}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer"
+                    >
+                      Try Again
+                    </button>
+                    <button
+                      onClick={() => setShowTldrModal(false)}
+                      className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md text-sm font-medium cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : tldrSummary ? (
+              <div className="space-y-6">
+                {/* Summary */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    Quick Summary
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    {tldrSummary.summary}
+                  </p>
+                </div>
+
+                {/* Key Points */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-700 rounded-full"></div>
+                    Key Points
+                  </h4>
+                  <ul className="space-y-3">
+                    {tldrSummary.keyPoints.map((point, index) => (
+                      <li key={index} className="flex items-start gap-3 text-gray-700">
+                        <div className="bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
+                          {index + 1}
+                        </div>
+                        <span className="leading-relaxed">{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Footer */}
+                <div className="bg-gradient-to-r from-blue-50 to-blue-50 p-4 rounded-lg border border-blue-100">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>This summary was generated by AI and may not capture all nuances of the original article.</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Generating AI summary...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Comments Section */}
       <div className="bg-white rounded-lg shadow-lg p-8">
