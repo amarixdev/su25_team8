@@ -6,7 +6,7 @@ interface FilterButtonsProps {
 }
 
 const FilterButtons: React.FC<FilterButtonsProps> = ({ activeFilter, onFilterChange }) => {
-  const filters = ['all', 'articles', 'authors', 'tags'];
+  const filters = ['all', 'articles', 'authors'];
 
   return (
     <div className="mb-8">
@@ -16,7 +16,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({ activeFilter, onFilterCha
           <button
             key={filter}
             onClick={() => onFilterChange(filter)}
-            className={`px-4 py-2 text-sm font-medium rounded-full ${
+            className={`cursor-pointer px-4 py-2 text-sm font-medium rounded-full transition-colors ${
               activeFilter === filter
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
