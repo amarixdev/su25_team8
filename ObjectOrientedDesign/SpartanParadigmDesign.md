@@ -31,6 +31,8 @@ Spartan Paradigm is a blog-style web app for UNCG students to connect and share 
 ### 2.1 Use Case Model
 ![Use Case Model](https://github.com/amarixdev/su25_team8/blob/main/ObjectOrientedDesign/UserCases_su25_team8-1.png)
 
+- Note: Admin is not a use case as of 6/17/25 - AD
+
 ### 2.2 Use Case Descriptions
 
 #### 2.2.1 Actor: Contributor

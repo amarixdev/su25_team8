@@ -86,12 +86,15 @@ Spartan Paradigm is a simple to use blog web app that is designed for students a
     * View blogs posted to Spartan Paradigm
     * Interact with posts via comments, liking, or subscribing to the author. 
     * Connect with authors by adding them as friends.
-    * Directly message friends who have added them back. 
-    * Ability to apply for contributer status (after interacting with 3 or more posts). 
+    * Ability to apply for contributer status. 
+    * AI-Powered TLDR Blog Summaries
 - **CONTRIBUTERS**
     * All VISITOR functions (- apply for contributer)
     * Ability to draft, save, post, and delete blogs to or from Spartan Paradigm.
-    * View statistics for their blogs and account (Viewer demographics, interaction count, etc.)
+    * View statistics for their blogs and account (views, interactions, etc.)
+    * View Motivation Quotes
+    * Earn Leaderboard spots
+
 
 ### 2.2 Product Constraints
 Spartan Paradigm will operate only on environments that support Java JDK 21. It is developed using Spring Boot 3.4.5 for the backend and PostgreSQL 17 for database management. Current development uses the free tier of PostgreSQL, which may restrict database size and performance, especially as messaging and interaction history grow. The frontend depends on React 19 and Next.js 15, and assumes users are accessing the platform from modern, standards-compliant web browsers. Because the project is constrained by a short timeline and limited resources, not all planned features may be available at launch, and some may be deferred to later iterations.
