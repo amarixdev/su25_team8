@@ -1,7 +1,7 @@
 # Software Requirements Specification
 ## For SpartanParadigm
 
-Version 1.1  
+Version 1.2  
 Prepared by <Amari DeVaughn, Camden Gregory>   
 Created 5/26/2025 
 
