@@ -133,7 +133,6 @@ Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API a
 
 -FR9: The system shall allow all users to summarize blog posts
 
-
 #### 3.1.1 User Interfaces  
 Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
 
