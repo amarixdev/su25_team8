@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Login = () => {
   const router = useRouter();
@@ -60,6 +61,19 @@ const Login = () => {
   return (
     <div className="flex-grow flex items-center justify-center p-8">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        {/* Avatar Section */}
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <Image
+              src="/placeholder-avatar.png"
+              alt="User Avatar"
+              width={80}
+              height={80}
+              className="rounded-full border-4 border-blue-100 shadow-lg"
+            />
+          </div>
+        </div>
+
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Welcome Back
         </h2>
@@ -92,7 +106,7 @@ const Login = () => {
           <button 
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-md shadow-sm text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+            className={`w-full py-3 px-4 rounded-md shadow-sm text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer ${
               isLoading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'

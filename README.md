@@ -29,7 +29,7 @@ Whether you have hidden talents, ambitious ideas, or niche passions, Spartan Par
    1. Login / modify / remove contributor profile.
    2. Write and manage blog posts (edit or delete).
    3. View post analytics (views, likes, comments).
-   4. Compete for leaderboard spots
+   4. Opportunity to earn leaderboard positions.
 
 ---
 
