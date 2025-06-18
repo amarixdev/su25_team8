@@ -133,14 +133,6 @@ Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API a
 
 - FR7: The system shall allow CONTRIBUTORS to reply to comments on their blogs with an authorship pin to verify them as the poster.
 
-- FR8: The system shall allow ADMINS to manually approve users applying for contributor status.
-
-- FR9: The system will allow ADMINS to suspend or remove USER/CONTRIBUTOR accounts.
-
-- FR10: ADMINS may moderate content through reviewing, editing, or deleting blog posts to ensure proper guidelines are followed.
-
-- FR11: ADMINS may access server-wide stats to help moderate content.
-
 #### 3.1.1 User Interfaces  
 Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Admins use a moderation dashboard to oversee user activity, review flagged content, and manage contributor access. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
 
