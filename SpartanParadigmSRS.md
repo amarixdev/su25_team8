@@ -39,6 +39,7 @@ Table of Contents
 |------|------|---------------------|---------|
 | Cam  | 5/26 |  Initial SRS          | 1.0  |
 | Amari | 5/26 | Formatting & Content | 1.1  |
+| Amari | 6/17 | Removed Admin Use Case | 1.2 |
 
 
 ## 1. Introduction
@@ -81,27 +82,22 @@ Section 1 contains a general introduction to Spartan Paradigm, intended for any 
 Spartan Paradigm is a simple to use blog web app that is designed for students and instructors to share informative content with one another. 
 
 ### 2.1 Product Functions
-- **USERS**
+- **VISITOR**
     * View blogs posted to Spartan Paradigm
     * Interact with posts via comments, liking, or subscribing to the author. 
     * Connect with authors by adding them as friends.
     * Directly message friends who have added them back. 
     * Ability to apply for contributer status (after interacting with 3 or more posts). 
 - **CONTRIBUTERS**
-    * All USER functions (- apply for contributer)
+    * All VISITOR functions (- apply for contributer)
     * Ability to draft, save, post, and delete blogs to or from Spartan Paradigm.
-    * Ability to block any users (- admins) from viewing their posts. 
     * View statistics for their blogs and account (Viewer demographics, interaction count, etc.)
-- **ADMINS**
-    * Manage user access – Approve, suspend, or remove user accounts.
-    * Moderate content – Review flagged posts and ensure content aligns with platform guidelines.
-    * Oversee platform activity – View system-wide stats and manage featured content
 
 ### 2.2 Product Constraints
 Spartan Paradigm will operate only on environments that support Java JDK 21. It is developed using Spring Boot 3.4.5 for the backend and PostgreSQL 17 for database management. Current development uses the free tier of PostgreSQL, which may restrict database size and performance, especially as messaging and interaction history grow. The frontend depends on React 19 and Next.js 15, and assumes users are accessing the platform from modern, standards-compliant web browsers. Because the project is constrained by a short timeline and limited resources, not all planned features may be available at launch, and some may be deferred to later iterations.
   
 ### 2.3 User Characteristics
-The platform is designed for students and instructors who want to share and interact with educational content. Most users will have basic digital literacy, such as navigating websites and filling out forms. Advanced tasks—such as messaging, applying for contributor access, or managing posts—are supported with intuitive design patterns and do not require technical knowledge. Users are expected to become comfortable with the interface after minimal use, and role-specific guidance for contributors and admins will be integrated as needed.
+The platform is designed for students and instructors who want to share and interact with educational content. Most users will have basic digital literacy, such as navigating websites and filling out forms. Advanced tasks—such as messaging, applying for contributor access, or managing posts—are supported with intuitive design patterns and do not require technical knowledge. Users are expected to become comfortable with the interface after minimal use, and role-specific guidance for contributors
 
 ### 2.4 Assumptions and Dependencies
 Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API and business logic, and PostgreSQL for storing data such as posts, messages, and user relationships. The frontend relies on React and Next.js for fast rendering and smooth navigation. RESTful communication connects the frontend to backend services. Development assumes a Unix-compatible environment and is being conducted in VS Code.
@@ -110,31 +106,35 @@ Spartan Paradigm depends on a Java-based backend (JDK 21), Spring Boot for API a
 
 ### 3.1 Functional Requirements 
 
-- FR0: The system will allow users to create accounts with user privileges.  
+- FR0: The system will allow visitors to create accounts with visitor privileges.  
   * Each account shall have a unique identifier assigned at the time of creation.
 
-  * Each account will have USER priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
+  * Each account will have VISITOR priviledges until CONTRIBUTER priviledges applied for, authenticated, and granted.
 
   * Any account may be deleted at anytime by its owner. 
 
-- FR1: The system shall allow USERS/CONTRIBUTORS/ADMINS to browse through the list of available blog posts.
+- FR1: The system shall allow VISITOR/CONTRIBUTORS to browse through the list of available blog posts.
 
-- FR2: The system shall allow USERS/CONTRIBUTORS/ADMINS to interact with available blog posts.  
+- FR2: The system shall allow VISITOR/CONTRIBUTORS to interact with available blog posts.  
    * All users may view, comment, like, and subscribe to blog posts.
 
-- FR3: The system shall allow USERS to apply for CONTRIBUTOR status after interacting with a minimum of three blog posts.
+- FR3: The system shall allow VISITOR to apply for CONTRIBUTOR status.
 
 - FR4: CONTRIBUTORS have permissions to draft, edit, post, and delete their blogs to the system at any time.
 
-- FR5: USERS/CONTRIBUTORS/ADMINS will be able to edit their profile at any time.
+- FR5: VISITOR/CONTRIBUTORS will be able to edit their profile at any time.
 
 - FR6: The system shall allow CONTRIBUTORS to view their post analytics at any time.  
   * Post analytics includes viewer count, interaction data, demographic data, and other stats to gauge engagement.
 
 - FR7: The system shall allow CONTRIBUTORS to reply to comments on their blogs with an authorship pin to verify them as the poster.
 
+-FR8: The system shall allow all users to comment on blog posts 
+
+-FR9: The system shall allow all users to summarize blog posts
+
 #### 3.1.1 User Interfaces  
-Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Admins use a moderation dashboard to oversee user activity, review flagged content, and manage contributor access. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
+Spartan Paradigm features a responsive web-based interface built with TailwindCSS, React, and Next.js, designed for ease of use across desktop and mobile devices. All users will interact with a consistent layout that includes a navigation bar, content feed, and contextual action buttons like Like, Comment, and Share. Contributors have access to a rich text editor for drafting posts, a dashboard for viewing engagement metrics, and tools to manage their audience. Error messages appear inline, and visual feedback like loading spinners and success banners are used to guide interaction.
 
 #### 3.1.2 Hardware Interfaces  
 Mobile and desktop devices with web browsing capabilities.
@@ -165,7 +165,7 @@ Mobile and desktop devices with web browsing capabilities.
 
 #### 3.2.1 Performance  
 - NFR0: Load all primary pages within 2 seconds under typical network conditions to maintain user engagement.  
-- NFR1: Database queries should return results within 500 milliseconds to maintain seamless user experience.
+- NFR1: Database queries and 3rd party API calls should return results within 500 milliseconds to maintain seamless user experience.
 
 #### 3.2.2 Security  
 - NFR3: System will be available only to authorized users, using their username and password.
