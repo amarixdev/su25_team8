@@ -39,7 +39,7 @@ Format your response as valid JSON only, no additional text.`;
 
     console.log('📤 Sending request to OpenAI...');
     console.log('📤 Request details:', {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini-2024-07-18",
       max_tokens: 300,
       temperature: 0.3,
       promptLength: prompt.length
@@ -47,7 +47,7 @@ Format your response as valid JSON only, no additional text.`;
 
     const startTime = Date.now();
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini-2024-07-18",
       messages: [
         {
           role: "system",
