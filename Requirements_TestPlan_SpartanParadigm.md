@@ -24,6 +24,7 @@
 1. Contributor (C1) logs in for the first time and edits his profile.
 
 #### 6. Contributor: Create/edit a new blog post
+0. C1 reads a motivational quote in the dashboard
 1. C1 creates a new blog post (B1) with title = "final_presentation".  
 2. C1 edits B1 content.
 3. C1 exits the app.
